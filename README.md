@@ -1,40 +1,22 @@
-# 🏫 CD Smart Campus
+# 🏫 CD NEXT GEN WEB ACADEMY
 
 **แพลตฟอร์มระบบบริการนักเรียนออนไลน์**
 
-CD Smart Campus is a comprehensive online student services platform designed specifically for educational institutions. Built with modern web technologies, it provides students with easy access to essential campus services, learning resources, and administrative tools.
+CD NEXT GEN WEB ACADEMY is a comprehensive online web application development learning platform designed specifically for educational institutions. Built with modern web technologies.
 
 ## 🎯 **Project Purpose**
 
-CD Smart Campus aims to digitize and streamline the student experience by providing:
+CD NEXT GEN WEB ACADEMY aims to digitize and streamline the student experience by providing:
 - **Digital Campus Services**: Room booking, sports management, and student applications
 - **Educational Resources**: Interactive learning modules for key subjects
-- **Sports Management System**: Real-time sports event tracking and medal tallying
-- **Student Portfolio**: Showcase of university and faculty achievements
 
 ## ✨ **Main Features**
-
-### 🏠 **Home Portal**
-- Modern, responsive landing page with smooth animations
-- Quick access to all platform services
-- Mobile-first design with optimized user experience
 
 ### 📚 **Learning Topics**
 - **HTML/CSS Module**: Interactive tutorials and examples
 - **JavaScript Course**: Comprehensive programming lessons
 - **Design Thinking**: Creative problem-solving methodologies  
 - **Figma Training**: UI/UX design tool tutorials
-
-### 🏆 **Sports Management System**
-- **Live Medal Dashboard**: Real-time tracking of sports day results
-- **Team Scoring**: Color-based team competition system (Green, Pink, Purple, Orange)
-- **Event Calendar**: Integration with Google Calendar for sports events
-- **Admin Panel**: Event management and score updating
-
-### 🎓 **Student Services**
-- **Room Booking**: Meeting and music room reservations
-- **Application System**: Student application processing
-- **Portfolio Showcase**: University and faculty achievements display
 
 ## 🛠 **Technology Stack**
 
@@ -191,10 +173,8 @@ Ensure all production environment variables are properly configured:
 ## 📊 **Project Status**
 
 - ✅ **Core Platform**: Fully functional
-- ✅ **Sports System**: Complete with real-time updates
 - ✅ **Learning Modules**: Interactive content delivery
-- 🔄 **Portfolio System**: Active development
-- 📋 **Mobile App**: Future roadmap
+
 
 ## 📄 **License**
 
