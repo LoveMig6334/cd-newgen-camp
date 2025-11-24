@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+:root {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: white;
+  color: black;
+  font-family: Sukhumvit;
+}
+@font-face {
+  font-family: "Sukhumvit";
+  src: url("../public/Fonts/SukhumvitSet-Medium.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Sukhumvit";
+  src: url("../public/Fonts/SukhumvitSet-Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: bold;
+}
+@font-face {
+  font-family: "Sukhumvit";
+  src: url("../public/Fonts/SukhumvitSet-Light.ttf") format("truetype");
+  font-weight: light;
+  font-style: light;
+}
+@font-face {
+  font-family: "Sukhumvit";
+  src: url("../public/Fonts/SukhumvitSet-Medium.ttf") format("truetype");
+  font-weight: medium;
+  font-style: medium;
+}
+@font-face {
+  font-family: "Sukhumvit";
+  src: url("../public/Fonts/SukhumvitSet-Thin.ttf") format("truetype");
+  font-weight: thin;
+  font-style: thin;
+}
+@font-face {
+  font-family: "Sukhumvit";
+  src: url("../public/Fonts/SukhumvitSet-Text.ttf") format("truetype");
+  font-weight: text;
+  font-style: text;
+}
