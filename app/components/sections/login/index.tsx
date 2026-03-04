@@ -195,7 +195,7 @@ export const Login = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.75, ease: "easeOut" }}
             >
-              <Link href="/application">
+              <Link href="/events/2025/next-gen-web-academy/application">
                 <button
                   className="px-6 text-2xl font-bold sm:px-8 py-2 sm:py-3 bg-yellow-500 text-white rounded-lg shadow-lg hover:bg-yellow-600 transition duration-300 flex items-center"
                   style={{ cursor: "pointer" }}
