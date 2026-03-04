@@ -1,27 +1,27 @@
+import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
-// Define the application data structure
-interface ApplicationData {
-  firstName: string;
-  lastName: string;
+interface ApplicationBody {
+  event_id: string;
+  first_name: string;
+  last_name: string;
   email: string;
   phone: string;
   school: string;
   grade: string;
   reason: string;
   expectations: string;
-  howDidYouHear: string;
+  how_did_you_hear?: string;
 }
 
 export async function POST(req: Request) {
   try {
-    // Parse the request body
-    const data: ApplicationData = await req.json();
+    const data: ApplicationBody = await req.json();
 
-    // Validate required fields
-    const requiredFields = [
-      "firstName",
-      "lastName",
+    const requiredFields: (keyof ApplicationBody)[] = [
+      "event_id",
+      "first_name",
+      "last_name",
       "email",
       "phone",
       "school",
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     ];
 
     for (const field of requiredFields) {
-      if (!data[field as keyof ApplicationData]) {
+      if (!data[field]) {
         return NextResponse.json(
           { error: `Field ${field} is required` },
           { status: 400 }
@@ -39,7 +39,6 @@ export async function POST(req: Request) {
       }
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(data.email)) {
       return NextResponse.json(
@@ -48,14 +47,28 @@ export async function POST(req: Request) {
       );
     }
 
-    // Here you would typically:
-    // 1. Save the application to your database
-    // 2. Send notification emails
-    // 3. Handle any other business logic
+    const supabase = await createClient();
+    const { error } = await supabase.from("applications").insert({
+      event_id: data.event_id,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      email: data.email,
+      phone: data.phone,
+      school: data.school,
+      grade: data.grade,
+      reason: data.reason,
+      expectations: data.expectations,
+      how_did_you_hear: data.how_did_you_hear ?? null,
+    });
 
-    // For now, we'll just simulate success
+    if (error) {
+      console.error("Supabase insert error:", error);
+      return NextResponse.json(
+        { error: "Failed to save application" },
+        { status: 500 }
+      );
+    }
 
-    // Return success response
     return NextResponse.json({
       success: true,
       message: "Application submitted successfully",
