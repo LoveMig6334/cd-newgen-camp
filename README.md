@@ -1,161 +1,140 @@
-# 🏫 CD NEXT GEN WEB ACADEMY
+# CD Smart Campus
 
-**แพลตฟอร์มระบบบริการนักเรียนออนไลน์**
+**แพลตฟอร์มจัดการกิจกรรมค่ายและรับสมัครนักเรียนออนไลน์**
 
-CD NEXT GEN WEB ACADEMY is a comprehensive online web application development learning platform designed specifically for educational institutions. Built with modern web technologies.
+CD Smart Campus is a multi-year event management platform for Thai schools — featuring dynamic event landing pages, an online application form, and an admin panel for managing events and applicants.
 
-## 🎯 **Project Purpose**
+## 🎯 Project Purpose
 
-CD NEXT GEN WEB ACADEMY aims to digitize and streamline the student experience by providing:
-- **Digital Campus Services**: Room booking, sports management, and student applications
-- **Educational Resources**: Interactive learning modules for key subjects
+- **Event Landing Pages**: Dynamic per-year/per-event pages showcasing camp details
+- **Online Applications**: Students submit applications stored directly in Supabase
+- **Admin Panel**: Auth-protected dashboard for managing events and viewing applicants
 
-## ✨ **Main Features**
+## ✨ Features
 
-### 📚 **Learning Topics**
-- **HTML/CSS Module**: Interactive tutorials and examples
-- **JavaScript Course**: Comprehensive programming lessons
-- **Design Thinking**: Creative problem-solving methodologies  
-- **Figma Training**: UI/UX design tool tutorials
+- Dynamic root redirect to the currently active event
+- Event application form with full validation → saved to Supabase
+- Admin panel (login, dashboard stats, event CRUD, applicant viewer with CSV export)
+- Supabase Auth for admin users (email + password)
+- Multi-year event architecture — add new events without code changes
 
-## 🛠 **Technology Stack**
+## 🛠 Technology Stack
 
-### **Frontend**
-- **Next.js 15.2.3** - React framework with App Router
-- **TypeScript** - Type-safe development
-- **Tailwind CSS 4** - Modern utility-first styling
-- **Framer Motion** - Smooth animations and transitions
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 15.2.3 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS 4 |
+| Database | Supabase (PostgreSQL) |
+| Auth | Supabase Auth |
+| Animations | Framer Motion |
+| UI Components | Material-UI |
+| Icons | React Icons, Heroicons, Lucide React |
 
-### **UI/UX Libraries**
-- **Material-UI (@mui/material)** - Component library
-- **Heroicons & Lucide React** - Icon systems
-- **React Icons** - Additional icon collections
+## 🚀 Getting Started
 
-### **Backend & Database**
-- **Next.js API Routes** - Serverless backend functions
+### Prerequisites
 
-### **Development Tools**
-- **Turbopack** - Fast development builds
-- **ESLint** - Code quality and consistency
+- Node.js 18+
+- A Supabase project with `events` and `applications` tables
 
-## 🚀 **Getting Started**
+### Installation
 
-### **Prerequisites**
-- Node.js 18+ installed
-
-### **Installation**
-
-1. **Clone the repository**
 ```bash
 git clone https://github.com/Theerat22/cdsc.git
 cd cdsc
-```
-
-2. **Install dependencies**
-```bash
 npm install
 ```
 
-3. **Run Development Server**
+### Environment Variables
+
+Create `.env.local`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### Run Development Server
+
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) to view the application.
 
+Open [http://localhost:3000](http://localhost:3000)
 
-## 📁 **Project Structure**
+## 📁 Project Structure
 
 ```
 cdsc/
-├── app/                          # Next.js App Router
-│   ├── components/              # Reusable UI components
-│   │   ├── UI/                  # Base UI components
-│   │   ├── NavBar.tsx           # Main navigation
-│   │   └── SportTable.tsx       # Sports dashboard
-│   ├── home/                    # Landing page
-│   │   └── sections/            # Page sections
-│   ├── topics/                  # Educational modules
-│   ├── application/             # Student applications
-│   └── api/                     # Backend API routes
-├── utils/                       # Utility functions
-├── public/                      # Static assets
-│   └── Fonts/                   # Custom Thai fonts
-└── docker-compose.*.yaml       # Container configurations
+├── app/
+│   ├── components/              # Shared UI
+│   │   ├── NavBar.tsx           # Event-aware navigation
+│   │   ├── ApplicationForm.tsx  # Student application form
+│   │   ├── sections/            # Landing page sections (hero, features, login)
+│   │   └── UI/                  # Footer, RippleEffect
+│   ├── events/
+│   │   ├── [year]/[slug]/       # Dynamic event pages
+│   │   └── 2025/next-gen-web-academy/  # Next Gen Web Academy 2025
+│   ├── admin/
+│   │   ├── (protected)/         # Auth-protected: dashboard, events, applicants
+│   │   ├── login/               # Admin login page
+│   │   └── components/          # LogoutButton
+│   ├── api/
+│   │   ├── application/         # Public: submit application
+│   │   ├── admin/events/        # Admin: event CRUD
+│   │   └── admin/applicants/    # Admin: read applicants
+│   ├── page.tsx                 # Root: redirects to active event
+│   └── layout.tsx               # Root layout
+├── lib/
+│   ├── supabase/
+│   │   ├── client.ts            # Browser Supabase client
+│   │   └── server.ts            # Server Supabase client
+│   └── types.ts                 # Event, Application types
+├── middleware.ts                 # Protects /admin/* routes
+└── public/Fonts/                # Sukhumvit Set (Thai font)
 ```
 
-## 🎨 **Design System**
+## 🗄 Database Schema
 
-### **Color Palette**
-- **Primary Blue**: Modern, professional campus branding
-- **Team Colors**: Green, Pink, Purple, Orange for sports system
-- **Gradients**: Smooth color transitions throughout UI
+```sql
+-- Events table
+events (id, name, year, slug, description, is_active, max_applicants, created_at, updated_at)
 
-### **Typography**
-- **Sukhumvit Set**: Custom Thai font family (6 weights)
-- **Geist Sans**: Modern English font for optimal readability
+-- Applications table
+applications (id, event_id, first_name, last_name, email, phone, school, grade, reason, expectations, how_did_you_hear, created_at)
+```
 
-### **Component Philosophy**
-- **Mobile-first responsive design**
-- **Consistent spacing and typography scale**
-- **Accessible color contrasts and interactions**
+## 🔐 Admin Setup
 
-## 🔧 **Development Workflow**
+1. Run RLS policies in Supabase SQL Editor:
+```sql
+CREATE POLICY "Authenticated users can manage events" ON events
+  FOR ALL USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
 
-### **Available Scripts**
+CREATE POLICY "Authenticated users can read applications" ON applications
+  FOR SELECT USING (auth.role() = 'authenticated');
+```
+
+2. Create an admin user: Supabase Dashboard → Authentication → Users → Add user
+
+3. Visit `/admin` — login with your credentials
+
+## 📜 Available Scripts
+
 ```bash
-npm run dev          # Start development server with Turbopack
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint checks
-npm run production   # Build and start production
+npm run dev        # Start dev server with Turbopack
+npm run build      # Production build
+npm run start      # Start production server
+npm run lint       # Run ESLint
+npm run production # Build then start
 ```
 
-### **Code Organization**
-- **Components**: Modular, reusable React components
-- **API Routes**: RESTful endpoints using Next.js API routes
-- **Styling**: Utility-first Tailwind CSS with custom components
-- **Type Safety**: Full TypeScript integration
-
-## 🌐 **Deployment**
-
-### **Production Build**
-```bash
-npm run build
-npm run start
-```
-
-
-### **Environment Variables**
-Ensure all production environment variables are properly configured:
-- Database connection strings
-- API keys and secrets  
-- External service credentials
-
-## 🤝 **Contributing**
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📊 **Project Status**
-
-- ✅ **Core Platform**: Fully functional
-- ✅ **Learning Modules**: Interactive content delivery
-
-
-## 📄 **License**
+## 📄 License
 
 This project is part of the CD Smart Campus initiative. All rights reserved.
 
-## 🙋‍♂️ **Support**
-
-For questions, issues, or contributions:
-- **Repository**: [GitHub Issues](https://github.com/Theerat22/cdsc/issues)
-- **Documentation**: Check the code comments and TypeScript definitions
-- **Community**: Join our development discussions
-
 ---
 
-**Built with ❤️ for the CDS**
+**Built for CDS**
