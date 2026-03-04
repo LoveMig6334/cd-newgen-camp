@@ -32,12 +32,9 @@ CD NEXT GEN WEB ACADEMY aims to digitize and streamline the student experience b
 - **React Icons** - Additional icon collections
 
 ### **Backend & Database**
-- **MySQL2** - Database connectivity
-- **Google APIs** - Calendar integration
 - **Next.js API Routes** - Serverless backend functions
 
 ### **Development Tools**
-- **Docker** - Containerization (development & production)
 - **Turbopack** - Fast development builds
 - **ESLint** - Code quality and consistency
 
@@ -45,8 +42,6 @@ CD NEXT GEN WEB ACADEMY aims to digitize and streamline the student experience b
 
 ### **Prerequisites**
 - Node.js 18+ installed
-- MySQL database setup
-- Google Calendar API credentials (for sports calendar features)
 
 ### **Installation**
 
@@ -61,34 +56,12 @@ cd cdsc
 npm install
 ```
 
-3. **Environment Setup**
-Create a `.env.local` file in the root directory:
-```env
-MYSQL_URI=mysql://username:password@host:port/database
-GOOGLE_CALENDAR_API_KEY=your_google_api_key
-```
-
-4. **Database Setup**
-Ensure your MySQL database has the required tables:
-- `sportsday` - Sports events and results
-- `universities` - University information
-- `faculties` - Faculty data
-- `students` - Student profiles
-
-5. **Run Development Server**
+3. **Run Development Server**
 ```bash
 npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-### **Docker Development**
-```bash
-# Development environment
-docker-compose -f docker-compose.development.yaml up
-
-# Production environment  
-docker-compose -f docker-compose.production.yaml up
-```
 
 ## 📁 **Project Structure**
 
@@ -151,10 +124,6 @@ npm run build
 npm run start
 ```
 
-### **Docker Production**
-```bash
-docker-compose -f docker-compose.production.yaml up -d
-```
 
 ### **Environment Variables**
 Ensure all production environment variables are properly configured:
@@ -189,4 +158,4 @@ For questions, issues, or contributions:
 
 ---
 
-**Built with ❤️ for the CD Smart Campus community**
+**Built with ❤️ for the CDS**
