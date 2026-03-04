@@ -1,0 +1,25 @@
+# CDSC Multi-Year Event Platform Refactor
+
+## Phase 1: Foundation — Project Restructure & Supabase Setup
+
+- [x] **Phase 1A**: Reorganize route structure for multi-year events (`/events/[year]/[slug]`)
+- [x] **Phase 1B**: Install Supabase, create client config, design DB schema
+- [ ] **Phase 1C**: Add global error boundaries (`global-error.tsx`, `error.tsx`, `not-found.tsx`)
+
+## Phase 2: Reusable Components & Application Form
+
+- [ ] **Phase 2A**: Extract reusable [ApplicationForm](file:///c:/Users/thatt/Documents/Coding%20Project/Web%20Projects/cdsc/lib/types.ts#31-35) component with dynamic camp name prop
+- [ ] **Phase 2B**: Migrate API route to Supabase (replace MySQL simulation)
+- [ ] **Phase 2C**: Move current "Next Gen Web Academy" pages under `/events/2025/next-gen-web-academy`
+
+## Phase 3: Admin Panel
+
+- [ ] **Phase 3A**: Create admin layout with sidebar navigation (`/admin`)
+- [ ] **Phase 3B**: Build event management page (list/create/set-active event)
+- [ ] **Phase 3C**: Build applicant viewer page (per-event, per-year records)
+
+## Phase 4: Dynamic Homepage & Routing
+
+- [ ] **Phase 4A**: Make root `/` dynamically render the active event's landing page
+- [ ] **Phase 4B**: Update NavBar to be event-aware (dynamic links, dynamic name)
+- [ ] **Phase 4C**: Final cleanup, remove dead code, update CLAUDE.md
