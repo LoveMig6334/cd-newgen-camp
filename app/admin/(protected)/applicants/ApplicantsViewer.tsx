@@ -1,7 +1,7 @@
 "use client";
 
 import type { Application, Event } from "@/lib/types";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 type EventOption = Pick<
   Event,
@@ -52,6 +52,7 @@ export default function ApplicantsViewer({
   const [applicants, setApplicants] = useState<Application[]>([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const [isPending, startTransition] = useTransition();
 
   const selectedEvent = events.find((e) => e.id === selectedEventId);
 
@@ -101,18 +102,21 @@ export default function ApplicantsViewer({
             ))}
           </select>
 
-          {selectedEventId && (
+          {selectedEventId ? (
             <input
               type="text"
               placeholder="ค้นหาชื่อ อีเมล หรือโรงเรียน..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                startTransition(() => setSearch(value));
+              }}
               className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 flex-1"
             />
-          )}
+          ) : null}
         </div>
 
-        {selectedEventId && applicants.length > 0 && (
+        {selectedEventId && applicants.length > 0 ? (
           <button
             onClick={() => exportCSV(filtered, selectedEvent?.name ?? "event")}
             className="flex items-center gap-2 border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
@@ -132,25 +136,25 @@ export default function ApplicantsViewer({
             </svg>
             ส่งออก CSV
           </button>
-        )}
+        ) : null}
       </div>
 
       {/* Stats bar */}
-      {selectedEvent && (
+      {selectedEvent ? (
         <div className="mb-3 text-sm text-gray-600">
           ผู้สมัคร{" "}
           <span className="font-semibold text-gray-900">{filtered.length}</span>
-          {search && ` (กรองจาก ${applicants.length})`} คน จาก{" "}
+          {search ? ` (กรองจาก ${applicants.length})` : null} คน จาก{" "}
           <span className="font-semibold text-gray-900">
             {selectedEvent.max_applicants}
           </span>{" "}
           คน
         </div>
-      )}
+      ) : null}
 
       {/* Table */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        {loading ? (
+        {loading || isPending ? (
           <div className="text-center py-12 text-gray-400">กำลังโหลด...</div>
         ) : !selectedEventId ? (
           <div className="text-center py-12 text-gray-400">
