@@ -40,6 +40,6 @@ export async function proxy(request: NextRequest) {
   return supabaseResponse;
 }
 
-export const proxyConfig = {
+export const config = {
   matcher: ["/admin/:path*"],
 };
