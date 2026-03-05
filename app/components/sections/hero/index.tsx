@@ -4,34 +4,31 @@ import React from "react";
 import { FaCss3Alt, FaHtml5, FaJs, FaReact } from "react-icons/fa";
 import { SiFigma, SiTailwindcss } from "react-icons/si";
 
+// Pure functions hoisted outside component to avoid re-creation on each render
+const getOpacity = (row: number, col: number): number => {
+  const centerRow = 7;
+  const centerCol = 3.5;
+  const distanceFromCenter = Math.sqrt(
+    Math.pow(row - centerRow, 2) + Math.pow(col - centerCol, 2),
+  );
+  return 0.4 + Math.cos(distanceFromCenter * 0.5) * 0.3;
+};
+
+const getSize = (row: number, col: number): number => {
+  const centerRow = 7;
+  const centerCol = 3.5;
+  const distanceFromCenter = Math.sqrt(
+    Math.pow(row - centerRow, 2) + Math.pow(col - centerCol, 2),
+  );
+  return 40 - distanceFromCenter * 1.2;
+};
+
 export const Hero: React.FC = () => {
   const handleScrollDown = (): void => {
     const heroElement = document.getElementById("hero");
     if (heroElement && heroElement.nextElementSibling) {
       heroElement.nextElementSibling.scrollIntoView({ behavior: "smooth" });
     }
-  };
-
-  // Generate symmetrical values based on row and column
-  const getOpacity = (row: number, col: number): number => {
-    // Create a symmetrical pattern based on row and column
-    // Calculate distance from center to create radial symmetry
-    const centerRow = 7; // Middle of 15 rows
-    const centerCol = 3.5; // Middle of 8 columns
-    const distanceFromCenter = Math.sqrt(
-      Math.pow(row - centerRow, 2) + Math.pow(col - centerCol, 2),
-    );
-    return 0.4 + Math.cos(distanceFromCenter * 0.5) * 0.3;
-  };
-
-  const getSize = (row: number, col: number): number => {
-    // Create a symmetrical pattern for icon size
-    const centerRow = 7;
-    const centerCol = 3.5;
-    const distanceFromCenter = Math.sqrt(
-      Math.pow(row - centerRow, 2) + Math.pow(col - centerCol, 2),
-    );
-    return 40 - distanceFromCenter * 1.2;
   };
 
   return (

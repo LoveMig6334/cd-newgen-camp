@@ -41,14 +41,14 @@ export const RippleEffect: React.FC<RippleProps> = ({
         id: Date.now(),
       };
 
-      setRippleArray([...rippleArray, newRipple]);
+      setRippleArray((prev) => [...prev, newRipple]);
 
       // Simulate a click with a small delay to allow ripple to start
       if (onClick) {
         setTimeout(() => onClick(), 150);
       }
     },
-    [rippleArray, onClick],
+    [onClick],
   );
 
   return (
