@@ -102,7 +102,7 @@ export default function Javascript() {
   return (
     <div className="min-h-screen bg-linear-to-b from-blue-50 to-white">
       {/* Aero-style glassmorphic header */}
-      <div className="sticky top-0 z-10 backdrop-blur-md bg-blue-50/80 border-b border-blue-200 shadow-sm">
+      <div className="sticky top-0 z-20 backdrop-blur-md bg-blue-50/80 border-b border-blue-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <Link
             href="/events/2025/next-gen-web-academy"
