@@ -25,7 +25,7 @@ const itemVariants = {
     opacity: 1,
     scale: 1,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 100,
       duration: 0.7,
     },
@@ -39,7 +39,7 @@ const iconVariants = {
     transition: {
       y: {
         repeat: Infinity,
-        repeatType: "reverse",
+        repeatType: "reverse" as const,
         duration: 1.5,
       },
     },

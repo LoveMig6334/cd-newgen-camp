@@ -19,7 +19,7 @@ export const Hero: React.FC = () => {
     const centerRow = 7; // Middle of 15 rows
     const centerCol = 3.5; // Middle of 8 columns
     const distanceFromCenter = Math.sqrt(
-      Math.pow(row - centerRow, 2) + Math.pow(col - centerCol, 2)
+      Math.pow(row - centerRow, 2) + Math.pow(col - centerCol, 2),
     );
     return 0.4 + Math.cos(distanceFromCenter * 0.5) * 0.3;
   };
@@ -29,7 +29,7 @@ export const Hero: React.FC = () => {
     const centerRow = 7;
     const centerCol = 3.5;
     const distanceFromCenter = Math.sqrt(
-      Math.pow(row - centerRow, 2) + Math.pow(col - centerCol, 2)
+      Math.pow(row - centerRow, 2) + Math.pow(col - centerCol, 2),
     );
     return 40 - distanceFromCenter * 1.2;
   };
@@ -62,7 +62,7 @@ export const Hero: React.FC = () => {
                   // Calculate position relative to center (normalized to 0-5)
                   const distanceFromCenter = Math.sqrt(
                     Math.pow(rowIndex - centerRow, 2) +
-                      Math.pow(colIndex - centerCol, 2)
+                      Math.pow(colIndex - centerCol, 2),
                   );
                   const iconType = Math.floor(distanceFromCenter) % 6;
 
@@ -209,7 +209,7 @@ export const Hero: React.FC = () => {
                 transition={{
                   duration: 4,
                   repeat: Infinity,
-                  repeatType: "reverse",
+                  repeatType: "reverse" as const,
                   ease: "easeInOut",
                 }}
               >
@@ -236,7 +236,7 @@ export const Hero: React.FC = () => {
                 transition={{
                   duration: 3,
                   repeat: Infinity,
-                  repeatType: "reverse",
+                  repeatType: "reverse" as const,
                   ease: "easeInOut",
                 }}
               >
@@ -263,7 +263,7 @@ export const Hero: React.FC = () => {
                 transition={{
                   duration: 3.7,
                   repeat: Infinity,
-                  repeatType: "reverse",
+                  repeatType: "reverse" as const,
                   ease: "easeInOut",
                 }}
               >
@@ -291,7 +291,7 @@ export const Hero: React.FC = () => {
                 transition={{
                   duration: 3.5,
                   repeat: Infinity,
-                  repeatType: "reverse",
+                  repeatType: "reverse" as const,
                   ease: "easeInOut",
                 }}
               >
@@ -322,7 +322,7 @@ export const Hero: React.FC = () => {
                   y: {
                     duration: 3,
                     repeat: Infinity,
-                    repeatType: "reverse",
+                    repeatType: "reverse" as const,
                     ease: "easeInOut",
                   },
                   rotateZ: {
@@ -359,13 +359,13 @@ export const Hero: React.FC = () => {
                   y: {
                     duration: 4.2,
                     repeat: Infinity,
-                    repeatType: "reverse",
+                    repeatType: "reverse" as const,
                     ease: "easeInOut",
                   },
                   rotateZ: {
                     duration: 6,
                     repeat: Infinity,
-                    repeatType: "reverse",
+                    repeatType: "reverse" as const,
                     ease: "easeInOut",
                   },
                 }}
@@ -388,7 +388,7 @@ export const Hero: React.FC = () => {
             transition={{
               duration: 1.5,
               repeat: Infinity,
-              repeatType: "loop",
+              repeatType: "loop" as const,
               ease: "easeInOut",
             }}
             className="flex flex-col items-center cursor-pointer"
@@ -408,7 +408,7 @@ export const Hero: React.FC = () => {
               transition={{
                 duration: 1.5,
                 repeat: Infinity,
-                repeatType: "loop",
+                repeatType: "loop" as const,
                 ease: "easeInOut",
               }}
             >
