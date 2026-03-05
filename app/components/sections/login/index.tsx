@@ -21,7 +21,7 @@ export const Login = () => {
   // const router = useRouter();
   return (
     <section
-      className="min-h-screen flex items-center justify-center sm:py-24 bg-gradient-to-r from-blue-500 to-blue-700 relative overflow-hidden"
+      className="min-h-screen flex items-center justify-center sm:py-24 bg-linear-to-r from-blue-500 to-blue-700 relative overflow-hidden"
       id="login"
     >
       {/* Code snippets background */}
