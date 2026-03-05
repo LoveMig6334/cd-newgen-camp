@@ -126,7 +126,7 @@ export const Features = () => {
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 relative inline-block">
               ค่ายเราสอนอะไรบ้าง?
               <motion.span
-                className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-yellow-400 to-blue-400 w-full"
+                className="absolute bottom-0 left-0 h-1 bg-linear-to-r from-yellow-400 to-blue-400 w-full"
                 initial={{ width: 0 }}
                 whileInView={{ width: "100%" }}
                 viewport={{ once: true }}
@@ -169,13 +169,13 @@ export const Features = () => {
                     onClick={() => (window.location.href = features[0].link)}
                   >
                     <motion.div
-                      className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30"
+                      className="absolute inset-0 w-full h-full bg-linear-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30"
                       variants={shineVariants}
                       initial="initial"
                       animate="animate"
                     />
                     <div
-                      className={`absolute inset-0 bg-gradient-to-br ${features[0].brightColor} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
+                      className={`absolute inset-0 bg-linear-to-br ${features[0].brightColor} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
                     />
                     <RippleEffect color="rgba(255, 255, 255, 0.5)" />
                     <motion.div
@@ -233,13 +233,13 @@ export const Features = () => {
                     onClick={() => (window.location.href = features[1].link)}
                   >
                     <motion.div
-                      className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30"
+                      className="absolute inset-0 w-full h-full bg-linear-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30"
                       variants={shineVariants}
                       initial="initial"
                       animate="animate"
                     />
                     <div
-                      className={`absolute inset-0 bg-gradient-to-br ${features[1].brightColor} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
+                      className={`absolute inset-0 bg-linear-to-br ${features[1].brightColor} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
                     />
                     <RippleEffect color="rgba(255, 255, 255, 0.5)" />
                     <motion.div
@@ -300,13 +300,13 @@ export const Features = () => {
                     onClick={() => (window.location.href = features[2].link)}
                   >
                     <motion.div
-                      className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30"
+                      className="absolute inset-0 w-full h-full bg-linear-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30"
                       variants={shineVariants}
                       initial="initial"
                       animate="animate"
                     />
                     <div
-                      className={`absolute inset-0 bg-gradient-to-br ${features[2].brightColor} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
+                      className={`absolute inset-0 bg-linear-to-br ${features[2].brightColor} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
                     />
                     <RippleEffect color="rgba(255, 255, 255, 0.5)" />
                     <motion.div
@@ -364,13 +364,13 @@ export const Features = () => {
                     onClick={() => (window.location.href = features[3].link)}
                   >
                     <motion.div
-                      className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30"
+                      className="absolute inset-0 w-full h-full bg-linear-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30"
                       variants={shineVariants}
                       initial="initial"
                       animate="animate"
                     />
                     <div
-                      className={`absolute inset-0 bg-gradient-to-br ${features[3].brightColor} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
+                      className={`absolute inset-0 bg-linear-to-br ${features[3].brightColor} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
                     />
                     <RippleEffect color="rgba(255, 255, 255, 0.5)" />
                     <motion.div

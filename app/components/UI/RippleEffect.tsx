@@ -48,7 +48,7 @@ export const RippleEffect: React.FC<RippleProps> = ({
         setTimeout(() => onClick(), 150);
       }
     },
-    [rippleArray, onClick]
+    [rippleArray, onClick],
   );
 
   return (

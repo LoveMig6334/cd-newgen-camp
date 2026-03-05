@@ -32,7 +32,7 @@ export default function ApplicationForm({
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -84,7 +84,7 @@ export default function ApplicationForm({
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-16 flex items-center">
+      <div className="min-h-screen bg-linear-to-b from-blue-50 to-white py-16 flex items-center">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -128,7 +128,7 @@ export default function ApplicationForm({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-16">
+    <div className="min-h-screen bg-linear-to-b from-blue-50 to-white py-16">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -138,7 +138,7 @@ export default function ApplicationForm({
         >
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
             สมัครเข้าร่วม{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-800">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-blue-800">
               {campName}
             </span>
           </h1>
@@ -349,7 +349,7 @@ export default function ApplicationForm({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-800 text-white font-bold rounded-lg shadow-lg hover:from-blue-700 hover:to-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 text-lg flex items-center justify-center ${
+                className={`w-full sm:w-auto px-8 py-4 bg-linear-to-r from-blue-600 to-blue-800 text-white font-bold rounded-lg shadow-lg hover:from-blue-700 hover:to-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 text-lg flex items-center justify-center ${
                   isSubmitting ? "opacity-70 cursor-not-allowed" : ""
                 }`}
               >
