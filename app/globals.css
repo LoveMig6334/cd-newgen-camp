@@ -13,3 +13,138 @@ body {
   color: black;
   font-family: var(--font-sukhumvit), sans-serif;
 }
+
+/* ===== Hero Section: Herringbone Pattern ===== */
+
+@keyframes float-slow {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-15px) scale(1.05);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes float-horizontal {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(20px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.1;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes herringbone-pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.6;
+  }
+}
+
+.herringbone-container {
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  top: -25%;
+  left: -25%;
+  transform: rotate(-12deg);
+}
+
+.herringbone-row {
+  display: flex;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.herringbone-item {
+  margin: 0 30px;
+  transform-origin: center;
+  transition: all 0.3s ease;
+  animation: herringbone-pulse 5s infinite alternate ease-in-out;
+}
+
+.herringbone-item:hover {
+  transform: scale(1.2) rotate(0deg) !important;
+}
+
+/* Radial animation delay pattern for herringbone rows */
+.herringbone-row:nth-child(1) .herringbone-item,
+.herringbone-row:nth-child(15) .herringbone-item {
+  animation-delay: 0s;
+}
+.herringbone-row:nth-child(2) .herringbone-item,
+.herringbone-row:nth-child(14) .herringbone-item {
+  animation-delay: 0.2s;
+}
+.herringbone-row:nth-child(3) .herringbone-item,
+.herringbone-row:nth-child(13) .herringbone-item {
+  animation-delay: 0.4s;
+}
+.herringbone-row:nth-child(4) .herringbone-item,
+.herringbone-row:nth-child(12) .herringbone-item {
+  animation-delay: 0.6s;
+}
+.herringbone-row:nth-child(5) .herringbone-item,
+.herringbone-row:nth-child(11) .herringbone-item {
+  animation-delay: 0.8s;
+}
+.herringbone-row:nth-child(6) .herringbone-item,
+.herringbone-row:nth-child(10) .herringbone-item {
+  animation-delay: 1s;
+}
+.herringbone-row:nth-child(7) .herringbone-item,
+.herringbone-row:nth-child(9) .herringbone-item {
+  animation-delay: 1.2s;
+}
+.herringbone-row:nth-child(8) .herringbone-item {
+  animation-delay: 1.4s;
+}
+
+/* ===== Login Section: Random Icons ===== */
+
+.random-icons-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.random-icon {
+  transform-origin: center;
+  transition: all 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 2px currentColor);
+}
+
+.random-icon:hover {
+  transform: scale(1.5) rotate(0deg) !important;
+  filter: drop-shadow(0 0 8px currentColor);
+  z-index: 10;
+}

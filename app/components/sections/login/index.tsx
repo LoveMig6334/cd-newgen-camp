@@ -329,31 +329,6 @@ export const Login = () => {
           </pre>
         </motion.div>
       </div>
-
-      {/* Style for random scattered icon pattern */}
-      <style jsx>{`
-        .random-icons-container {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
-        }
-
-        .random-icon {
-          transform-origin: center;
-          transition: all 0.5s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          filter: drop-shadow(0 0 2px currentColor);
-        }
-
-        .random-icon:hover {
-          transform: scale(1.5) rotate(0deg) !important;
-          filter: drop-shadow(0 0 8px currentColor);
-          z-index: 10;
-        }
-      `}</style>
     </section>
   );
 };
