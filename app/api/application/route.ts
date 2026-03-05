@@ -34,7 +34,7 @@ export async function POST(req: Request) {
       if (!data[field]) {
         return NextResponse.json(
           { error: `Field ${field} is required` },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     if (!emailRegex.test(data.email)) {
       return NextResponse.json(
         { error: "Invalid email format" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
       console.error("Supabase insert error:", error);
       return NextResponse.json(
         { error: "Failed to save application" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -77,7 +77,7 @@ export async function POST(req: Request) {
     console.error("Application submission error:", error);
     return NextResponse.json(
       { error: "Failed to process application" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
