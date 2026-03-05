@@ -136,7 +136,7 @@ export const Hero: React.FC = () => {
             transition={{ duration: 1 }}
           >
             <motion.span
-              className="block bg-gradient-to-r text-6xl from-blue-600 via-indigo-500 to-blue-800 bg-clip-text text-transparent"
+              className="block bg-linear-to-r text-6xl from-blue-600 via-indigo-500 to-blue-800 bg-clip-text text-transparent"
               initial={{ y: 20 }}
               animate={{ y: 0 }}
               transition={{ delay: 0.7, duration: 1.5 }}
@@ -152,7 +152,7 @@ export const Hero: React.FC = () => {
             transition={{ delay: 1, duration: 1 }}
           >
             <motion.span
-              className="block text-9xl bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent"
+              className="block text-9xl bg-linear-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent"
               initial={{ y: 20 }}
               animate={{ y: 0 }}
               transition={{ delay: 0.9, duration: 1.6 }}
@@ -168,7 +168,7 @@ export const Hero: React.FC = () => {
             transition={{ delay: 2, duration: 1 }}
           >
             <motion.span
-              className="block text-6xl bg-gradient-to-r from-gray-400 to-gray-600 bg-clip-text text-transparent"
+              className="block text-6xl bg-linear-to-r from-gray-400 to-gray-600 bg-clip-text text-transparent"
               initial={{ y: 0 }}
               animate={{ y: 0 }}
               transition={{ delay: 1.2, duration: 1.6 }}

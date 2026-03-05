@@ -27,7 +27,7 @@ const Navbar = ({ eventName, eventYear, eventSlug }: NavBarProps) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
-          <div className="flex-shrink-0 flex items-center">
+          <div className="shrink-0 flex items-center">
             <Link href="/" className="flex items-center gap-2">
               <div className="text-blue-600">
                 <svg
@@ -54,7 +54,7 @@ const Navbar = ({ eventName, eventYear, eventSlug }: NavBarProps) => {
                   />
                 </svg>
               </div>
-              <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
+              <span className="text-xl sm:text-2xl font-bold bg-linear-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
                 {displayName}
               </span>
             </Link>
@@ -84,7 +84,7 @@ const Navbar = ({ eventName, eventYear, eventSlug }: NavBarProps) => {
               >
                 <Link
                   href={applicationHref}
-                  className="flex items-center px-4 py-2 font-bold bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 shadow-md transition duration-300"
+                  className="flex items-center px-4 py-2 font-bold bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 shadow-md transition duration-300"
                 >
                   สมัครค่าย
                 </Link>
@@ -134,7 +134,7 @@ const Navbar = ({ eventName, eventYear, eventSlug }: NavBarProps) => {
               <Link
                 href={applicationHref}
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-center px-4 py-2 font-bold bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 shadow-md transition duration-300"
+                className="flex items-center justify-center px-4 py-2 font-bold bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 shadow-md transition duration-300"
               >
                 สมัครค่าย
               </Link>
