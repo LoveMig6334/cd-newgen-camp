@@ -21,102 +21,102 @@ import {
   TbDeviceTablet,
 } from "react-icons/tb";
 
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6 },
+  },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const figmaTools = [
+  {
+    id: "frames",
+    title: "Frames",
+    icon: <FaTableCells className="text-3xl mb-2" />,
+    description:
+      "สร้างพื้นที่สำหรับการออกแบบในขนาดต่างๆ เช่น หน้าจอมือถือ, แท็บเล็ต, เดสก์ท็อป",
+    details:
+      "Frames เป็นองค์ประกอบพื้นฐานในการออกแบบ UI ที่ช่วยให้คุณกำหนดขนาดและขอบเขตของหน้าจอที่ต้องการออกแบบ สามารถเลือกขนาดสำเร็จรูปหรือกำหนดเองได้ตามความต้องการ",
+  },
+  {
+    id: "components",
+    title: "Components",
+    icon: <TbComponents className="text-3xl mb-2" />,
+    description:
+      "สร้างชิ้นส่วนการออกแบบที่นำกลับมาใช้ใหม่ได้ เช่น ปุ่ม, เมนู, การ์ด",
+    details:
+      "Components ช่วยให้การออกแบบมีความสอดคล้องและประหยัดเวลา เมื่อคุณปรับแต่ง Main Component ทุก Instance ที่ใช้จะเปลี่ยนแปลงตาม ช่วยให้จัดการดีไซน์ขนาดใหญ่ได้อย่างมีประสิทธิภาพ",
+  },
+  {
+    id: "autolayout",
+    title: "Auto Layout",
+    icon: <FiGrid className="text-3xl mb-2" />,
+    description:
+      "จัดการระยะห่างและการเรียงตัวของอิลิเมนต์โดยอัตโนมัติ รองรับการปรับขนาดอย่างยืดหยุ่น",
+    details:
+      "Auto Layout ช่วยให้องค์ประกอบปรับตัวอัตโนมัติเมื่อเพิ่ม, ลบ หรือเปลี่ยนขนาดเนื้อหา เหมาะสำหรับการออกแบบที่ต้องรองรับข้อมูลที่เปลี่ยนแปลง เช่น รายการ, การ์ด หรือปุ่มที่มีความยาวข้อความต่างกัน",
+  },
+  {
+    id: "prototyping",
+    title: "Prototyping",
+    icon: <FaArrowPointer className="text-3xl mb-2" />,
+    description:
+      "สร้าง interactive prototype เพื่อจำลองการทำงานของดีไซน์ ก่อนนำไปพัฒนาจริง",
+    details:
+      "ฟีเจอร์ Prototyping ช่วยให้คุณเชื่อมต่อหน้าจอต่างๆ เพิ่มการเปลี่ยนหน้าและ animation เพื่อทดสอบประสบการณ์ผู้ใช้ สามารถแชร์กับทีมหรือผู้ใช้เพื่อรับฟีดแบคได้ง่าย",
+  },
+  {
+    id: "plugins",
+    title: "Plugins",
+    icon: <FiSettings className="text-3xl mb-2" />,
+    description:
+      "เพิ่มความสามารถด้วยปลั๊กอินต่างๆ เช่น สร้างข้อมูลจำลอง, จัดการไอคอน, เพิ่มภาพประกอบ",
+    details:
+      "Figma มีระบบปลั๊กอินที่หลากหลายช่วยเพิ่มประสิทธิภาพในการออกแบบ เช่น Content Reel สำหรับข้อมูลจำลอง, Iconify สำหรับไอคอน, Unsplash สำหรับรูปภาพ และ Auto Flow สำหรับสร้างแผนผังการทำงาน",
+  },
+];
+
+const responsiveDesigns = [
+  {
+    id: "mobile",
+    title: "Mobile",
+    icon: <TbDeviceMobile className="text-3xl mb-2" />,
+    dimensions: "320-480px",
+    considerations:
+      "ออกแบบสำหรับหน้าจอเล็กและการใช้งานด้วยนิ้ว แสดงเฉพาะเนื้อหาสำคัญ",
+  },
+  {
+    id: "tablet",
+    title: "Tablet",
+    icon: <TbDeviceTablet className="text-3xl mb-2" />,
+    dimensions: "768-1024px",
+    considerations:
+      "สามารถแสดงข้อมูลได้มากกว่ามือถือ มีการจัดวางที่ยืดหยุ่นกว่า",
+  },
+  {
+    id: "desktop",
+    title: "Desktop",
+    icon: <TbDeviceDesktop className="text-3xl mb-2" />,
+    dimensions: "1024px+",
+    considerations:
+      "แสดงข้อมูลได้มากที่สุด เน้นการนำเสนอแบบกว้างและการใช้งานด้วยเมาส์และคีย์บอร์ด",
+  },
+];
+
 export default function FigmaBasics() {
   const [activeSection, setActiveSection] = useState("what");
-
-  const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const figmaTools = [
-    {
-      id: "frames",
-      title: "Frames",
-      icon: <FaTableCells className="text-3xl mb-2" />,
-      description:
-        "สร้างพื้นที่สำหรับการออกแบบในขนาดต่างๆ เช่น หน้าจอมือถือ, แท็บเล็ต, เดสก์ท็อป",
-      details:
-        "Frames เป็นองค์ประกอบพื้นฐานในการออกแบบ UI ที่ช่วยให้คุณกำหนดขนาดและขอบเขตของหน้าจอที่ต้องการออกแบบ สามารถเลือกขนาดสำเร็จรูปหรือกำหนดเองได้ตามความต้องการ",
-    },
-    {
-      id: "components",
-      title: "Components",
-      icon: <TbComponents className="text-3xl mb-2" />,
-      description:
-        "สร้างชิ้นส่วนการออกแบบที่นำกลับมาใช้ใหม่ได้ เช่น ปุ่ม, เมนู, การ์ด",
-      details:
-        "Components ช่วยให้การออกแบบมีความสอดคล้องและประหยัดเวลา เมื่อคุณปรับแต่ง Main Component ทุก Instance ที่ใช้จะเปลี่ยนแปลงตาม ช่วยให้จัดการดีไซน์ขนาดใหญ่ได้อย่างมีประสิทธิภาพ",
-    },
-    {
-      id: "autolayout",
-      title: "Auto Layout",
-      icon: <FiGrid className="text-3xl mb-2" />,
-      description:
-        "จัดการระยะห่างและการเรียงตัวของอิลิเมนต์โดยอัตโนมัติ รองรับการปรับขนาดอย่างยืดหยุ่น",
-      details:
-        "Auto Layout ช่วยให้องค์ประกอบปรับตัวอัตโนมัติเมื่อเพิ่ม, ลบ หรือเปลี่ยนขนาดเนื้อหา เหมาะสำหรับการออกแบบที่ต้องรองรับข้อมูลที่เปลี่ยนแปลง เช่น รายการ, การ์ด หรือปุ่มที่มีความยาวข้อความต่างกัน",
-    },
-    {
-      id: "prototyping",
-      title: "Prototyping",
-      icon: <FaArrowPointer className="text-3xl mb-2" />,
-      description:
-        "สร้าง interactive prototype เพื่อจำลองการทำงานของดีไซน์ ก่อนนำไปพัฒนาจริง",
-      details:
-        "ฟีเจอร์ Prototyping ช่วยให้คุณเชื่อมต่อหน้าจอต่างๆ เพิ่มการเปลี่ยนหน้าและ animation เพื่อทดสอบประสบการณ์ผู้ใช้ สามารถแชร์กับทีมหรือผู้ใช้เพื่อรับฟีดแบคได้ง่าย",
-    },
-    {
-      id: "plugins",
-      title: "Plugins",
-      icon: <FiSettings className="text-3xl mb-2" />,
-      description:
-        "เพิ่มความสามารถด้วยปลั๊กอินต่างๆ เช่น สร้างข้อมูลจำลอง, จัดการไอคอน, เพิ่มภาพประกอบ",
-      details:
-        "Figma มีระบบปลั๊กอินที่หลากหลายช่วยเพิ่มประสิทธิภาพในการออกแบบ เช่น Content Reel สำหรับข้อมูลจำลอง, Iconify สำหรับไอคอน, Unsplash สำหรับรูปภาพ และ Auto Flow สำหรับสร้างแผนผังการทำงาน",
-    },
-  ];
-
-  const responsiveDesigns = [
-    {
-      id: "mobile",
-      title: "Mobile",
-      icon: <TbDeviceMobile className="text-3xl mb-2" />,
-      dimensions: "320-480px",
-      considerations:
-        "ออกแบบสำหรับหน้าจอเล็กและการใช้งานด้วยนิ้ว แสดงเฉพาะเนื้อหาสำคัญ",
-    },
-    {
-      id: "tablet",
-      title: "Tablet",
-      icon: <TbDeviceTablet className="text-3xl mb-2" />,
-      dimensions: "768-1024px",
-      considerations:
-        "สามารถแสดงข้อมูลได้มากกว่ามือถือ มีการจัดวางที่ยืดหยุ่นกว่า",
-    },
-    {
-      id: "desktop",
-      title: "Desktop",
-      icon: <TbDeviceDesktop className="text-3xl mb-2" />,
-      dimensions: "1024px+",
-      considerations:
-        "แสดงข้อมูลได้มากที่สุด เน้นการนำเสนอแบบกว้างและการใช้งานด้วยเมาส์และคีย์บอร์ด",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-linear-to-b from-blue-50 to-white">

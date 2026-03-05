@@ -15,85 +15,85 @@ import { LuBrain } from "react-icons/lu";
 import { PiFigmaLogo } from "react-icons/pi";
 import { TbDeviceMobile } from "react-icons/tb";
 
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6 },
+  },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const htmlCssTopics = [
+  {
+    id: "html-structure",
+    title: "โครงสร้าง HTML",
+    icon: <FaHtml5 className="text-3xl mb-2" />,
+    description:
+      "เรียนรู้เกี่ยวกับแท็ก HTML พื้นฐานและการสร้างโครงสร้างเว็บเพจ",
+    details:
+      "HTML (Hypertext Markup Language) เป็นภาษามาร์กอัพมาตรฐานสำหรับการสร้างเว็บเพจ เราจะเรียนรู้เกี่ยวกับแท็กพื้นฐาน, การสร้างโครงสร้างเอกสาร, การใส่ลิงก์ รูปภาพ และการจัดการฟอร์มต่างๆ",
+  },
+  {
+    id: "css-styling",
+    title: "การจัดรูปแบบด้วย CSS",
+    icon: <FaCss3Alt className="text-3xl mb-2" />,
+    description: "การใช้ CSS เพื่อจัดรูปแบบและปรับแต่งหน้าเว็บให้สวยงาม",
+    details:
+      "CSS (Cascading Style Sheets) ช่วยให้เราสามารถกำหนดสไตล์และการแสดงผลของเว็บเพจ เราจะเรียนรู้เกี่ยวกับการกำหนดสี, ขนาด, ตำแหน่ง, แบบอักษร และการจัดวางองค์ประกอบต่างๆ บนหน้าเว็บ",
+  },
+  {
+    id: "responsive",
+    title: "Responsive Design",
+    icon: <TbDeviceMobile className="text-3xl mb-2" />,
+    description: "การออกแบบเว็บไซต์ให้แสดงผลได้ดีบนทุกอุปกรณ์",
+    details:
+      "เรียนรู้การใช้ Media Queries, Flexbox, และ CSS Grid เพื่อสร้างเว็บไซต์ที่แสดงผลได้อย่างเหมาะสมบนทุกขนาดหน้าจอ ตั้งแต่มือถือไปจนถึงจอขนาดใหญ่",
+  },
+  {
+    id: "best-practices",
+    title: "แนวทางปฏิบัติที่ดี",
+    icon: <FiTarget className="text-3xl mb-2" />,
+    description:
+      "เทคนิคและข้อควรปฏิบัติในการเขียน HTML และ CSS ที่มีประสิทธิภาพ",
+    details:
+      "เรียนรู้เกี่ยวกับ Semantic HTML, CSS Organization, การตั้งชื่อคลาส และการเขียนโค้ดที่ดูแลรักษาง่าย เพื่อให้การพัฒนาเว็บไซต์เป็นไปอย่างมีประสิทธิภาพและมีมาตรฐาน",
+  },
+];
+
+const cssFrameworks = [
+  {
+    id: "bootstrap",
+    title: "Bootstrap",
+    description: "เฟรมเวิร์กยอดนิยมที่มาพร้อมคอมโพเนนต์สำเร็จรูปมากมาย",
+    features: "Grid System, Components, Utilities",
+  },
+  {
+    id: "tailwind",
+    title: "Tailwind CSS",
+    description: "เฟรมเวิร์กแบบ utility-first ที่ช่วยให้สร้าง UI ได้รวดเร็ว",
+    features: "Utility Classes, Customization, JIT Compiler",
+  },
+  {
+    id: "bulma",
+    title: "Bulma",
+    description: "เฟรมเวิร์ก CSS ที่มีความยืดหยุ่นและมุ่งเน้นการใช้ Flexbox",
+    features: "Modular, No JS, Flexbox Based",
+  },
+];
+
 export default function HtmlCss() {
   const [activeSection, setActiveSection] = useState("what");
-
-  const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const htmlCssTopics = [
-    {
-      id: "html-structure",
-      title: "โครงสร้าง HTML",
-      icon: <FaHtml5 className="text-3xl mb-2" />,
-      description:
-        "เรียนรู้เกี่ยวกับแท็ก HTML พื้นฐานและการสร้างโครงสร้างเว็บเพจ",
-      details:
-        "HTML (Hypertext Markup Language) เป็นภาษามาร์กอัพมาตรฐานสำหรับการสร้างเว็บเพจ เราจะเรียนรู้เกี่ยวกับแท็กพื้นฐาน, การสร้างโครงสร้างเอกสาร, การใส่ลิงก์ รูปภาพ และการจัดการฟอร์มต่างๆ",
-    },
-    {
-      id: "css-styling",
-      title: "การจัดรูปแบบด้วย CSS",
-      icon: <FaCss3Alt className="text-3xl mb-2" />,
-      description: "การใช้ CSS เพื่อจัดรูปแบบและปรับแต่งหน้าเว็บให้สวยงาม",
-      details:
-        "CSS (Cascading Style Sheets) ช่วยให้เราสามารถกำหนดสไตล์และการแสดงผลของเว็บเพจ เราจะเรียนรู้เกี่ยวกับการกำหนดสี, ขนาด, ตำแหน่ง, แบบอักษร และการจัดวางองค์ประกอบต่างๆ บนหน้าเว็บ",
-    },
-    {
-      id: "responsive",
-      title: "Responsive Design",
-      icon: <TbDeviceMobile className="text-3xl mb-2" />,
-      description: "การออกแบบเว็บไซต์ให้แสดงผลได้ดีบนทุกอุปกรณ์",
-      details:
-        "เรียนรู้การใช้ Media Queries, Flexbox, และ CSS Grid เพื่อสร้างเว็บไซต์ที่แสดงผลได้อย่างเหมาะสมบนทุกขนาดหน้าจอ ตั้งแต่มือถือไปจนถึงจอขนาดใหญ่",
-    },
-    {
-      id: "best-practices",
-      title: "แนวทางปฏิบัติที่ดี",
-      icon: <FiTarget className="text-3xl mb-2" />,
-      description:
-        "เทคนิคและข้อควรปฏิบัติในการเขียน HTML และ CSS ที่มีประสิทธิภาพ",
-      details:
-        "เรียนรู้เกี่ยวกับ Semantic HTML, CSS Organization, การตั้งชื่อคลาส และการเขียนโค้ดที่ดูแลรักษาง่าย เพื่อให้การพัฒนาเว็บไซต์เป็นไปอย่างมีประสิทธิภาพและมีมาตรฐาน",
-    },
-  ];
-
-  const cssFrameworks = [
-    {
-      id: "bootstrap",
-      title: "Bootstrap",
-      description: "เฟรมเวิร์กยอดนิยมที่มาพร้อมคอมโพเนนต์สำเร็จรูปมากมาย",
-      features: "Grid System, Components, Utilities",
-    },
-    {
-      id: "tailwind",
-      title: "Tailwind CSS",
-      description: "เฟรมเวิร์กแบบ utility-first ที่ช่วยให้สร้าง UI ได้รวดเร็ว",
-      features: "Utility Classes, Customization, JIT Compiler",
-    },
-    {
-      id: "bulma",
-      title: "Bulma",
-      description: "เฟรมเวิร์ก CSS ที่มีความยืดหยุ่นและมุ่งเน้นการใช้ Flexbox",
-      features: "Modular, No JS, Flexbox Based",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-linear-to-b from-yellow-50 to-white">

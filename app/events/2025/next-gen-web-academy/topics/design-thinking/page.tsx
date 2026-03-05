@@ -16,73 +16,73 @@ import { PiFigmaLogo } from "react-icons/pi";
 import { RiJavascriptFill } from "react-icons/ri";
 import { TbTestPipe } from "react-icons/tb";
 
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6 },
+  },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const designThinkingSteps = [
+  {
+    id: "empathize",
+    title: "Empathize",
+    icon: <FaPeopleGroup className="text-3xl mb-2" />,
+    description:
+      "เข้าใจปัญหาและความต้องการของผู้ใช้อย่างลึกซึ้ง ผ่านการสัมภาษณ์ สังเกตการณ์ และเก็บข้อมูล",
+    details:
+      "การเข้าใจความต้องการและปัญหาของผู้ใช้คือหัวใจสำคัญของการออกแบบที่ดี ในขั้นตอนนี้เราจะเรียนรู้เทคนิคการเก็บข้อมูลผู้ใช้ การสัมภาษณ์อย่างมีประสิทธิภาพ และการสร้าง User Personas เพื่อเข้าใจกลุ่มเป้าหมาย",
+  },
+  {
+    id: "define",
+    title: "Define",
+    icon: <FiTarget className="text-3xl mb-2" />,
+    description:
+      "กำหนดปัญหาและความต้องการให้ชัดเจน เพื่อตั้งโจทย์ในการแก้ปัญหาที่ตรงจุด",
+    details:
+      "การกำหนดปัญหาให้ชัดเจนช่วยให้การออกแบบมีเป้าหมายที่แน่นอน เราจะเรียนรู้วิธีการสังเคราะห์ข้อมูล การเขียน Problem Statement และการใช้เครื่องมือ How Might We Questions เพื่อกำหนดขอบเขตการแก้ปัญหา",
+  },
+  {
+    id: "ideate",
+    title: "Ideate",
+    icon: <LuLightbulb className="text-3xl mb-2" />,
+    description:
+      "ระดมความคิดและสร้างไอเดียที่หลากหลาย เพื่อหาทางแก้ปัญหาที่สร้างสรรค์",
+    details:
+      "การระดมความคิดอย่างสร้างสรรค์คือกุญแจสู่นวัตกรรม เราจะเรียนรู้เทคนิคการ Brainstorming, Mind Mapping, Crazy 8s และวิธีการคิดนอกกรอบเพื่อสร้างไอเดียที่แปลกใหม่และมีประสิทธิภาพ",
+  },
+  {
+    id: "prototype",
+    title: "Prototype",
+    icon: <FaPuzzlePiece className="text-3xl mb-2" />,
+    description: "สร้างต้นแบบแนวคิดอย่างรวดเร็ว เพื่อทดสอบและพัฒนาไอเดีย",
+    details:
+      "การสร้างต้นแบบช่วยให้เห็นภาพไอเดียที่เป็นรูปธรรม เราจะเรียนรู้การสร้าง Low-fidelity และ High-fidelity Prototypes ด้วยเครื่องมือต่างๆ เช่น Figma รวมถึงเทคนิคการทำ Paper Prototyping อย่างมีประสิทธิภาพ",
+  },
+  {
+    id: "test",
+    title: "Test",
+    icon: <TbTestPipe className="text-3xl mb-2" />,
+    description: "ทดสอบต้นแบบกับผู้ใช้จริง รวบรวมฟีดแบค และนำมาปรับปรุง",
+    details:
+      "การทดสอบกับผู้ใช้จริงช่วยให้เราค้นพบจุดบกพร่องและโอกาสในการพัฒนา เราจะเรียนรู้วิธีการออกแบบการทดสอบ การเก็บข้อมูลฟีดแบค และวิธีการวิเคราะห์ผลเพื่อนำไปปรับปรุงผลงาน",
+  },
+];
+
 export default function DesignThinking() {
   const [activeSection, setActiveSection] = useState("what");
-
-  const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const designThinkingSteps = [
-    {
-      id: "empathize",
-      title: "Empathize",
-      icon: <FaPeopleGroup className="text-3xl mb-2" />,
-      description:
-        "เข้าใจปัญหาและความต้องการของผู้ใช้อย่างลึกซึ้ง ผ่านการสัมภาษณ์ สังเกตการณ์ และเก็บข้อมูล",
-      details:
-        "การเข้าใจความต้องการและปัญหาของผู้ใช้คือหัวใจสำคัญของการออกแบบที่ดี ในขั้นตอนนี้เราจะเรียนรู้เทคนิคการเก็บข้อมูลผู้ใช้ การสัมภาษณ์อย่างมีประสิทธิภาพ และการสร้าง User Personas เพื่อเข้าใจกลุ่มเป้าหมาย",
-    },
-    {
-      id: "define",
-      title: "Define",
-      icon: <FiTarget className="text-3xl mb-2" />,
-      description:
-        "กำหนดปัญหาและความต้องการให้ชัดเจน เพื่อตั้งโจทย์ในการแก้ปัญหาที่ตรงจุด",
-      details:
-        "การกำหนดปัญหาให้ชัดเจนช่วยให้การออกแบบมีเป้าหมายที่แน่นอน เราจะเรียนรู้วิธีการสังเคราะห์ข้อมูล การเขียน Problem Statement และการใช้เครื่องมือ How Might We Questions เพื่อกำหนดขอบเขตการแก้ปัญหา",
-    },
-    {
-      id: "ideate",
-      title: "Ideate",
-      icon: <LuLightbulb className="text-3xl mb-2" />,
-      description:
-        "ระดมความคิดและสร้างไอเดียที่หลากหลาย เพื่อหาทางแก้ปัญหาที่สร้างสรรค์",
-      details:
-        "การระดมความคิดอย่างสร้างสรรค์คือกุญแจสู่นวัตกรรม เราจะเรียนรู้เทคนิคการ Brainstorming, Mind Mapping, Crazy 8s และวิธีการคิดนอกกรอบเพื่อสร้างไอเดียที่แปลกใหม่และมีประสิทธิภาพ",
-    },
-    {
-      id: "prototype",
-      title: "Prototype",
-      icon: <FaPuzzlePiece className="text-3xl mb-2" />,
-      description: "สร้างต้นแบบแนวคิดอย่างรวดเร็ว เพื่อทดสอบและพัฒนาไอเดีย",
-      details:
-        "การสร้างต้นแบบช่วยให้เห็นภาพไอเดียที่เป็นรูปธรรม เราจะเรียนรู้การสร้าง Low-fidelity และ High-fidelity Prototypes ด้วยเครื่องมือต่างๆ เช่น Figma รวมถึงเทคนิคการทำ Paper Prototyping อย่างมีประสิทธิภาพ",
-    },
-    {
-      id: "test",
-      title: "Test",
-      icon: <TbTestPipe className="text-3xl mb-2" />,
-      description: "ทดสอบต้นแบบกับผู้ใช้จริง รวบรวมฟีดแบค และนำมาปรับปรุง",
-      details:
-        "การทดสอบกับผู้ใช้จริงช่วยให้เราค้นพบจุดบกพร่องและโอกาสในการพัฒนา เราจะเรียนรู้วิธีการออกแบบการทดสอบ การเก็บข้อมูลฟีดแบค และวิธีการวิเคราะห์ผลเพื่อนำไปปรับปรุงผลงาน",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-linear-to-b from-yellow-50 to-white">

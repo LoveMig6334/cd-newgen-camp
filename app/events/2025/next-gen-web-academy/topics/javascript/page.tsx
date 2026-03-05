@@ -16,88 +16,88 @@ import { PiFigmaLogo } from "react-icons/pi";
 import { RiJavascriptFill } from "react-icons/ri";
 import { TbBrandReact, TbPrompt, TbWorldWww } from "react-icons/tb";
 
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6 },
+  },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const jsTopics = [
+  {
+    id: "basics",
+    title: "พื้นฐาน JavaScript",
+    icon: <RiJavascriptFill className="text-3xl mb-2" />,
+    description:
+      "ทำความเข้าใจโครงสร้างพื้นฐาน, ตัวแปร, ฟังก์ชัน และการทำงานของ JavaScript",
+    details:
+      "เรียนรู้เกี่ยวกับพื้นฐานของ JavaScript เช่น ตัวแปร, ประเภทข้อมูล, โครงสร้างควบคุม, ฟังก์ชัน, และวิธีการเขียนโค้ดที่มีประสิทธิภาพ เพื่อเป็นรากฐานสำคัญในการพัฒนา JavaScript ขั้นสูง",
+  },
+  {
+    id: "dom",
+    title: "DOM Manipulation",
+    icon: <TbWorldWww className="text-3xl mb-2" />,
+    description:
+      "การเข้าถึงและจัดการองค์ประกอบ HTML ผ่าน Document Object Model",
+    details:
+      "DOM (Document Object Model) คือการแทนโครงสร้าง HTML เป็นออบเจกต์ที่ JavaScript สามารถจัดการได้ เราจะเรียนรู้วิธีการเข้าถึงองค์ประกอบ, เปลี่ยนแปลงเนื้อหา, จัดการกับ attributes และ classes รวมถึงการเพิ่ม/ลบองค์ประกอบ",
+  },
+  {
+    id: "events",
+    title: "Events และการโต้ตอบ",
+    icon: <FaCircleNodes className="text-3xl mb-2" />,
+    description:
+      "การจัดการกับอีเวนต์ต่างๆ เช่น คลิก, ป้อนข้อมูล, เลื่อน เพื่อสร้างการโต้ตอบ",
+    details:
+      "Events เป็นกลไกสำคัญในการสร้างการโต้ตอบกับผู้ใช้ เราจะเรียนรู้การใช้ Event Listeners, การจัดการกับอีเวนต์ต่างๆ เช่น click, submit, keypress และวิธีการสร้างประสบการณ์ผู้ใช้ที่ราบรื่น",
+  },
+  {
+    id: "async",
+    title: "Asynchronous JavaScript",
+    icon: <TbPrompt className="text-3xl mb-2" />,
+    description: "การทำงานแบบ Asynchronous, Promises และการดึงข้อมูลจาก API",
+    details:
+      "JavaScript สามารถทำงานแบบ Asynchronous ซึ่งช่วยให้โปรแกรมทำงานอย่างมีประสิทธิภาพ เราจะเรียนรู้เกี่ยวกับ Callbacks, Promises, Async/Await และวิธีการใช้ Fetch API เพื่อดึงข้อมูลจาก Web Services",
+  },
+];
+
+const jsLibraries = [
+  {
+    id: "jquery",
+    title: "jQuery",
+    description:
+      "ไลบรารีที่ทำให้การเขียน JavaScript ง่ายขึ้น เน้นการจัดการ DOM และอีเวนต์",
+    features: "DOM Manipulation, AJAX, Animation",
+  },
+  {
+    id: "react",
+    title: "React",
+    description: "ไลบรารีสำหรับสร้าง User Interface แบบ Component-Based",
+    features: "Components, Virtual DOM, React Hooks",
+  },
+  {
+    id: "vue",
+    title: "Vue.js",
+    description:
+      "เฟรมเวิร์กที่ง่ายต่อการเรียนรู้ เน้นการสร้าง UI แบบ Progressive",
+    features: "Reactive Data Binding, Components, Directives",
+  },
+];
+
 export default function Javascript() {
   const [activeSection, setActiveSection] = useState("what");
-
-  const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const jsTopics = [
-    {
-      id: "basics",
-      title: "พื้นฐาน JavaScript",
-      icon: <RiJavascriptFill className="text-3xl mb-2" />,
-      description:
-        "ทำความเข้าใจโครงสร้างพื้นฐาน, ตัวแปร, ฟังก์ชัน และการทำงานของ JavaScript",
-      details:
-        "เรียนรู้เกี่ยวกับพื้นฐานของ JavaScript เช่น ตัวแปร, ประเภทข้อมูล, โครงสร้างควบคุม, ฟังก์ชัน, และวิธีการเขียนโค้ดที่มีประสิทธิภาพ เพื่อเป็นรากฐานสำคัญในการพัฒนา JavaScript ขั้นสูง",
-    },
-    {
-      id: "dom",
-      title: "DOM Manipulation",
-      icon: <TbWorldWww className="text-3xl mb-2" />,
-      description:
-        "การเข้าถึงและจัดการองค์ประกอบ HTML ผ่าน Document Object Model",
-      details:
-        "DOM (Document Object Model) คือการแทนโครงสร้าง HTML เป็นออบเจกต์ที่ JavaScript สามารถจัดการได้ เราจะเรียนรู้วิธีการเข้าถึงองค์ประกอบ, เปลี่ยนแปลงเนื้อหา, จัดการกับ attributes และ classes รวมถึงการเพิ่ม/ลบองค์ประกอบ",
-    },
-    {
-      id: "events",
-      title: "Events และการโต้ตอบ",
-      icon: <FaCircleNodes className="text-3xl mb-2" />,
-      description:
-        "การจัดการกับอีเวนต์ต่างๆ เช่น คลิก, ป้อนข้อมูล, เลื่อน เพื่อสร้างการโต้ตอบ",
-      details:
-        "Events เป็นกลไกสำคัญในการสร้างการโต้ตอบกับผู้ใช้ เราจะเรียนรู้การใช้ Event Listeners, การจัดการกับอีเวนต์ต่างๆ เช่น click, submit, keypress และวิธีการสร้างประสบการณ์ผู้ใช้ที่ราบรื่น",
-    },
-    {
-      id: "async",
-      title: "Asynchronous JavaScript",
-      icon: <TbPrompt className="text-3xl mb-2" />,
-      description: "การทำงานแบบ Asynchronous, Promises และการดึงข้อมูลจาก API",
-      details:
-        "JavaScript สามารถทำงานแบบ Asynchronous ซึ่งช่วยให้โปรแกรมทำงานอย่างมีประสิทธิภาพ เราจะเรียนรู้เกี่ยวกับ Callbacks, Promises, Async/Await และวิธีการใช้ Fetch API เพื่อดึงข้อมูลจาก Web Services",
-    },
-  ];
-
-  const jsLibraries = [
-    {
-      id: "jquery",
-      title: "jQuery",
-      description:
-        "ไลบรารีที่ทำให้การเขียน JavaScript ง่ายขึ้น เน้นการจัดการ DOM และอีเวนต์",
-      features: "DOM Manipulation, AJAX, Animation",
-    },
-    {
-      id: "react",
-      title: "React",
-      description: "ไลบรารีสำหรับสร้าง User Interface แบบ Component-Based",
-      features: "Components, Virtual DOM, React Hooks",
-    },
-    {
-      id: "vue",
-      title: "Vue.js",
-      description:
-        "เฟรมเวิร์กที่ง่ายต่อการเรียนรู้ เน้นการสร้าง UI แบบ Progressive",
-      features: "Reactive Data Binding, Components, Directives",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-linear-to-b from-blue-50 to-white">
