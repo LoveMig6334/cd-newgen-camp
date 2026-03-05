@@ -1,9 +1,10 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { HiOutlineLockClosed } from "react-icons/hi2";
+import { HiOutlineArrowLeft, HiOutlineLockClosed } from "react-icons/hi2";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -89,6 +90,14 @@ export default function AdminLoginPage() {
             >
               {loading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
             </button>
+
+            <Link
+              href="/"
+              className="w-full inline-flex items-center justify-center gap-2 border border-gray-300 text-gray-700 hover:bg-gray-50 py-3 px-4 rounded-lg font-medium transition-colors"
+            >
+              <HiOutlineArrowLeft className="h-4 w-4" />
+              กลับหน้าหลัก
+            </Link>
           </form>
         </div>
       </div>
