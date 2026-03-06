@@ -37,7 +37,7 @@ This is a **Next.js 15 App Router** project (TypeScript + Tailwind CSS 4) for "C
 - `lib/supabase/client.ts` — Browser Supabase client (`createBrowserClient`)
 - `lib/supabase/server.ts` — Server Supabase client (`createServerClient` with cookies)
 - `lib/types.ts` — Shared TypeScript types: `Event`, `Application`, `ApplicationFormData`
-- `middleware.ts` — Auth middleware: protects `/admin/*`, redirects unauthenticated to `/admin/login`
+- `proxy.ts` — Auth middleware: protects `/admin/*`, redirects unauthenticated to `/admin/login`
 - `public/Fonts/` — Custom Thai fonts (Sukhumvit Set)
 
 ### Data layer
@@ -45,14 +45,14 @@ This is a **Next.js 15 App Router** project (TypeScript + Tailwind CSS 4) for "C
 - **Supabase** (PostgreSQL) via `@supabase/ssr` and `@supabase/supabase-js`
 - Requires `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.local`
 - Tables: `events`, `applications` (with RLS policies)
-- Server-side: use `lib/supabase/server.ts` in Server Components, API routes, middleware
+- Server-side: use `lib/supabase/server.ts` in Server Components, API routes, `proxy.ts`
 - Client-side: use `lib/supabase/client.ts` in Client Components only
 - Vercel Analytics is integrated in the root layout
 
 ### Auth
 
 - Supabase Auth (email + password) for admin users
-- `middleware.ts` protects all `/admin/*` routes except `/admin/login`
+- `proxy.ts` protects all `/admin/*` routes except `/admin/login`
 - `app/admin/(protected)/layout.tsx` provides secondary auth check + sidebar UI
 - Create admin users via Supabase Dashboard → Authentication → Users
 
