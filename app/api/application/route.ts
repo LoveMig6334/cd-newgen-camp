@@ -5,11 +5,11 @@ interface ApplicationBody {
   event_id: string;
   first_name: string;
   last_name: string;
-  email: string;
+  student_id: string;
   phone: string;
   school: string;
   grade: string;
-  reason: string;
+  reason?: string | null;
   expectations: string;
   how_did_you_hear?: string;
 }
@@ -22,11 +22,10 @@ export async function POST(req: Request) {
       "event_id",
       "first_name",
       "last_name",
-      "email",
+      "student_id",
       "phone",
       "school",
       "grade",
-      "reason",
       "expectations",
     ];
 
@@ -39,10 +38,9 @@ export async function POST(req: Request) {
       }
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(data.email)) {
+    if (!/^\d{4}$/.test(data.student_id)) {
       return NextResponse.json(
-        { error: "Invalid email format" },
+        { error: "Student ID must be exactly 4 digits" },
         { status: 400 },
       );
     }
@@ -52,11 +50,11 @@ export async function POST(req: Request) {
       event_id: data.event_id,
       first_name: data.first_name,
       last_name: data.last_name,
-      email: data.email,
+      student_id: data.student_id,
       phone: data.phone,
       school: data.school,
       grade: data.grade,
-      reason: data.reason,
+      reason: data.reason ?? null,
       expectations: data.expectations,
       how_did_you_hear: data.how_did_you_hear ?? null,
     });

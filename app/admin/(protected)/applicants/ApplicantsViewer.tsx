@@ -13,7 +13,7 @@ function exportCSV(applicants: Application[], eventName: string) {
   const headers = [
     "ชื่อ",
     "นามสกุล",
-    "อีเมล",
+    "เลขประจำตัวนักเรียน",
     "โทรศัพท์",
     "โรงเรียน",
     "ระดับชั้น",
@@ -22,7 +22,7 @@ function exportCSV(applicants: Application[], eventName: string) {
   const rows = applicants.map((a) => [
     a.first_name,
     a.last_name,
-    a.email,
+    a.student_id,
     a.phone,
     a.school,
     a.grade,
@@ -75,7 +75,7 @@ export default function ApplicantsViewer({
     return (
       a.first_name.toLowerCase().includes(q) ||
       a.last_name.toLowerCase().includes(q) ||
-      a.email.toLowerCase().includes(q) ||
+      a.student_id.includes(q) ||
       a.school.toLowerCase().includes(q)
     );
   });
@@ -106,7 +106,7 @@ export default function ApplicantsViewer({
           {selectedEventId ? (
             <input
               type="text"
-              placeholder="ค้นหาชื่อ อีเมล หรือโรงเรียน..."
+              placeholder="ค้นหาชื่อ เลขประจำตัว หรือโรงเรียน..."
               value={search}
               onChange={(e) => {
                 const value = e.target.value;
@@ -164,7 +164,7 @@ export default function ApplicantsViewer({
                     นามสกุล
                   </th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">
-                    อีเมล
+                    เลขประจำตัว
                   </th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">
                     โทรศัพท์
@@ -200,7 +200,7 @@ export default function ApplicantsViewer({
                         {applicant.last_name}
                       </td>
                       <td className="px-4 py-3 text-gray-600">
-                        {applicant.email}
+                        {applicant.student_id}
                       </td>
                       <td className="px-4 py-3 text-gray-600">
                         {applicant.phone}

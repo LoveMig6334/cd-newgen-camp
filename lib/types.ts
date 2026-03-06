@@ -17,11 +17,11 @@ export interface Application {
   event_id: string;
   first_name: string;
   last_name: string;
-  email: string;
+  student_id: string;
   phone: string;
   school: string;
   grade: string;
-  reason: string;
+  reason: string | null;
   expectations: string;
   how_did_you_hear: string | null;
   created_at: string;

@@ -17,9 +17,9 @@ export default function ApplicationForm({
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    email: "",
+    studentId: "",
     phone: "",
-    school: "",
+    school: "จิตรลดา",
     grade: "",
     reason: "",
     expectations: "",
@@ -50,11 +50,11 @@ export default function ApplicationForm({
           event_id: eventId,
           first_name: formData.firstName,
           last_name: formData.lastName,
-          email: formData.email,
+          student_id: formData.studentId,
           phone: formData.phone,
           school: formData.school,
           grade: formData.grade,
-          reason: formData.reason,
+          reason: formData.reason || null,
           expectations: formData.expectations,
           how_did_you_hear: formData.howDidYouHear,
         }),
@@ -196,20 +196,22 @@ export default function ApplicationForm({
 
               <motion.div variants={itemVariants}>
                 <label
-                  htmlFor="email"
+                  htmlFor="studentId"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  อีเมล*
+                  เลขประจำตัวนักเรียน*
                 </label>
                 <input
-                  type="email"
-                  id="email"
-                  name="email"
+                  type="text"
+                  id="studentId"
+                  name="studentId"
                   required
-                  value={formData.email}
+                  maxLength={4}
+                  pattern="[0-9]{4}"
+                  value={formData.studentId}
                   onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  placeholder="example@email.com"
+                  placeholder="เช่น 1234"
                 />
               </motion.div>
 
@@ -237,17 +239,16 @@ export default function ApplicationForm({
                   htmlFor="school"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  โรงเรียน/มหาวิทยาลัย*
+                  โรงเรียน*
                 </label>
                 <input
                   type="text"
                   id="school"
                   name="school"
                   required
+                  readOnly
                   value={formData.school}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  placeholder="ชื่อสถาบันการศึกษา"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-500 cursor-not-allowed"
                 />
               </motion.div>
 
@@ -284,12 +285,12 @@ export default function ApplicationForm({
                 htmlFor="reason"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                เหตุผลที่อยากเข้าร่วมค่าย*
+                เหตุผลที่อยากเข้าร่วมค่าย
+                <span className="ml-1 text-gray-400 font-normal">(ไม่บังคับ)</span>
               </label>
               <textarea
                 id="reason"
                 name="reason"
-                required
                 value={formData.reason}
                 onChange={handleChange}
                 rows={4}
@@ -305,16 +306,22 @@ export default function ApplicationForm({
               >
                 สิ่งที่คาดหวังจากค่าย*
               </label>
-              <textarea
+              <select
                 id="expectations"
                 name="expectations"
                 required
                 value={formData.expectations}
                 onChange={handleChange}
-                rows={4}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                placeholder="คุณคาดหวังอะไรจากการเข้าร่วมค่ายนี้บ้าง"
-              ></textarea>
+              >
+                <option value="" disabled>โปรดเลือก</option>
+                <option value="เรียนรู้ทักษะใหม่ด้านเทคโนโลยี">เรียนรู้ทักษะใหม่ด้านเทคโนโลยี</option>
+                <option value="ได้ประสบการณ์การทำงานจริง">ได้ประสบการณ์การทำงานจริง</option>
+                <option value="สร้างเครือข่ายและเพื่อนใหม่">สร้างเครือข่ายและเพื่อนใหม่</option>
+                <option value="พัฒนาพอร์ตโฟลิโอและผลงาน">พัฒนาพอร์ตโฟลิโอและผลงาน</option>
+                <option value="ทดสอบความสนใจในสายงาน IT">ทดสอบความสนใจในสายงาน IT</option>
+                <option value="อื่นๆ">อื่นๆ</option>
+              </select>
             </motion.div>
 
             <motion.div variants={itemVariants} className="mt-6">
