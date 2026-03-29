@@ -102,19 +102,19 @@ export default function PromptEngineering() {
   const [activeSection, setActiveSection] = useState("what");
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-teal-50 to-white">
+    <div className="min-h-screen bg-linear-to-b from-yellow-50 to-white">
       {/* Header */}
-      <div className="sticky top-0 z-20 backdrop-blur-md bg-teal-50/80 border-b border-teal-200 shadow-sm">
+      <div className="sticky top-0 z-20 backdrop-blur-md bg-yellow-50/80 border-b border-yellow-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <Link
             href="/events/2026/next-gen-ai-academy"
-            className="flex items-center text-teal-700 hover:text-teal-500 transition-colors"
+            className="flex items-center text-yellow-700 hover:text-yellow-500 transition-colors"
           >
             <FaArrowLeft className="mr-2" />
             <span>กลับสู่หน้าหลัก</span>
           </Link>
           <h1 className="text-xl sm:text-2xl font-bold text-center text-gray-800 flex items-center">
-            <TbSparkles className="text-teal-500 mr-2 text-2xl sm:text-3xl" />
+            <TbSparkles className="text-yellow-500 mr-2 text-2xl sm:text-3xl" />
             Prompt Engineering
           </h1>
           <div className="w-24"></div>
@@ -122,7 +122,7 @@ export default function PromptEngineering() {
       </div>
 
       {/* Hero */}
-      <div className="relative bg-linear-to-br from-teal-400 to-cyan-300 overflow-hidden">
+      <div className="relative bg-linear-to-br from-yellow-400 to-amber-300 overflow-hidden">
         <div className="absolute inset-0 z-0 overflow-hidden">
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/20 rounded-full blur-3xl"></div>
           <div className="absolute left-1/4 top-1/4 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-white/15 rounded-full blur-3xl"></div>
@@ -141,7 +141,7 @@ export default function PromptEngineering() {
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-shadow mb-4">
                 เทคนิคการใช้ AI
               </h2>
-              <p className="text-lg text-teal-50">
+              <p className="text-lg text-yellow-50">
                 เรียนรู้ศิลปะในการสื่อสารกับ AI อย่างมีประสิทธิภาพ
                 ตั้งแต่การเขียน Prompt พื้นฐาน ไปจนถึงเทคนิคขั้นสูง
                 ที่ใช้ได้กับทั้ง ChatGPT, Claude และ AI อื่นๆ
@@ -161,7 +161,7 @@ export default function PromptEngineering() {
       </div>
 
       {/* Navigation tabs */}
-      <div className="bg-white border-b border-teal-100">
+      <div className="bg-white border-b border-yellow-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex overflow-x-auto scrollbar-hide py-2 gap-2">
             {[
@@ -174,8 +174,8 @@ export default function PromptEngineering() {
                 key={tab.key}
                 className={`px-4 py-2 rounded-full whitespace-nowrap ${
                   activeSection === tab.key
-                    ? "bg-teal-100 text-teal-800"
-                    : "bg-transparent text-gray-700 hover:bg-teal-50"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : "bg-transparent text-gray-700 hover:bg-yellow-50"
                 }`}
                 onClick={() => setActiveSection(tab.key)}
               >
@@ -193,10 +193,10 @@ export default function PromptEngineering() {
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className="bg-white rounded-2xl p-6 shadow-lg border border-teal-100"
+            className="bg-white rounded-2xl p-6 shadow-lg border border-yellow-100"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-              <FaRegLightbulb className="text-teal-500 mr-2" />
+              <FaRegLightbulb className="text-yellow-500 mr-2" />
               Prompt Engineering คืออะไร
             </h2>
             <div className="space-y-4">
@@ -208,56 +208,56 @@ export default function PromptEngineering() {
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                <div className="bg-teal-50 p-4 rounded-xl border border-teal-100">
+                <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100">
                   <h3 className="font-bold text-gray-800">
                     หลักการ Prompt ที่ดี
                   </h3>
                   <ul className="mt-2 space-y-2">
                     <li className="flex items-start">
-                      <span className="text-teal-500 mr-2">•</span>
+                      <span className="text-yellow-500 mr-2">•</span>
                       <span>ชัดเจน — บอกสิ่งที่ต้องการอย่างเจาะจง</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-teal-500 mr-2">•</span>
+                      <span className="text-yellow-500 mr-2">•</span>
                       <span>ให้บริบท — บอก AI ว่าคุณคือใคร ต้องการอะไร</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-teal-500 mr-2">•</span>
+                      <span className="text-yellow-500 mr-2">•</span>
                       <span>
                         กำหนดรูปแบบ — บอกว่าต้องการคำตอบแบบไหน
                       </span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-teal-500 mr-2">•</span>
+                      <span className="text-yellow-500 mr-2">•</span>
                       <span>ให้ตัวอย่าง — แสดงผลลัพธ์ที่คาดหวัง</span>
                     </li>
                   </ul>
                 </div>
-                <div className="bg-teal-50 p-4 rounded-xl border border-teal-100">
+                <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100">
                   <h3 className="font-bold text-gray-800">
                     AI Tools ที่เราจะใช้
                   </h3>
                   <ul className="mt-2 space-y-2">
                     <li className="flex items-start">
-                      <span className="text-teal-500 mr-2">•</span>
+                      <span className="text-yellow-500 mr-2">•</span>
                       <span>
                         <strong>ChatGPT</strong> — AI สนทนาจาก OpenAI
                       </span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-teal-500 mr-2">•</span>
+                      <span className="text-yellow-500 mr-2">•</span>
                       <span>
                         <strong>Claude</strong> — AI สนทนาจาก Anthropic
                       </span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-teal-500 mr-2">•</span>
+                      <span className="text-yellow-500 mr-2">•</span>
                       <span>
                         <strong>DALL-E / Midjourney</strong> — AI สร้างรูปภาพ
                       </span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-teal-500 mr-2">•</span>
+                      <span className="text-yellow-500 mr-2">•</span>
                       <span>
                         <strong>Claude Code</strong> — AI ช่วยเขียนโค้ด
                       </span>
@@ -266,7 +266,7 @@ export default function PromptEngineering() {
                 </div>
               </div>
 
-              <div className="mt-6 p-5 bg-linear-to-r from-teal-100 to-teal-50 rounded-xl">
+              <div className="mt-6 p-5 bg-linear-to-r from-yellow-100 to-yellow-50 rounded-xl">
                 <h3 className="font-bold text-lg mb-2 text-gray-800">
                   ทำไม Prompt Engineering ถึงสำคัญ?
                 </h3>
@@ -287,10 +287,10 @@ export default function PromptEngineering() {
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className="bg-white rounded-2xl p-6 shadow-lg border border-teal-100"
+            className="bg-white rounded-2xl p-6 shadow-lg border border-yellow-100"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-              <FaPuzzlePiece className="text-teal-500 mr-2" />
+              <FaPuzzlePiece className="text-yellow-500 mr-2" />
               หัวข้อที่จะเรียนรู้
             </h2>
             <motion.div
@@ -302,10 +302,10 @@ export default function PromptEngineering() {
               {promptTopics.map((topic) => (
                 <motion.div
                   key={topic.id}
-                  className="bg-teal-50 p-5 rounded-xl border border-teal-100 hover:shadow-md transition-shadow"
+                  className="bg-yellow-50 p-5 rounded-xl border border-yellow-100 hover:shadow-md transition-shadow"
                   variants={fadeIn}
                 >
-                  <div className="text-teal-500">{topic.icon}</div>
+                  <div className="text-yellow-500">{topic.icon}</div>
                   <h3 className="font-bold text-gray-800 mt-1">
                     {topic.title}
                   </h3>
@@ -324,10 +324,10 @@ export default function PromptEngineering() {
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className="bg-white rounded-2xl p-6 shadow-lg border border-teal-100"
+            className="bg-white rounded-2xl p-6 shadow-lg border border-yellow-100"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-              <TbMessageChatbot className="text-teal-500 mr-2" />
+              <TbMessageChatbot className="text-yellow-500 mr-2" />
               ตัวอย่าง Prompt
             </h2>
             <div className="space-y-6">
@@ -339,7 +339,7 @@ export default function PromptEngineering() {
                       ? "bg-red-50 border-red-200"
                       : example.type === "good"
                         ? "bg-yellow-50 border-yellow-200"
-                        : "bg-green-50 border-green-200"
+                        : "bg-blue-50 border-blue-200"
                   }`}
                   variants={fadeIn}
                 >
@@ -375,34 +375,34 @@ export default function PromptEngineering() {
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className="bg-white rounded-2xl p-6 shadow-lg border border-teal-100"
+            className="bg-white rounded-2xl p-6 shadow-lg border border-yellow-100"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-              <TbSparkles className="text-teal-500 mr-2" />
+              <TbSparkles className="text-yellow-500 mr-2" />
               กิจกรรมในค่าย
             </h2>
             <div className="space-y-6">
-              <div className="bg-teal-50 p-5 rounded-xl border border-teal-100">
+              <div className="bg-yellow-50 p-5 rounded-xl border border-yellow-100">
                 <h3 className="font-bold text-gray-800 text-lg">
                   Workshop: Prompt Lab
                 </h3>
                 <ul className="mt-3 space-y-2">
                   <li className="flex items-start">
-                    <span className="text-teal-500 mr-2">•</span>
+                    <span className="text-yellow-500 mr-2">•</span>
                     <span>ฝึกเขียน Prompt กับ ChatGPT และ Claude</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-teal-500 mr-2">•</span>
+                    <span className="text-yellow-500 mr-2">•</span>
                     <span>ทดลองเทคนิค Zero-shot, Few-shot, Chain of Thought</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-teal-500 mr-2">•</span>
+                    <span className="text-yellow-500 mr-2">•</span>
                     <span>สร้าง AI ช่วยสรุปบทเรียนจากหนังสือเรียน</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="bg-teal-50 p-5 rounded-xl border border-teal-100">
+              <div className="bg-yellow-50 p-5 rounded-xl border border-yellow-100">
                 <h3 className="font-bold text-gray-800 text-lg">
                   Challenge: Prompt Battle
                 </h3>
@@ -413,7 +413,7 @@ export default function PromptEngineering() {
                 </p>
               </div>
 
-              <div className="bg-teal-50 p-5 rounded-xl border border-teal-100">
+              <div className="bg-yellow-50 p-5 rounded-xl border border-yellow-100">
                 <h3 className="font-bold text-gray-800 text-lg">
                   Project: AI Tutor ส่วนตัว
                 </h3>
@@ -430,34 +430,34 @@ export default function PromptEngineering() {
 
       {/* Footer links */}
       <div className="max-w-7xl mx-auto px-4 pb-12 sm:px-6 lg:px-8">
-        <div className="border-t border-teal-100 pt-8">
+        <div className="border-t border-yellow-100 pt-8">
           <h3 className="text-lg font-bold text-gray-800 mb-4">
             หัวข้ออื่นๆ ในค่าย
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link
               href="/events/2026/next-gen-ai-academy/topics/ai-fundamentals"
-              className="flex items-center p-4 bg-purple-50 rounded-xl border border-purple-200 hover:shadow-md transition-shadow"
+              className="flex items-center p-4 bg-yellow-50 rounded-xl border border-yellow-200 hover:shadow-md transition-shadow"
             >
-              <FaRobot className="text-purple-500 text-2xl mr-3" />
+              <FaRobot className="text-yellow-500 text-2xl mr-3" />
               <span className="font-medium text-gray-800">
                 AI Fundamentals
               </span>
             </Link>
             <Link
               href="/events/2026/next-gen-ai-academy/topics/python"
-              className="flex items-center p-4 bg-green-50 rounded-xl border border-green-200 hover:shadow-md transition-shadow"
+              className="flex items-center p-4 bg-blue-50 rounded-xl border border-blue-200 hover:shadow-md transition-shadow"
             >
-              <SiPython className="text-green-500 text-2xl mr-3" />
+              <SiPython className="text-blue-500 text-2xl mr-3" />
               <span className="font-medium text-gray-800">
                 Python เบื้องต้น
               </span>
             </Link>
             <Link
               href="/events/2026/next-gen-ai-academy/topics/claude-code"
-              className="flex items-center p-4 bg-orange-50 rounded-xl border border-orange-200 hover:shadow-md transition-shadow"
+              className="flex items-center p-4 bg-blue-50 rounded-xl border border-blue-200 hover:shadow-md transition-shadow"
             >
-              <TbTerminal2 className="text-orange-500 text-2xl mr-3" />
+              <TbTerminal2 className="text-blue-500 text-2xl mr-3" />
               <span className="font-medium text-gray-800">Claude Code</span>
             </Link>
           </div>

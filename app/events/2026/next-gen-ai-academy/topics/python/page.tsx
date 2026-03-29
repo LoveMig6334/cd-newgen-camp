@@ -90,19 +90,19 @@ export default function Python() {
   const [activeSection, setActiveSection] = useState("what");
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-green-50 to-white">
+    <div className="min-h-screen bg-linear-to-b from-blue-50 to-white">
       {/* Header */}
-      <div className="sticky top-0 z-20 backdrop-blur-md bg-green-50/80 border-b border-green-200 shadow-sm">
+      <div className="sticky top-0 z-20 backdrop-blur-md bg-blue-50/80 border-b border-blue-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <Link
             href="/events/2026/next-gen-ai-academy"
-            className="flex items-center text-green-700 hover:text-green-500 transition-colors"
+            className="flex items-center text-blue-700 hover:text-blue-500 transition-colors"
           >
             <FaArrowLeft className="mr-2" />
             <span>กลับสู่หน้าหลัก</span>
           </Link>
           <h1 className="text-xl sm:text-2xl font-bold text-center text-gray-800 flex items-center">
-            <SiPython className="text-green-500 mr-2 text-2xl sm:text-3xl" />
+            <SiPython className="text-blue-500 mr-2 text-2xl sm:text-3xl" />
             Python
           </h1>
           <div className="w-24"></div>
@@ -110,7 +110,7 @@ export default function Python() {
       </div>
 
       {/* Hero */}
-      <div className="relative bg-linear-to-br from-green-400 to-emerald-300 overflow-hidden">
+      <div className="relative bg-linear-to-br from-blue-400 to-blue-200 overflow-hidden">
         <div className="absolute inset-0 z-0 overflow-hidden">
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/20 rounded-full blur-3xl"></div>
           <div className="absolute left-1/4 top-1/4 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-white/15 rounded-full blur-3xl"></div>
@@ -129,7 +129,7 @@ export default function Python() {
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-shadow mb-4">
                 สอนการเขียน Python
               </h2>
-              <p className="text-lg text-green-50">
+              <p className="text-lg text-blue-50">
                 เรียนรู้พื้นฐานภาษา Python ที่เป็นภาษาอันดับ 1
                 สำหรับงาน AI และ Data Science
                 พร้อมฝึกเขียนโค้ดจริงตั้งแต่เริ่มต้น
@@ -149,7 +149,7 @@ export default function Python() {
       </div>
 
       {/* Navigation tabs */}
-      <div className="bg-white border-b border-green-100">
+      <div className="bg-white border-b border-blue-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex overflow-x-auto scrollbar-hide py-2 gap-2">
             {[
@@ -162,8 +162,8 @@ export default function Python() {
                 key={tab.key}
                 className={`px-4 py-2 rounded-full whitespace-nowrap ${
                   activeSection === tab.key
-                    ? "bg-green-100 text-green-800"
-                    : "bg-transparent text-gray-700 hover:bg-green-50"
+                    ? "bg-blue-100 text-blue-800"
+                    : "bg-transparent text-gray-700 hover:bg-blue-50"
                 }`}
                 onClick={() => setActiveSection(tab.key)}
               >
@@ -181,10 +181,10 @@ export default function Python() {
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className="bg-white rounded-2xl p-6 shadow-lg border border-green-100"
+            className="bg-white rounded-2xl p-6 shadow-lg border border-blue-100"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-              <FaRegLightbulb className="text-green-500 mr-2" />
+              <FaRegLightbulb className="text-blue-500 mr-2" />
               Python คืออะไร
             </h2>
             <div className="space-y-4">
@@ -196,55 +196,55 @@ export default function Python() {
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                <div className="bg-green-50 p-4 rounded-xl border border-green-100">
+                <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
                   <h3 className="font-bold text-gray-800">
                     ทำไมต้อง Python?
                   </h3>
                   <ul className="mt-2 space-y-2">
                     <li className="flex items-start">
-                      <span className="text-green-500 mr-2">•</span>
+                      <span className="text-blue-500 mr-2">•</span>
                       <span>ภาษาอันดับ 1 สำหรับ AI และ Data Science</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-green-500 mr-2">•</span>
+                      <span className="text-blue-500 mr-2">•</span>
                       <span>ไวยากรณ์ง่าย อ่านเข้าใจได้ทันที</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-green-500 mr-2">•</span>
+                      <span className="text-blue-500 mr-2">•</span>
                       <span>มีไลบรารีมากมายพร้อมใช้งาน</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-green-500 mr-2">•</span>
+                      <span className="text-blue-500 mr-2">•</span>
                       <span>ชุมชนนักพัฒนาขนาดใหญ่ทั่วโลก</span>
                     </li>
                   </ul>
                 </div>
-                <div className="bg-green-50 p-4 rounded-xl border border-green-100">
+                <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
                   <h3 className="font-bold text-gray-800">
                     Python ทำอะไรได้บ้าง
                   </h3>
                   <ul className="mt-2 space-y-2">
                     <li className="flex items-start">
-                      <span className="text-green-500 mr-2">•</span>
+                      <span className="text-blue-500 mr-2">•</span>
                       <span>สร้างแอปพลิเคชัน AI และ Machine Learning</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-green-500 mr-2">•</span>
+                      <span className="text-blue-500 mr-2">•</span>
                       <span>วิเคราะห์ข้อมูลและสร้างกราฟ</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-green-500 mr-2">•</span>
+                      <span className="text-blue-500 mr-2">•</span>
                       <span>สร้างเว็บไซต์ (Django, Flask)</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-green-500 mr-2">•</span>
+                      <span className="text-blue-500 mr-2">•</span>
                       <span>เขียนสคริปต์อัตโนมัติ (Automation)</span>
                     </li>
                   </ul>
                 </div>
               </div>
 
-              <div className="mt-4 bg-green-50 p-4 rounded-xl border border-green-100">
+              <div className="mt-4 bg-blue-50 p-4 rounded-xl border border-blue-100">
                 <h3 className="font-bold text-gray-800">
                   ตัวอย่างโค้ด Python พื้นฐาน
                 </h3>
@@ -279,7 +279,7 @@ for fruit in fruits:
                 </div>
               </div>
 
-              <div className="mt-6 p-5 bg-linear-to-r from-green-100 to-green-50 rounded-xl">
+              <div className="mt-6 p-5 bg-linear-to-r from-blue-100 to-blue-50 rounded-xl">
                 <h3 className="font-bold text-lg mb-2 text-gray-800">
                   Python ในค่ายนี้
                 </h3>
@@ -298,10 +298,10 @@ for fruit in fruits:
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className="bg-white rounded-2xl p-6 shadow-lg border border-green-100"
+            className="bg-white rounded-2xl p-6 shadow-lg border border-blue-100"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-              <FaPuzzlePiece className="text-green-500 mr-2" />
+              <FaPuzzlePiece className="text-blue-500 mr-2" />
               หัวข้อที่จะเรียนรู้
             </h2>
             <motion.div
@@ -313,10 +313,10 @@ for fruit in fruits:
               {pythonTopics.map((topic) => (
                 <motion.div
                   key={topic.id}
-                  className="bg-green-50 p-5 rounded-xl border border-green-100 hover:shadow-md transition-shadow"
+                  className="bg-blue-50 p-5 rounded-xl border border-blue-100 hover:shadow-md transition-shadow"
                   variants={fadeIn}
                 >
-                  <div className="text-green-500">{topic.icon}</div>
+                  <div className="text-blue-500">{topic.icon}</div>
                   <h3 className="font-bold text-gray-800 mt-1">
                     {topic.title}
                   </h3>
@@ -335,17 +335,17 @@ for fruit in fruits:
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className="bg-white rounded-2xl p-6 shadow-lg border border-green-100"
+            className="bg-white rounded-2xl p-6 shadow-lg border border-blue-100"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-              <FaPuzzlePiece className="text-green-500 mr-2" />
+              <FaPuzzlePiece className="text-blue-500 mr-2" />
               Python Libraries ที่จะใช้
             </h2>
             <div className="space-y-4">
               {pythonLibraries.map((lib) => (
                 <motion.div
                   key={lib.id}
-                  className="bg-green-50 p-5 rounded-xl border border-green-100"
+                  className="bg-blue-50 p-5 rounded-xl border border-blue-100"
                   variants={fadeIn}
                 >
                   <h3 className="font-bold text-gray-800 text-lg">
@@ -356,7 +356,7 @@ for fruit in fruits:
                     {lib.features.split(", ").map((feature) => (
                       <span
                         key={feature}
-                        className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium"
+                        className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium"
                       >
                         {feature}
                       </span>
@@ -366,7 +366,7 @@ for fruit in fruits:
               ))}
             </div>
 
-            <div className="mt-6 bg-green-50 p-4 rounded-xl border border-green-100">
+            <div className="mt-6 bg-blue-50 p-4 rounded-xl border border-blue-100">
               <h3 className="font-bold text-gray-800">
                 ตัวอย่าง: เรียก AI API ด้วย Python
               </h3>
@@ -398,34 +398,34 @@ print(response.choices[0].message.content)`}
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className="bg-white rounded-2xl p-6 shadow-lg border border-green-100"
+            className="bg-white rounded-2xl p-6 shadow-lg border border-blue-100"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-              <TbTerminal2 className="text-green-500 mr-2" />
+              <TbTerminal2 className="text-blue-500 mr-2" />
               กิจกรรมในค่าย
             </h2>
             <div className="space-y-6">
-              <div className="bg-green-50 p-5 rounded-xl border border-green-100">
+              <div className="bg-blue-50 p-5 rounded-xl border border-blue-100">
                 <h3 className="font-bold text-gray-800 text-lg">
                   Workshop: เขียน Python ตั้งแต่เริ่มต้น
                 </h3>
                 <ul className="mt-3 space-y-2">
                   <li className="flex items-start">
-                    <span className="text-green-500 mr-2">•</span>
+                    <span className="text-blue-500 mr-2">•</span>
                     <span>ตั้งค่า Python และ IDE</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-green-500 mr-2">•</span>
+                    <span className="text-blue-500 mr-2">•</span>
                     <span>เขียนโปรแกรมคำนวณ, เกมทาย, และ Quiz</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-green-500 mr-2">•</span>
+                    <span className="text-blue-500 mr-2">•</span>
                     <span>ฝึกใช้ List, Dictionary และ Functions</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="bg-green-50 p-5 rounded-xl border border-green-100">
+              <div className="bg-blue-50 p-5 rounded-xl border border-blue-100">
                 <h3 className="font-bold text-gray-800 text-lg">
                   Challenge: Python Mini Games
                 </h3>
@@ -436,7 +436,7 @@ print(response.choices[0].message.content)`}
                 </p>
               </div>
 
-              <div className="bg-green-50 p-5 rounded-xl border border-green-100">
+              <div className="bg-blue-50 p-5 rounded-xl border border-blue-100">
                 <h3 className="font-bold text-gray-800 text-lg">
                   Project: AI Chatbot ด้วย Python
                 </h3>
@@ -453,34 +453,34 @@ print(response.choices[0].message.content)`}
 
       {/* Footer links */}
       <div className="max-w-7xl mx-auto px-4 pb-12 sm:px-6 lg:px-8">
-        <div className="border-t border-green-100 pt-8">
+        <div className="border-t border-blue-100 pt-8">
           <h3 className="text-lg font-bold text-gray-800 mb-4">
             หัวข้ออื่นๆ ในค่าย
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link
               href="/events/2026/next-gen-ai-academy/topics/ai-fundamentals"
-              className="flex items-center p-4 bg-purple-50 rounded-xl border border-purple-200 hover:shadow-md transition-shadow"
+              className="flex items-center p-4 bg-yellow-50 rounded-xl border border-yellow-200 hover:shadow-md transition-shadow"
             >
-              <FaRobot className="text-purple-500 text-2xl mr-3" />
+              <FaRobot className="text-yellow-500 text-2xl mr-3" />
               <span className="font-medium text-gray-800">
                 AI Fundamentals
               </span>
             </Link>
             <Link
               href="/events/2026/next-gen-ai-academy/topics/prompt-engineering"
-              className="flex items-center p-4 bg-teal-50 rounded-xl border border-teal-200 hover:shadow-md transition-shadow"
+              className="flex items-center p-4 bg-yellow-50 rounded-xl border border-yellow-200 hover:shadow-md transition-shadow"
             >
-              <TbSparkles className="text-teal-500 text-2xl mr-3" />
+              <TbSparkles className="text-yellow-500 text-2xl mr-3" />
               <span className="font-medium text-gray-800">
                 Prompt Engineering
               </span>
             </Link>
             <Link
               href="/events/2026/next-gen-ai-academy/topics/claude-code"
-              className="flex items-center p-4 bg-orange-50 rounded-xl border border-orange-200 hover:shadow-md transition-shadow"
+              className="flex items-center p-4 bg-blue-50 rounded-xl border border-blue-200 hover:shadow-md transition-shadow"
             >
-              <TbTerminal2 className="text-orange-500 text-2xl mr-3" />
+              <TbTerminal2 className="text-blue-500 text-2xl mr-3" />
               <span className="font-medium text-gray-800">Claude Code</span>
             </Link>
           </div>

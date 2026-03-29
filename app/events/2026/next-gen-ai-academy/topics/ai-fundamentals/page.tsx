@@ -104,19 +104,19 @@ export default function AIFundamentals() {
   const [activeSection, setActiveSection] = useState("what");
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-purple-50 to-white">
+    <div className="min-h-screen bg-linear-to-b from-yellow-50 to-white">
       {/* Header */}
-      <div className="sticky top-0 z-20 backdrop-blur-md bg-purple-50/80 border-b border-purple-200 shadow-sm">
+      <div className="sticky top-0 z-20 backdrop-blur-md bg-yellow-50/80 border-b border-yellow-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <Link
             href="/events/2026/next-gen-ai-academy"
-            className="flex items-center text-purple-700 hover:text-purple-500 transition-colors"
+            className="flex items-center text-yellow-700 hover:text-yellow-500 transition-colors"
           >
             <FaArrowLeft className="mr-2" />
             <span>กลับสู่หน้าหลัก</span>
           </Link>
           <h1 className="text-xl sm:text-2xl font-bold text-center text-gray-800 flex items-center">
-            <FaRobot className="text-purple-500 mr-2 text-2xl sm:text-3xl" />
+            <FaRobot className="text-yellow-500 mr-2 text-2xl sm:text-3xl" />
             AI Fundamentals
           </h1>
           <div className="w-24"></div>
@@ -124,7 +124,7 @@ export default function AIFundamentals() {
       </div>
 
       {/* Hero */}
-      <div className="relative bg-linear-to-br from-purple-500 to-violet-400 overflow-hidden">
+      <div className="relative bg-linear-to-br from-yellow-400 to-amber-300 overflow-hidden">
         <div className="absolute inset-0 z-0 overflow-hidden">
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/20 rounded-full blur-3xl"></div>
           <div className="absolute left-1/4 top-1/4 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-white/15 rounded-full blur-3xl"></div>
@@ -143,7 +143,7 @@ export default function AIFundamentals() {
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-shadow mb-4">
                 พื้นฐานปัญญาประดิษฐ์
               </h2>
-              <p className="text-lg text-purple-50">
+              <p className="text-lg text-yellow-50">
                 เรียนรู้พื้นฐานของ AI, Machine Learning และ Neural Networks
                 ที่อยู่เบื้องหลังเทคโนโลยีอัจฉริยะที่เราใช้ทุกวัน ตั้งแต่ ChatGPT
                 ไปจนถึงรถยนต์ไร้คนขับ
@@ -163,7 +163,7 @@ export default function AIFundamentals() {
       </div>
 
       {/* Navigation tabs */}
-      <div className="bg-white border-b border-purple-100">
+      <div className="bg-white border-b border-yellow-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex overflow-x-auto scrollbar-hide py-2 gap-2">
             {[
@@ -176,8 +176,8 @@ export default function AIFundamentals() {
                 key={tab.key}
                 className={`px-4 py-2 rounded-full whitespace-nowrap ${
                   activeSection === tab.key
-                    ? "bg-purple-100 text-purple-800"
-                    : "bg-transparent text-gray-700 hover:bg-purple-50"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : "bg-transparent text-gray-700 hover:bg-yellow-50"
                 }`}
                 onClick={() => setActiveSection(tab.key)}
               >
@@ -195,10 +195,10 @@ export default function AIFundamentals() {
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className="bg-white rounded-2xl p-6 shadow-lg border border-purple-100"
+            className="bg-white rounded-2xl p-6 shadow-lg border border-yellow-100"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-              <FaRegLightbulb className="text-purple-500 mr-2" />
+              <FaRegLightbulb className="text-yellow-500 mr-2" />
               AI คืออะไร
             </h2>
             <div className="space-y-4">
@@ -211,25 +211,25 @@ export default function AIFundamentals() {
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                <div className="bg-purple-50 p-4 rounded-xl border border-purple-100">
+                <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100">
                   <h3 className="font-bold text-gray-800">ประเภทของ AI</h3>
                   <ul className="mt-2 space-y-2">
                     <li className="flex items-start">
-                      <span className="text-purple-500 mr-2">•</span>
+                      <span className="text-yellow-500 mr-2">•</span>
                       <span>
                         <strong>Narrow AI</strong> — AI
                         ที่ทำงานเฉพาะทาง เช่น Siri, แนะนำสินค้า
                       </span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-purple-500 mr-2">•</span>
+                      <span className="text-yellow-500 mr-2">•</span>
                       <span>
                         <strong>General AI</strong> — AI
                         ที่คิดได้เหมือนมนุษย์ (ยังไม่มีจริง)
                       </span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-purple-500 mr-2">•</span>
+                      <span className="text-yellow-500 mr-2">•</span>
                       <span>
                         <strong>Generative AI</strong> — AI ที่สร้างเนื้อหาใหม่
                         เช่น ChatGPT, Claude, DALL-E
@@ -237,30 +237,30 @@ export default function AIFundamentals() {
                     </li>
                   </ul>
                 </div>
-                <div className="bg-purple-50 p-4 rounded-xl border border-purple-100">
+                <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100">
                   <h3 className="font-bold text-gray-800">AI ในชีวิตประจำวัน</h3>
                   <ul className="mt-2 space-y-2">
                     <li className="flex items-start">
-                      <span className="text-purple-500 mr-2">•</span>
+                      <span className="text-yellow-500 mr-2">•</span>
                       <span>แนะนำวิดีโอ/เพลง (YouTube, Spotify)</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-purple-500 mr-2">•</span>
+                      <span className="text-yellow-500 mr-2">•</span>
                       <span>ผู้ช่วยอัจฉริยะ (Siri, Google Assistant)</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-purple-500 mr-2">•</span>
+                      <span className="text-yellow-500 mr-2">•</span>
                       <span>ฟิลเตอร์หน้า (Instagram, TikTok)</span>
                     </li>
                     <li className="flex items-start">
-                      <span className="text-purple-500 mr-2">•</span>
+                      <span className="text-yellow-500 mr-2">•</span>
                       <span>แชทบอท (ChatGPT, Claude)</span>
                     </li>
                   </ul>
                 </div>
               </div>
 
-              <div className="mt-6 p-5 bg-linear-to-r from-purple-100 to-purple-50 rounded-xl">
+              <div className="mt-6 p-5 bg-linear-to-r from-yellow-100 to-yellow-50 rounded-xl">
                 <h3 className="font-bold text-lg mb-2 text-gray-800">
                   ทำไมต้องเรียนรู้ AI?
                 </h3>
@@ -280,10 +280,10 @@ export default function AIFundamentals() {
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className="bg-white rounded-2xl p-6 shadow-lg border border-purple-100"
+            className="bg-white rounded-2xl p-6 shadow-lg border border-yellow-100"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-              <FaPuzzlePiece className="text-purple-500 mr-2" />
+              <FaPuzzlePiece className="text-yellow-500 mr-2" />
               หัวข้อที่จะเรียนรู้
             </h2>
             <motion.div
@@ -295,10 +295,10 @@ export default function AIFundamentals() {
               {aiTopics.map((topic) => (
                 <motion.div
                   key={topic.id}
-                  className="bg-purple-50 p-5 rounded-xl border border-purple-100 hover:shadow-md transition-shadow"
+                  className="bg-yellow-50 p-5 rounded-xl border border-yellow-100 hover:shadow-md transition-shadow"
                   variants={fadeIn}
                 >
-                  <div className="text-purple-500">{topic.icon}</div>
+                  <div className="text-yellow-500">{topic.icon}</div>
                   <h3 className="font-bold text-gray-800 mt-1">
                     {topic.title}
                   </h3>
@@ -317,14 +317,14 @@ export default function AIFundamentals() {
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className="bg-white rounded-2xl p-6 shadow-lg border border-purple-100"
+            className="bg-white rounded-2xl p-6 shadow-lg border border-yellow-100"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-              <TbSparkles className="text-purple-500 mr-2" />
+              <TbSparkles className="text-yellow-500 mr-2" />
               AI Timeline
             </h2>
             <div className="relative">
-              <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-purple-200"></div>
+              <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-yellow-200"></div>
               <div className="space-y-8">
                 {aiMilestones.map((milestone, index) => (
                   <motion.div
@@ -335,12 +335,12 @@ export default function AIFundamentals() {
                     transition={{ delay: index * 0.15 }}
                   >
                     <div className="flex-shrink-0 w-16 text-right mr-4">
-                      <span className="text-sm font-bold text-purple-600">
+                      <span className="text-sm font-bold text-yellow-600">
                         {milestone.year}
                       </span>
                     </div>
-                    <div className="w-4 h-4 bg-purple-500 rounded-full flex-shrink-0 mt-1 relative z-10"></div>
-                    <div className="ml-4 bg-purple-50 p-4 rounded-xl border border-purple-100 flex-1">
+                    <div className="w-4 h-4 bg-yellow-500 rounded-full flex-shrink-0 mt-1 relative z-10"></div>
+                    <div className="ml-4 bg-yellow-50 p-4 rounded-xl border border-yellow-100 flex-1">
                       <h3 className="font-bold text-gray-800">
                         {milestone.title}
                       </h3>
@@ -360,34 +360,34 @@ export default function AIFundamentals() {
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className="bg-white rounded-2xl p-6 shadow-lg border border-purple-100"
+            className="bg-white rounded-2xl p-6 shadow-lg border border-yellow-100"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-              <TbMessageChatbot className="text-purple-500 mr-2" />
+              <TbMessageChatbot className="text-yellow-500 mr-2" />
               กิจกรรมในค่าย
             </h2>
             <div className="space-y-6">
-              <div className="bg-purple-50 p-5 rounded-xl border border-purple-100">
+              <div className="bg-yellow-50 p-5 rounded-xl border border-yellow-100">
                 <h3 className="font-bold text-gray-800 text-lg">
                   Workshop: ทดลองใช้ AI จริง
                 </h3>
                 <ul className="mt-3 space-y-2">
                   <li className="flex items-start">
-                    <span className="text-purple-500 mr-2">•</span>
+                    <span className="text-yellow-500 mr-2">•</span>
                     <span>ทดลองใช้ ChatGPT และ Claude ในการถาม-ตอบ</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-purple-500 mr-2">•</span>
+                    <span className="text-yellow-500 mr-2">•</span>
                     <span>ทดลองสร้างรูปภาพด้วย AI (DALL-E / Midjourney)</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-purple-500 mr-2">•</span>
+                    <span className="text-yellow-500 mr-2">•</span>
                     <span>ทดลอง AI วิเคราะห์รูปภาพ (Computer Vision)</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="bg-purple-50 p-5 rounded-xl border border-purple-100">
+              <div className="bg-yellow-50 p-5 rounded-xl border border-yellow-100">
                 <h3 className="font-bold text-gray-800 text-lg">
                   Challenge: AI Quiz Battle
                 </h3>
@@ -398,7 +398,7 @@ export default function AIFundamentals() {
                 </p>
               </div>
 
-              <div className="bg-purple-50 p-5 rounded-xl border border-purple-100">
+              <div className="bg-yellow-50 p-5 rounded-xl border border-yellow-100">
                 <h3 className="font-bold text-gray-800 text-lg">
                   Project: ออกแบบ AI Solution
                 </h3>
@@ -415,34 +415,34 @@ export default function AIFundamentals() {
 
       {/* Footer links */}
       <div className="max-w-7xl mx-auto px-4 pb-12 sm:px-6 lg:px-8">
-        <div className="border-t border-purple-100 pt-8">
+        <div className="border-t border-yellow-100 pt-8">
           <h3 className="text-lg font-bold text-gray-800 mb-4">
             หัวข้ออื่นๆ ในค่าย
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link
               href="/events/2026/next-gen-ai-academy/topics/python"
-              className="flex items-center p-4 bg-green-50 rounded-xl border border-green-200 hover:shadow-md transition-shadow"
+              className="flex items-center p-4 bg-blue-50 rounded-xl border border-blue-200 hover:shadow-md transition-shadow"
             >
-              <SiPython className="text-green-500 text-2xl mr-3" />
+              <SiPython className="text-blue-500 text-2xl mr-3" />
               <span className="font-medium text-gray-800">
                 Python เบื้องต้น
               </span>
             </Link>
             <Link
               href="/events/2026/next-gen-ai-academy/topics/prompt-engineering"
-              className="flex items-center p-4 bg-teal-50 rounded-xl border border-teal-200 hover:shadow-md transition-shadow"
+              className="flex items-center p-4 bg-yellow-50 rounded-xl border border-yellow-200 hover:shadow-md transition-shadow"
             >
-              <TbSparkles className="text-teal-500 text-2xl mr-3" />
+              <TbSparkles className="text-yellow-500 text-2xl mr-3" />
               <span className="font-medium text-gray-800">
                 Prompt Engineering
               </span>
             </Link>
             <Link
               href="/events/2026/next-gen-ai-academy/topics/claude-code"
-              className="flex items-center p-4 bg-orange-50 rounded-xl border border-orange-200 hover:shadow-md transition-shadow"
+              className="flex items-center p-4 bg-blue-50 rounded-xl border border-blue-200 hover:shadow-md transition-shadow"
             >
-              <TbTerminal2 className="text-orange-500 text-2xl mr-3" />
+              <TbTerminal2 className="text-blue-500 text-2xl mr-3" />
               <span className="font-medium text-gray-800">Claude Code</span>
             </Link>
           </div>
