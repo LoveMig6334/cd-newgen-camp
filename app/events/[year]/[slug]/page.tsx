@@ -6,6 +6,10 @@ const EVENT_REGISTRY: Record<string, { name: string; component: string }> = {
     name: "Next Gen Web Academy",
     component: "next-gen-web-academy",
   },
+  "2026/next-gen-ai-academy": {
+    name: "Next Gen AI Academy",
+    component: "next-gen-ai-academy",
+  },
 };
 
 interface EventPageProps {

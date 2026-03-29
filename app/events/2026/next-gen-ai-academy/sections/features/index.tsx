@@ -1,0 +1,236 @@
+"use client";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import React from "react";
+import { FaRobot } from "react-icons/fa";
+import { SiPython } from "react-icons/si";
+import { TbSparkles, TbTerminal2 } from "react-icons/tb";
+import { RippleEffect } from "@/app/components/UI/RippleEffect";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      delayChildren: 0.3,
+      staggerChildren: 0.3,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 50, opacity: 0, scale: 0.8 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      duration: 0.7,
+    },
+  },
+};
+
+const iconVariants = {
+  hover: {
+    y: [-5, 5],
+    transition: {
+      y: {
+        repeat: Infinity,
+        repeatType: "reverse" as const,
+        duration: 1.5,
+      },
+    },
+  },
+};
+
+const shineVariants = {
+  initial: { x: "-100%", opacity: 0 },
+  animate: {
+    x: "100%",
+    opacity: 0.7,
+    transition: {
+      repeat: Infinity,
+      repeatDelay: 3,
+      duration: 1.5,
+    },
+  },
+};
+
+interface FeatureItem {
+  id: number;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  color: string;
+  brightColor: string;
+  link: string;
+}
+
+const FeatureCard = ({ feature }: { feature: FeatureItem }) => (
+  <div className="w-full md:w-2/5 max-w-sm">
+    <Link href={feature.link} passHref>
+      <motion.div
+        className={`${feature.color} border-2 p-4 sm:p-6 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden group cursor-pointer h-full`}
+        variants={itemVariants}
+        whileHover={{
+          y: -10,
+          boxShadow: "0 15px 30px rgba(0,0,0,0.1)",
+          scale: 1.03,
+          transition: { duration: 0.5 },
+        }}
+        whileTap={{
+          scale: 0.95,
+          opacity: 0.8,
+          boxShadow: "0 5px 10px rgba(0,0,0,0.2)",
+          transition: { duration: 0.1 },
+        }}
+        onClick={() => (window.location.href = feature.link)}
+      >
+        <motion.div
+          className="absolute inset-0 w-full h-full bg-linear-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-30"
+          variants={shineVariants}
+          initial="initial"
+          animate="animate"
+        />
+        <div
+          className={`absolute inset-0 bg-linear-to-br ${feature.brightColor} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
+        />
+        <RippleEffect color="rgba(255, 255, 255, 0.5)" />
+        <motion.div
+          variants={iconVariants}
+          whileHover="hover"
+          className="pointer-events-none"
+        >
+          {feature.icon}
+        </motion.div>
+        <h3 className="text-xl font-bold text-gray-900 my-3 relative pointer-events-none">
+          {feature.title}
+        </h3>
+        <p className="text-gray-600 mb-3 relative pointer-events-none">
+          {feature.description}
+        </p>
+        <div className="mt-auto inline-flex items-center font-medium text-sm text-gray-700 group-hover:text-gray-900 relative pointer-events-none">
+          <span>ดูรายละเอียด</span>
+          <svg
+            className="w-3 h-3 ml-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </div>
+      </motion.div>
+    </Link>
+  </div>
+);
+
+export const AIFeatures = () => {
+  const features: FeatureItem[] = [
+    {
+      id: 1,
+      title: "AI Fundamentals",
+      description:
+        "เรียนรู้พื้นฐาน AI, Machine Learning และการทำงานของปัญญาประดิษฐ์",
+      icon: <FaRobot className="text-purple-500 text-5xl mb-2" />,
+      color: "bg-purple-50 border-purple-200",
+      brightColor: "from-purple-300 to-purple-100",
+      link: "/events/2026/next-gen-ai-academy/topics/ai-fundamentals",
+    },
+    {
+      id: 2,
+      title: "Python เบื้องต้น",
+      description: "สอนการเขียน Python เบื้องต้นสำหรับ AI และ Data Science",
+      icon: <SiPython className="text-green-500 text-5xl mb-2" />,
+      color: "bg-green-50 border-green-200",
+      brightColor: "from-green-300 to-green-100",
+      link: "/events/2026/next-gen-ai-academy/topics/python",
+    },
+    {
+      id: 3,
+      title: "Prompt Engineering",
+      description:
+        "เทคนิคการใช้ ChatGPT และ AI Tools อย่างมีประสิทธิภาพ",
+      icon: <TbSparkles className="text-teal-500 text-5xl mb-2" />,
+      color: "bg-teal-50 border-teal-200",
+      brightColor: "from-teal-300 to-teal-100",
+      link: "/events/2026/next-gen-ai-academy/topics/prompt-engineering",
+    },
+    {
+      id: 4,
+      title: "Claude Code",
+      description: "เรียนรู้การใช้ AI ช่วยเขียนโค้ดและสร้างโปรเจคจริง",
+      icon: <TbTerminal2 className="text-orange-500 text-5xl mb-2" />,
+      color: "bg-orange-50 border-orange-200",
+      brightColor: "from-orange-300 to-orange-100",
+      link: "/events/2026/next-gen-ai-academy/topics/claude-code",
+    },
+  ];
+
+  return (
+    <section
+      className="min-h-screen flex items-center justify-center relative overflow-hidden py-12 sm:py-16 bg-white"
+      id="features"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Decorative blobs */}
+        <div className="absolute top-20 left-20 w-36 h-36 bg-purple-100 rounded-full opacity-30 blur-3xl" />
+        <div className="absolute top-20 right-20 w-36 h-36 bg-green-100 rounded-full opacity-30 blur-3xl" />
+        <div className="absolute bottom-20 left-20 w-36 h-36 bg-green-100 rounded-full opacity-30 blur-3xl" />
+        <div className="absolute bottom-20 right-20 w-36 h-36 bg-purple-100 rounded-full opacity-30 blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-purple-50 rounded-full opacity-20 blur-xl" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-24 h-24 bg-green-50 rounded-full opacity-20 blur-lg" />
+        <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 w-24 h-24 bg-teal-50 rounded-full opacity-20 blur-lg" />
+
+        <motion.div
+          className="text-center mb-12 sm:mb-16 relative z-10"
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 relative inline-block">
+            ค่ายเราสอนอะไรบ้าง?
+            <motion.span
+              className="absolute bottom-0 left-0 h-1 bg-linear-to-r from-purple-400 to-green-400 w-full"
+              initial={{ width: 0 }}
+              whileInView={{ width: "100%" }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+            />
+          </h2>
+          <p className="mt-4 text-base sm:text-lg text-gray-600">
+            ความรู้อัดแน่นตลอด 4 วัน
+          </p>
+        </motion.div>
+
+        <motion.div
+          className="relative z-10"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+        >
+          <div className="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-16 mb-8 md:mb-12">
+            {features.slice(0, 2).map((feature) => (
+              <FeatureCard key={feature.id} feature={feature} />
+            ))}
+          </div>
+          <div className="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-16">
+            {features.slice(2, 4).map((feature) => (
+              <FeatureCard key={feature.id} feature={feature} />
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};

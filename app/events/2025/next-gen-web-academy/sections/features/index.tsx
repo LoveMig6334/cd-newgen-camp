@@ -6,7 +6,7 @@ import { FaLaptopCode } from "react-icons/fa";
 import { LuBrain } from "react-icons/lu";
 import { PiFigmaLogo } from "react-icons/pi";
 import { RiJavascriptFill } from "react-icons/ri";
-import { RippleEffect } from "../../UI/RippleEffect";
+import { RippleEffect } from "@/app/components/UI/RippleEffect";
 
 const containerVariants = {
   hidden: { opacity: 0 },
