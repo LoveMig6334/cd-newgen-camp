@@ -16,7 +16,7 @@ import {
 export const AILogin = () => {
   return (
     <section
-      className="min-h-screen flex items-center justify-center sm:py-24 bg-linear-to-r from-purple-600 to-violet-800 relative overflow-hidden"
+      className="min-h-screen flex items-center justify-center sm:py-24 bg-linear-to-r from-blue-500 to-blue-700 relative overflow-hidden"
       id="login"
     >
       {/* Grid background */}
@@ -70,27 +70,27 @@ export const AILogin = () => {
             switch (iconIndex) {
               case 0:
                 Icon = SiPython;
-                color = "text-green-400";
+                color = "text-orange-400";
                 break;
               case 1:
                 Icon = TbBrain;
-                color = "text-purple-300";
+                color = "text-blue-400";
                 break;
               case 2:
                 Icon = SiOpenai;
-                color = "text-emerald-300";
+                color = "text-yellow-300";
                 break;
               case 3:
                 Icon = FaRobot;
-                color = "text-violet-300";
+                color = "text-cyan-300";
                 break;
               case 4:
                 Icon = TbTerminal2;
-                color = "text-orange-300";
+                color = "text-blue-300";
                 break;
               case 5:
                 Icon = TbSparkles;
-                color = "text-teal-300";
+                color = "text-purple-300";
                 break;
               case 6:
                 Icon = TbMessageChatbot;
@@ -98,15 +98,15 @@ export const AILogin = () => {
                 break;
               case 7:
                 Icon = TbBrandPython;
-                color = "text-green-300";
+                color = "text-blue-500";
                 break;
               case 8:
                 Icon = SiJupyter;
-                color = "text-orange-400";
+                color = "text-blue-400";
                 break;
               case 9:
                 Icon = TbDatabase;
-                color = "text-blue-300";
+                color = "text-green-300";
                 break;
               default:
                 Icon = TbPrompt;
@@ -162,7 +162,7 @@ export const AILogin = () => {
           </motion.h1>
 
           <motion.p
-            className="mt-4 text-base sm:text-lg md:text-xl text-purple-100"
+            className="mt-4 text-base sm:text-lg md:text-xl text-blue-100"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.75, ease: "easeOut" }}
@@ -176,7 +176,7 @@ export const AILogin = () => {
             >
               <Link href="/events/2026/next-gen-ai-academy/application">
                 <button
-                  className="px-6 text-2xl font-bold sm:px-8 py-2 sm:py-3 bg-emerald-500 text-white rounded-lg shadow-lg hover:bg-emerald-600 transition duration-300 flex items-center"
+                  className="px-6 text-2xl font-bold sm:px-8 py-2 sm:py-3 bg-yellow-500 text-white rounded-lg shadow-lg hover:bg-yellow-600 transition duration-300 flex items-center"
                   style={{ cursor: "pointer" }}
                 >
                   คลิกเพื่อสมัครเลย

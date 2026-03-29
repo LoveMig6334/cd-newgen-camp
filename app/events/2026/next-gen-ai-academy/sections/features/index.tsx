@@ -140,18 +140,18 @@ export const AIFeatures = () => {
       title: "AI Fundamentals",
       description:
         "เรียนรู้พื้นฐาน AI, Machine Learning และการทำงานของปัญญาประดิษฐ์",
-      icon: <FaRobot className="text-purple-500 text-5xl mb-2" />,
-      color: "bg-purple-50 border-purple-200",
-      brightColor: "from-purple-300 to-purple-100",
+      icon: <FaRobot className="text-yellow-500 text-5xl mb-2" />,
+      color: "bg-yellow-50 border-yellow-200",
+      brightColor: "from-yellow-300 to-yellow-100",
       link: "/events/2026/next-gen-ai-academy/topics/ai-fundamentals",
     },
     {
       id: 2,
       title: "Python เบื้องต้น",
       description: "สอนการเขียน Python เบื้องต้นสำหรับ AI และ Data Science",
-      icon: <SiPython className="text-green-500 text-5xl mb-2" />,
-      color: "bg-green-50 border-green-200",
-      brightColor: "from-green-300 to-green-100",
+      icon: <SiPython className="text-blue-500 text-5xl mb-2" />,
+      color: "bg-blue-50 border-blue-200",
+      brightColor: "from-blue-300 to-blue-100",
       link: "/events/2026/next-gen-ai-academy/topics/python",
     },
     {
@@ -159,18 +159,18 @@ export const AIFeatures = () => {
       title: "Prompt Engineering",
       description:
         "เทคนิคการใช้ ChatGPT และ AI Tools อย่างมีประสิทธิภาพ",
-      icon: <TbSparkles className="text-teal-500 text-5xl mb-2" />,
-      color: "bg-teal-50 border-teal-200",
-      brightColor: "from-teal-300 to-teal-100",
+      icon: <TbSparkles className="text-yellow-500 text-5xl mb-2" />,
+      color: "bg-yellow-50 border-yellow-200",
+      brightColor: "from-yellow-300 to-yellow-100",
       link: "/events/2026/next-gen-ai-academy/topics/prompt-engineering",
     },
     {
       id: 4,
       title: "Claude Code",
       description: "เรียนรู้การใช้ AI ช่วยเขียนโค้ดและสร้างโปรเจคจริง",
-      icon: <TbTerminal2 className="text-orange-500 text-5xl mb-2" />,
-      color: "bg-orange-50 border-orange-200",
-      brightColor: "from-orange-300 to-orange-100",
+      icon: <TbTerminal2 className="text-blue-500 text-5xl mb-2" />,
+      color: "bg-blue-50 border-blue-200",
+      brightColor: "from-blue-300 to-blue-100",
       link: "/events/2026/next-gen-ai-academy/topics/claude-code",
     },
   ];
@@ -181,14 +181,14 @@ export const AIFeatures = () => {
       id="features"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Decorative blobs */}
-        <div className="absolute top-20 left-20 w-36 h-36 bg-purple-100 rounded-full opacity-30 blur-3xl" />
-        <div className="absolute top-20 right-20 w-36 h-36 bg-green-100 rounded-full opacity-30 blur-3xl" />
-        <div className="absolute bottom-20 left-20 w-36 h-36 bg-green-100 rounded-full opacity-30 blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-36 h-36 bg-purple-100 rounded-full opacity-30 blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-purple-50 rounded-full opacity-20 blur-xl" />
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-24 h-24 bg-green-50 rounded-full opacity-20 blur-lg" />
-        <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 w-24 h-24 bg-teal-50 rounded-full opacity-20 blur-lg" />
+        {/* Symmetrical decorative blobs arranged in perfect balance */}
+        <div className="absolute top-20 left-20 w-36 h-36 bg-yellow-100 rounded-full opacity-30 blur-3xl" />
+        <div className="absolute top-20 right-20 w-36 h-36 bg-blue-100 rounded-full opacity-30 blur-3xl" />
+        <div className="absolute bottom-20 left-20 w-36 h-36 bg-blue-100 rounded-full opacity-30 blur-3xl" />
+        <div className="absolute bottom-20 right-20 w-36 h-36 bg-yellow-100 rounded-full opacity-30 blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-yellow-50 rounded-full opacity-20 blur-xl" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-24 h-24 bg-blue-50 rounded-full opacity-20 blur-lg" />
+        <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 w-24 h-24 bg-yellow-50 rounded-full opacity-20 blur-lg" />
 
         <motion.div
           className="text-center mb-12 sm:mb-16 relative z-10"
@@ -200,7 +200,7 @@ export const AIFeatures = () => {
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 relative inline-block">
             ค่ายเราสอนอะไรบ้าง?
             <motion.span
-              className="absolute bottom-0 left-0 h-1 bg-linear-to-r from-purple-400 to-green-400 w-full"
+              className="absolute bottom-0 left-0 h-1 bg-linear-to-r from-yellow-400 to-blue-400 w-full"
               initial={{ width: 0 }}
               whileInView={{ width: "100%" }}
               viewport={{ once: true }}

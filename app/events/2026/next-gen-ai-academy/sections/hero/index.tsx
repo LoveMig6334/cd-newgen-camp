@@ -64,27 +64,27 @@ export const AIHero: React.FC = () => {
                 switch (iconType) {
                   case 0:
                     Icon = SiPython;
-                    color = "text-green-500";
+                    color = "text-orange-500";
                     break;
                   case 1:
                     Icon = TbBrain;
-                    color = "text-purple-500";
+                    color = "text-blue-500";
                     break;
                   case 2:
                     Icon = SiOpenai;
-                    color = "text-emerald-400";
+                    color = "text-yellow-400";
                     break;
                   case 3:
                     Icon = FaRobot;
-                    color = "text-violet-400";
+                    color = "text-blue-400";
                     break;
                   case 4:
                     Icon = TbTerminal2;
-                    color = "text-orange-400";
+                    color = "text-cyan-400";
                     break;
                   default:
                     Icon = TbSparkles;
-                    color = "text-teal-400";
+                    color = "text-purple-400";
                 }
 
                 const opacity = getOpacity(rowIndex, colIndex);
@@ -127,7 +127,7 @@ export const AIHero: React.FC = () => {
             transition={{ duration: 1 }}
           >
             <motion.span
-              className="block bg-linear-to-r text-6xl from-purple-600 via-violet-500 to-purple-800 bg-clip-text text-transparent"
+              className="block bg-linear-to-r text-6xl from-blue-600 via-indigo-500 to-blue-800 bg-clip-text text-transparent"
               initial={{ y: 20 }}
               animate={{ y: 0 }}
               transition={{ delay: 0.7, duration: 1.5 }}
@@ -143,12 +143,12 @@ export const AIHero: React.FC = () => {
             transition={{ delay: 1, duration: 1 }}
           >
             <motion.span
-              className="block text-9xl bg-linear-to-r from-emerald-400 to-teal-600 bg-clip-text text-transparent"
+              className="block text-9xl bg-linear-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent"
               initial={{ y: 20 }}
               animate={{ y: 0 }}
               transition={{ delay: 0.9, duration: 1.6 }}
             >
-              AI
+              AI AGENTIC
             </motion.span>
           </motion.h1>
 
@@ -181,7 +181,7 @@ export const AIHero: React.FC = () => {
         <div className="relative h-24 mt-6">
           {/* Left Side Icons */}
           <motion.div
-            className="absolute text-green-500"
+            className="absolute text-orange-500"
             initial={{ x: -100, y: 0, opacity: 0 }}
             animate={{ x: 0, y: 0, opacity: 1 }}
             transition={{ delay: 2.2, duration: 1, ease: "easeOut" }}
@@ -201,7 +201,7 @@ export const AIHero: React.FC = () => {
           </motion.div>
 
           <motion.div
-            className="absolute text-purple-500"
+            className="absolute text-yellow-400"
             initial={{ x: -80, y: 50, opacity: 0 }}
             animate={{ x: 0, y: 0, opacity: 1 }}
             transition={{ delay: 2.6, duration: 1, ease: "easeOut" }}
@@ -221,7 +221,7 @@ export const AIHero: React.FC = () => {
           </motion.div>
 
           <motion.div
-            className="absolute text-teal-400"
+            className="absolute text-cyan-400"
             initial={{ x: -70, y: 30, opacity: 0 }}
             animate={{ x: 0, y: 0, opacity: 1 }}
             transition={{ delay: 3.0, duration: 1, ease: "easeOut" }}
@@ -242,7 +242,7 @@ export const AIHero: React.FC = () => {
 
           {/* Right Side Icons */}
           <motion.div
-            className="absolute text-emerald-500"
+            className="absolute text-blue-500"
             initial={{ x: 100, y: 0, opacity: 0 }}
             animate={{ x: 0, y: 0, opacity: 1 }}
             transition={{ delay: 2.4, duration: 1, ease: "easeOut" }}
@@ -262,7 +262,7 @@ export const AIHero: React.FC = () => {
           </motion.div>
 
           <motion.div
-            className="absolute text-violet-400"
+            className="absolute text-blue-400"
             initial={{ x: 80, y: 50, opacity: 0 }}
             animate={{ x: 0, y: 0, opacity: 1 }}
             transition={{ delay: 2.8, duration: 1, ease: "easeOut" }}
@@ -289,7 +289,7 @@ export const AIHero: React.FC = () => {
           </motion.div>
 
           <motion.div
-            className="absolute text-orange-400"
+            className="absolute text-purple-400"
             initial={{ x: 70, y: 30, opacity: 0 }}
             animate={{ x: 0, y: 0, opacity: 1 }}
             transition={{ delay: 3.2, duration: 1, ease: "easeOut" }}
@@ -336,7 +336,7 @@ export const AIHero: React.FC = () => {
           className="flex flex-col items-center cursor-pointer"
           onClick={handleScrollDown}
         >
-          <span className="text-purple-600 text-sm font-medium mb-2">
+          <span className="text-blue-600 text-sm font-medium mb-2">
             เลื่อนลงเพื่อดูเพิ่มเติม
           </span>
           <motion.svg
@@ -355,7 +355,7 @@ export const AIHero: React.FC = () => {
           >
             <path
               d="M12 5V19M12 19L5 12M12 19L19 12"
-              stroke="#8B5CF6"
+              stroke="#3B82F6"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"

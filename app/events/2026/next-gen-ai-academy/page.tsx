@@ -8,7 +8,7 @@ const Hero = dynamic(
   {
     loading: () => (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
       </div>
     ),
   },
@@ -22,7 +22,7 @@ const Features = dynamic(
   {
     loading: () => (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="w-10 h-10 border-4 border-green-200 border-t-green-500 rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-yellow-200 border-t-yellow-500 rounded-full animate-spin" />
       </div>
     ),
   },
@@ -33,7 +33,7 @@ const Login = dynamic(
     import("./sections/login").then((m) => m.AILogin),
   {
     loading: () => (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-purple-600 to-violet-800">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-blue-500 to-blue-700">
         <div className="w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin" />
       </div>
     ),
