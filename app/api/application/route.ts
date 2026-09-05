@@ -1,3 +1,4 @@
+import { getEventRules, gradeLabel } from "@/lib/eventRules";
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
@@ -46,6 +47,56 @@ export async function POST(req: Request) {
     }
 
     const supabase = await createClient();
+
+    // Event must exist and be open for applications
+    const { data: event } = await supabase
+      .from("events")
+      .select("id, year, slug, is_active, max_applicants")
+      .eq("id", data.event_id)
+      .single();
+
+    if (!event || !event.is_active) {
+      return NextResponse.json(
+        { error: "กิจกรรมนี้ยังไม่เปิดรับสมัคร" },
+        { status: 400 },
+      );
+    }
+
+    // Grade must be within the event's allowed range
+    const rules = getEventRules(event.year, event.slug);
+    const allowedLabels = rules.allowedGrades.map(gradeLabel);
+    if (!allowedLabels.includes(data.grade)) {
+      const min = Math.min(...rules.allowedGrades);
+      const max = Math.max(...rules.allowedGrades);
+      return NextResponse.json(
+        { error: `กิจกรรมนี้รับเฉพาะนักเรียนชั้น ม.${min} – ม.${max} เท่านั้น` },
+        { status: 400 },
+      );
+    }
+
+    // Capacity check — applications are not readable by anon (RLS), so the
+    // count comes from the SECURITY DEFINER function `count_applications`
+    // (see README → Admin Setup).
+    const { data: count, error: countError } = await supabase.rpc(
+      "count_applications",
+      { p_event_id: event.id },
+    );
+
+    if (countError) {
+      console.error("count_applications error:", countError);
+      return NextResponse.json(
+        { error: "ไม่สามารถตรวจสอบจำนวนผู้สมัครได้ โปรดลองอีกครั้ง" },
+        { status: 500 },
+      );
+    }
+
+    if ((count ?? 0) >= event.max_applicants) {
+      return NextResponse.json(
+        { error: `กิจกรรมนี้รับสมัครครบ ${event.max_applicants} คนแล้ว` },
+        { status: 409 },
+      );
+    }
+
     const { error } = await supabase.from("applications").insert({
       event_id: data.event_id,
       first_name: data.first_name,

@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useState } from "react";
 import { FaArrowLeft, FaRegLightbulb, FaRobot } from "react-icons/fa";
 import { FaPuzzlePiece } from "react-icons/fa6";
-import { SiPython } from "react-icons/si";
+import { LuBrain } from "react-icons/lu";
 import {
   TbCode,
   TbGitBranch,
+  TbRobot,
   TbSparkles,
   TbTerminal2,
   TbWand,
@@ -32,53 +33,74 @@ const staggerContainer = {
   },
 };
 
-const claudeTopics = [
+const agenticTopics = [
   {
-    id: "what-is-claude-code",
-    title: "Claude Code คืออะไร",
+    id: "what-is-agentic-cli",
+    title: "Agentic CLI คืออะไร",
     icon: <TbTerminal2 className="text-3xl mb-2" />,
     description:
-      "ทำความรู้จักกับ Claude Code — AI ที่ช่วยเขียนโค้ดจาก Anthropic",
+      "ทำความรู้จัก AI Agent ที่ทำงานผ่าน Terminal เช่น Claude Code, Gemini CLI, Codex CLI",
     details:
-      "Claude Code เป็นเครื่องมือ AI จาก Anthropic ที่ช่วยเขียนโค้ด วิเคราะห์โค้ด แก้บัก และสร้างโปรเจคได้ ทำงานผ่าน Terminal โดยสามารถอ่าน แก้ไข และสร้างไฟล์ได้โดยตรง เหมือนมีโปรแกรมเมอร์คู่คิดอยู่ข้างๆ",
+      "Agentic CLI คือเครื่องมือ AI ที่ไม่ได้แค่ตอบคำถาม แต่ลงมือทำงานแทนเราได้ ทั้งอ่านไฟล์ แก้ไขโค้ด รันคำสั่ง และตรวจสอบผลลัพธ์เอง เราจะเรียนรู้ว่ามันทำงานอย่างไร และต่างจากแชทบอทธรรมดาตรงไหน",
+  },
+  {
+    id: "agent-loop",
+    title: "วิธีคิดแบบ Agent",
+    icon: <TbRobot className="text-3xl mb-2" />,
+    description:
+      "เข้าใจวงจร วางแผน → ลงมือทำ → ตรวจสอบ → แก้ไข ของ AI Agent",
+    details:
+      "AI Agent ทำงานเป็นรอบๆ: รับโจทย์ วางแผน เลือกใช้เครื่องมือ (อ่านไฟล์, รันคำสั่ง, ค้นหา) แล้วดูผลลัพธ์เพื่อตัดสินใจขั้นต่อไป เราจะเรียนรู้วิธีตั้งโจทย์ให้ Agent ทำงานได้ถูกต้อง และวิธีตรวจสอบสิ่งที่ Agent ทำ",
   },
   {
     id: "ai-coding",
-    title: "AI-Assisted Coding",
+    title: "สร้างโปรเจคด้วย AI Agent",
     icon: <TbCode className="text-3xl mb-2" />,
     description:
-      "เรียนรู้วิธีใช้ AI ช่วยเขียนโค้ดอย่างมีประสิทธิภาพ",
+      "ใช้ Agentic CLI สร้างเว็บไซต์และแอปพลิเคชันจริงตั้งแต่ต้นจนจบ",
     details:
-      "เรียนรู้วิธีใช้ AI ช่วยเขียนโค้ดจริง ทั้งการสร้างไฟล์ใหม่, การแก้ไขโค้ดที่มีอยู่, การ Debug หาข้อผิดพลาด, การเขียน Test และการ Refactor โค้ดให้ดีขึ้น ด้วยการสื่อสารกับ AI อย่างมีประสิทธิภาพ",
-  },
-  {
-    id: "project-building",
-    title: "สร้างโปรเจคด้วย AI",
-    icon: <TbWand className="text-3xl mb-2" />,
-    description:
-      "ใช้ Claude Code สร้างเว็บไซต์และแอปพลิเคชันจริง",
-    details:
-      "เรียนรู้การวางแผนและสร้างโปรเจคจริงด้วย AI ตั้งแต่การออกแบบ, การเขียนโค้ด HTML/CSS/JavaScript, การสร้าง Python scripts ไปจนถึงการ Deploy ให้คนอื่นใช้งานได้",
+      "เรียนรู้การวางแผนและสร้างโปรเจคจริงด้วย AI Agent ตั้งแต่การอธิบายสิ่งที่ต้องการ การให้ Agent สร้างไฟล์ เขียนโค้ด แก้บัก ไปจนถึงการ Deploy ให้คนอื่นใช้งานได้",
   },
   {
     id: "git-basics",
     title: "Git & Version Control",
     icon: <TbGitBranch className="text-3xl mb-2" />,
     description:
-      "เรียนรู้การใช้ Git เพื่อจัดการโค้ดอย่างมืออาชีพ",
+      "ให้ AI Agent ช่วยจัดการโค้ดด้วย Git อย่างมืออาชีพ",
     details:
-      "Git เป็นเครื่องมือสำคัญที่โปรแกรมเมอร์ทุกคนต้องรู้ เราจะเรียนรู้ git init, commit, push, branch และการทำงานร่วมกับ GitHub เพื่อเก็บและแชร์โค้ดของเรา",
+      "Git เป็นเครื่องมือสำคัญที่โปรแกรมเมอร์ทุกคนต้องรู้ เราจะเรียนรู้ git init, commit, push, branch และการทำงานร่วมกับ GitHub โดยมี AI Agent ช่วยเขียน commit message และตรวจสอบการเปลี่ยนแปลง",
   },
 ];
 
-const claudeCommands = [
+const cliTools = [
   {
-    command: "claude",
-    description: "เปิดใช้ Claude Code ในโฟลเดอร์ปัจจุบัน",
+    id: "claude-code",
+    title: "Claude Code",
+    description: "Agentic CLI จาก Anthropic ใช้เป็นเครื่องมือหลักในค่ายนี้",
+    features: "อ่าน/แก้ไขไฟล์, รันคำสั่ง, Git, Subagents",
   },
   {
-    command: 'claude "สร้างเว็บไซต์ portfolio"',
-    description: "สั่งให้ Claude สร้างโปรเจคใหม่ทันที",
+    id: "gemini-cli",
+    title: "Gemini CLI",
+    description: "Agentic CLI จาก Google ใช้งานได้ฟรีสำหรับผู้เริ่มต้น",
+    features: "อ่าน/แก้ไขไฟล์, ค้นหาเว็บ, Context ขนาดใหญ่",
+  },
+  {
+    id: "codex-cli",
+    title: "Codex CLI",
+    description: "Agentic CLI จาก OpenAI ที่ทำงานใน Terminal เช่นกัน",
+    features: "อ่าน/แก้ไขไฟล์, รันคำสั่ง, Sandbox",
+  },
+];
+
+const cliCommands = [
+  {
+    command: "claude",
+    description: "เปิดใช้ AI Agent ในโฟลเดอร์โปรเจคปัจจุบัน",
+  },
+  {
+    command: 'claude "สร้างเว็บไซต์ portfolio ด้วย HTML, CSS, JS"',
+    description: "สั่งงาน Agent ให้สร้างโปรเจคใหม่ทันที",
   },
   {
     command: "/help",
@@ -86,11 +108,11 @@ const claudeCommands = [
   },
   {
     command: "/commit",
-    description: "ให้ Claude ช่วยสร้าง git commit message",
+    description: "ให้ Agent ช่วยสร้าง git commit พร้อมข้อความอธิบาย",
   },
 ];
 
-export default function ClaudeCode() {
+export default function AgenticCLI() {
   const [activeSection, setActiveSection] = useState("what");
 
   return (
@@ -107,7 +129,7 @@ export default function ClaudeCode() {
           </Link>
           <h1 className="text-xl sm:text-2xl font-bold text-center text-gray-800 flex items-center">
             <TbTerminal2 className="text-blue-500 mr-2 text-2xl sm:text-3xl" />
-            Claude Code
+            Agentic CLI
           </h1>
           <div className="w-24"></div>
         </div>
@@ -131,11 +153,12 @@ export default function ClaudeCode() {
           >
             <div className="md:w-1/2">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-shadow mb-4">
-                AI ช่วยเขียนโค้ด
+                AI Agent ที่ลงมือทำแทนคุณ
               </h2>
               <p className="text-lg text-blue-50">
-                เรียนรู้การใช้ Claude Code — เครื่องมือ AI
-                ที่ช่วยเขียนโค้ดและสร้างโปรเจคจริงได้ตั้งแต่ต้นจนจบ
+                เรียนรู้การใช้ Agentic CLI เช่น Claude Code — AI Agent
+                ที่ทำงานผ่าน Terminal อ่านโค้ด เขียนโค้ด รันคำสั่ง
+                และสร้างโปรเจคจริงได้ตั้งแต่ต้นจนจบ
                 เหมือนมีโปรแกรมเมอร์มือโปรคอยช่วยเหลือตลอดเวลา
               </p>
             </div>
@@ -157,9 +180,9 @@ export default function ClaudeCode() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex overflow-x-auto scrollbar-hide py-2 gap-2">
             {[
-              { key: "what", label: "Claude Code คืออะไร" },
+              { key: "what", label: "Agentic CLI คืออะไร" },
               { key: "topics", label: "หัวข้อที่เรียนรู้" },
-              { key: "commands", label: "คำสั่งพื้นฐาน" },
+              { key: "tools", label: "เครื่องมือและคำสั่ง" },
               { key: "activities", label: "กิจกรรมในค่าย" },
             ].map((tab) => (
               <button
@@ -189,21 +212,22 @@ export default function ClaudeCode() {
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
               <FaRegLightbulb className="text-blue-500 mr-2" />
-              Claude Code คืออะไร
+              Agentic CLI คืออะไร
             </h2>
             <div className="space-y-4">
               <p>
-                Claude Code เป็น AI coding assistant จาก Anthropic
-                ที่ทำงานผ่าน Terminal/Command Line
-                สามารถอ่านโค้ดทั้งโปรเจค, เขียนโค้ดใหม่, แก้ไขโค้ดที่มีอยู่,
-                รันคำสั่ง และสร้างโปรเจคเต็มรูปแบบได้
+                Agentic CLI คือ AI Agent ที่ทำงานผ่าน Terminal/Command Line
+                เช่น Claude Code, Gemini CLI และ Codex CLI
+                ต่างจากแชทบอทตรงที่มันไม่ได้แค่ตอบคำถาม
+                แต่สามารถอ่านโค้ดทั้งโปรเจค เขียนโค้ดใหม่ แก้ไขไฟล์
+                รันคำสั่ง ตรวจสอบผลลัพธ์ และแก้ไขจนงานเสร็จได้เอง
                 เหมือนมีโปรแกรมเมอร์มือโปรนั่งอยู่ข้างๆ
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
                   <h3 className="font-bold text-gray-800">
-                    Claude Code ทำอะไรได้
+                    Agentic CLI ทำอะไรได้
                   </h3>
                   <ul className="mt-2 space-y-2">
                     <li className="flex items-start">
@@ -212,7 +236,7 @@ export default function ClaudeCode() {
                     </li>
                     <li className="flex items-start">
                       <span className="text-blue-500 mr-2">•</span>
-                      <span>แก้บัก วิเคราะห์ข้อผิดพลาด หาทางแก้ไข</span>
+                      <span>แก้บัก วิเคราะห์ข้อผิดพลาด แล้วรันทดสอบซ้ำเอง</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-blue-500 mr-2">•</span>
@@ -226,7 +250,7 @@ export default function ClaudeCode() {
                 </div>
                 <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
                   <h3 className="font-bold text-gray-800">
-                    ต่างจาก ChatGPT อย่างไร
+                    ต่างจากแชทบอทอย่างไร
                   </h3>
                   <ul className="mt-2 space-y-2">
                     <li className="flex items-start">
@@ -235,15 +259,15 @@ export default function ClaudeCode() {
                     </li>
                     <li className="flex items-start">
                       <span className="text-blue-500 mr-2">•</span>
-                      <span>สร้างและแก้ไขไฟล์ได้เลย</span>
+                      <span>สร้างและแก้ไขไฟล์ได้เลย ไม่ต้องคัดลอกวาง</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-blue-500 mr-2">•</span>
-                      <span>รันคำสั่ง Terminal ได้</span>
+                      <span>รันคำสั่ง Terminal และดูผลลัพธ์เองได้</span>
                     </li>
                     <li className="flex items-start">
                       <span className="text-blue-500 mr-2">•</span>
-                      <span>เข้าใจบริบทของโปรเจคทั้งหมด</span>
+                      <span>ทำงานหลายขั้นตอนต่อเนื่องจนเสร็จ</span>
                     </li>
                   </ul>
                 </div>
@@ -251,7 +275,7 @@ export default function ClaudeCode() {
 
               <div className="mt-4 bg-blue-50 p-4 rounded-xl border border-blue-100">
                 <h3 className="font-bold text-gray-800">
-                  ตัวอย่างการใช้ Claude Code
+                  ตัวอย่างการใช้ Agentic CLI
                 </h3>
                 <div className="mt-3 bg-gray-900 p-4 rounded-lg text-sm overflow-x-auto">
                   <pre className="text-gray-200 font-mono">
@@ -263,6 +287,7 @@ Claude: ฉันจะสร้างเว็บไซต์ portfolio ให�
 ✓ สร้าง index.html - โครงสร้างหน้าเว็บ
 ✓ สร้าง styles.css - การตกแต่ง responsive
 ✓ สร้าง script.js - animations และ interactions
+✓ เปิดทดสอบในเบราว์เซอร์ - ทำงานถูกต้อง
 
 เว็บไซต์พร้อมแล้ว! เปิดไฟล์ index.html เพื่อดูผลลัพธ์`}
                     </code>
@@ -276,7 +301,7 @@ Claude: ฉันจะสร้างเว็บไซต์ portfolio ให�
                 </h3>
                 <p>
                   ไม่ว่าจะเป็นมือใหม่ที่ไม่เคยเขียนโค้ดมาก่อน
-                  หรือคนที่มีพื้นฐานอยู่แล้ว Claude Code จะช่วยให้คุณ
+                  หรือคนที่มีพื้นฐานอยู่แล้ว Agentic CLI จะช่วยให้คุณ
                   สร้างสรรค์สิ่งที่คิดไม่ถึงว่าจะทำได้ภายในเวลาสั้นๆ
                 </p>
               </div>
@@ -301,7 +326,7 @@ Claude: ฉันจะสร้างเว็บไซต์ portfolio ให�
               initial="hidden"
               animate="visible"
             >
-              {claudeTopics.map((topic) => (
+              {agenticTopics.map((topic) => (
                 <motion.div
                   key={topic.id}
                   className="bg-blue-50 p-5 rounded-xl border border-blue-100 hover:shadow-md transition-shadow"
@@ -321,7 +346,7 @@ Claude: ฉันจะสร้างเว็บไซต์ portfolio ให�
           </motion.div>
         )}
 
-        {activeSection === "commands" && (
+        {activeSection === "tools" && (
           <motion.div
             initial="hidden"
             animate="visible"
@@ -330,10 +355,38 @@ Claude: ฉันจะสร้างเว็บไซต์ portfolio ให�
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
               <TbTerminal2 className="text-blue-500 mr-2" />
-              คำสั่ง Claude Code พื้นฐาน
+              เครื่องมือ Agentic CLI ยอดนิยม
             </h2>
             <div className="space-y-4">
-              {claudeCommands.map((cmd) => (
+              {cliTools.map((tool) => (
+                <motion.div
+                  key={tool.id}
+                  className="bg-blue-50 p-5 rounded-xl border border-blue-100"
+                  variants={fadeIn}
+                >
+                  <h3 className="font-bold text-gray-800 text-lg">
+                    {tool.title}
+                  </h3>
+                  <p className="text-gray-600 mt-1">{tool.description}</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {tool.features.split(", ").map((feature) => (
+                      <span
+                        key={feature}
+                        className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium"
+                      >
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <h3 className="text-xl font-bold text-gray-800 mt-8 mb-4">
+              คำสั่งพื้นฐาน (Claude Code)
+            </h3>
+            <div className="space-y-4">
+              {cliCommands.map((cmd) => (
                 <div
                   key={cmd.command}
                   className="bg-blue-50 p-4 rounded-xl border border-blue-100"
@@ -348,23 +401,23 @@ Claude: ฉันจะสร้างเว็บไซต์ portfolio ให�
 
             <div className="mt-6 bg-blue-50 p-4 rounded-xl border border-blue-100">
               <h3 className="font-bold text-gray-800">
-                ตัวอย่าง: ใช้ Claude Code แก้บัก
+                ตัวอย่าง: ให้ AI Agent แก้บัก
               </h3>
               <div className="mt-3 bg-gray-900 p-4 rounded-lg text-sm overflow-x-auto">
                 <pre className="text-gray-200 font-mono">
                   <code>
                     {`$ claude
 
-> โค้ด Python ของฉันมี error "TypeError: list indices
-  must be integers" ที่ไฟล์ main.py บรรทัด 15
+> เว็บของฉันกดปุ่ม "ส่ง" แล้วไม่มีอะไรเกิดขึ้น
   ช่วยหาสาเหตุและแก้ไขให้หน่อย
 
-Claude: ดูจากโค้ดในไฟล์ main.py แล้ว ปัญหาคือ...
-- บรรทัด 15: data["name"] ใช้ string เป็น index
-  แต่ data เป็น list ไม่ใช่ dict
-- แก้ไขโดยเปลี่ยนเป็น data[0]["name"]
+Claude: ฉันอ่านไฟล์ script.js แล้ว ปัญหาคือ...
+- บรรทัด 12: ใช้ id "submit-btn" แต่ใน index.html
+  ปุ่มมี id เป็น "submitBtn"
+- แก้ไขโดยเปลี่ยน id ให้ตรงกัน
 
-✓ แก้ไข main.py เรียบร้อยแล้ว`}
+✓ แก้ไข script.js เรียบร้อยแล้ว
+✓ ทดสอบซ้ำ - ปุ่มทำงานถูกต้อง`}
                   </code>
                 </pre>
               </div>
@@ -386,16 +439,16 @@ Claude: ดูจากโค้ดในไฟล์ main.py แล้ว ป�
             <div className="space-y-6">
               <div className="bg-blue-50 p-5 rounded-xl border border-blue-100">
                 <h3 className="font-bold text-gray-800 text-lg">
-                  Workshop: เริ่มต้นกับ Claude Code
+                  Workshop: เริ่มต้นกับ Agentic CLI
                 </h3>
                 <ul className="mt-3 space-y-2">
                   <li className="flex items-start">
                     <span className="text-blue-500 mr-2">•</span>
-                    <span>ตั้งค่า Claude Code บนเครื่อง</span>
+                    <span>ติดตั้งและตั้งค่า Claude Code บนเครื่อง</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-blue-500 mr-2">•</span>
-                    <span>ใช้ Claude Code สร้างหน้าเว็บแรก</span>
+                    <span>ใช้ AI Agent สร้างหน้าเว็บแรก</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-blue-500 mr-2">•</span>
@@ -409,18 +462,19 @@ Claude: ดูจากโค้ดในไฟล์ main.py แล้ว ป�
                   Challenge: Speed Building
                 </h3>
                 <p className="mt-2 text-gray-600">
-                  แข่งขันสร้างโปรเจคภายในเวลาจำกัด โดยใช้ Claude Code
+                  แข่งขันสร้างโปรเจคภายในเวลาจำกัด โดยใช้ Agentic CLI
                   ช่วยเขียนโค้ด ทีมไหนสร้างแอปที่ใช้งานได้จริงเร็วที่สุดและดีที่สุดจะชนะ
                 </p>
               </div>
 
               <div className="bg-blue-50 p-5 rounded-xl border border-blue-100">
                 <h3 className="font-bold text-gray-800 text-lg">
-                  Project: สร้างโปรเจคจริงด้วย AI
+                  Project: จากไอเดีย Design Thinking สู่โปรเจคจริง
                 </h3>
                 <p className="mt-2 text-gray-600">
-                  สร้างโปรเจคจริงด้วย Claude Code ตั้งแต่ต้นจนจบ
-                  เช่น เว็บไซต์ Portfolio, Todo App, AI Chatbot หรือ Data Dashboard
+                  นำไอเดียที่ได้จากกระบวนการ Design Thinking
+                  มาสร้างเป็นโปรเจคจริงด้วย AI Agent ตั้งแต่ต้นจนจบ
+                  เช่น เว็บไซต์, Todo App, AI Chatbot หรือ Data Dashboard
                   พร้อม Deploy ขึ้น GitHub และนำเสนอผลงาน
                 </p>
               </div>
@@ -448,22 +502,11 @@ Claude: ดูจากโค้ดในไฟล์ main.py แล้ว ป�
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link
-              href="/events/2026/next-gen-ai-academy/topics/ai-fundamentals"
+              href="/events/2026/next-gen-ai-academy/topics/ai-foundations"
               className="flex items-center p-4 bg-yellow-50 rounded-xl border border-yellow-200 hover:shadow-md transition-shadow"
             >
               <FaRobot className="text-yellow-500 text-2xl mr-3" />
-              <span className="font-medium text-gray-800">
-                AI Fundamentals
-              </span>
-            </Link>
-            <Link
-              href="/events/2026/next-gen-ai-academy/topics/python"
-              className="flex items-center p-4 bg-blue-50 rounded-xl border border-blue-200 hover:shadow-md transition-shadow"
-            >
-              <SiPython className="text-blue-500 text-2xl mr-3" />
-              <span className="font-medium text-gray-800">
-                Python เบื้องต้น
-              </span>
+              <span className="font-medium text-gray-800">AI Foundations</span>
             </Link>
             <Link
               href="/events/2026/next-gen-ai-academy/topics/prompt-engineering"
@@ -473,6 +516,13 @@ Claude: ดูจากโค้ดในไฟล์ main.py แล้ว ป�
               <span className="font-medium text-gray-800">
                 Prompt Engineering
               </span>
+            </Link>
+            <Link
+              href="/events/2026/next-gen-ai-academy/topics/design-thinking"
+              className="flex items-center p-4 bg-blue-50 rounded-xl border border-blue-200 hover:shadow-md transition-shadow"
+            >
+              <LuBrain className="text-blue-500 text-2xl mr-3" />
+              <span className="font-medium text-gray-800">Design Thinking</span>
             </Link>
           </div>
         </div>

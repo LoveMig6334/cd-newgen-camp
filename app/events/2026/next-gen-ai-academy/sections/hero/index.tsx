@@ -132,7 +132,7 @@ export const AIHero: React.FC = () => {
               animate={{ y: 0 }}
               transition={{ delay: 0.7, duration: 1.5 }}
             >
-              NEXT GEN
+              CD AI
             </motion.span>
           </motion.h1>
 
@@ -148,7 +148,7 @@ export const AIHero: React.FC = () => {
               animate={{ y: 0 }}
               transition={{ delay: 0.9, duration: 1.6 }}
             >
-              AI AGENTIC
+              INNOVATION
             </motion.span>
           </motion.h1>
 
@@ -164,7 +164,7 @@ export const AIHero: React.FC = () => {
               animate={{ y: 0 }}
               transition={{ delay: 1.2, duration: 1.6 }}
             >
-              ACADEMY
+              BOOTCAMP 2026
             </motion.span>
           </motion.h1>
 
@@ -174,7 +174,9 @@ export const AIHero: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.1, duration: 0.8 }}
-          ></motion.p>
+          >
+            ค่าย AI สำหรับนักเรียนชั้น ม.3 – ม.6 รับเพียง 20 คนเท่านั้น
+          </motion.p>
         </motion.div>
 
         {/* Floating Tech Icons */}

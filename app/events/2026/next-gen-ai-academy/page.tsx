@@ -41,16 +41,16 @@ const Login = dynamic(
 );
 
 export const metadata: Metadata = {
-  title: "Next Gen AI Academy 2026",
+  title: "CD AI Innovation Bootcamp 2026",
   description:
-    "ค่ายปัญญาประดิษฐ์สำหรับนักเรียนมัธยม — Next Gen AI Academy 2026",
+    "ค่าย AI สำหรับนักเรียน ม.3 – ม.6 รับเพียง 20 คน — CD AI Innovation Bootcamp 2026",
 };
 
-export default function NextGenAIAcademyPage() {
+export default function CDAIInnovationBootcampPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar
-        eventName="Next Gen AI Academy"
+        eventName="CD AI Innovation Bootcamp 2026"
         eventYear={2026}
         eventSlug="next-gen-ai-academy"
       />

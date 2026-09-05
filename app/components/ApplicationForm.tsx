@@ -2,18 +2,29 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
+import { ALL_GRADES, gradeLabel } from "@/lib/eventRules";
 
 interface ApplicationFormProps {
   campName: string;
   eventId: string;
   apiEndpoint?: string;
+  /** Capacity shown in the form header. */
+  maxApplicants?: number;
+  /** Grades (ม.1–ม.6) that may apply; defaults to all. */
+  allowedGrades?: number[];
 }
 
 export default function ApplicationForm({
   campName,
   eventId,
   apiEndpoint = "/api/application",
+  maxApplicants = 20,
+  allowedGrades = [...ALL_GRADES],
 }: ApplicationFormProps) {
+  const gradeRange =
+    allowedGrades.length > 1
+      ? `ม.${Math.min(...allowedGrades)} – ม.${Math.max(...allowedGrades)}`
+      : `ม.${allowedGrades[0]}`;
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -66,7 +77,11 @@ export default function ApplicationForm({
       setIsSubmitted(true);
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("เกิดข้อผิดพลาดในการส่งใบสมัคร โปรดลองอีกครั้ง");
+      alert(
+        error instanceof Error && error.message
+          ? error.message
+          : "เกิดข้อผิดพลาดในการส่งใบสมัคร โปรดลองอีกครั้ง",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -143,8 +158,11 @@ export default function ApplicationForm({
             </span>
           </h1>
           <p className="text-lg text-gray-600">
-            กรอกข้อมูลเพื่อสมัครเข้าร่วมค่ายการพัฒนาเว็บไซต์ (รับจำกัด 20
-            คนเท่านั้น)
+            กรอกข้อมูลเพื่อสมัครเข้าร่วมค่าย {campName} (รับจำกัด{" "}
+            {maxApplicants} คนเท่านั้น)
+          </p>
+          <p className="mt-2 text-base text-blue-700 font-medium">
+            เฉพาะนักเรียนชั้น {gradeRange} เท่านั้น
           </p>
         </motion.div>
 
@@ -270,12 +288,11 @@ export default function ApplicationForm({
                   <option value="" disabled>
                     เลือกระดับชั้น
                   </option>
-                  <option value="มัธยมศึกษาปีที่ 1">มัธยมศึกษาปีที่ 1</option>
-                  <option value="มัธยมศึกษาปีที่ 2">มัธยมศึกษาปีที่ 2</option>
-                  <option value="มัธยมศึกษาปีที่ 3">มัธยมศึกษาปีที่ 3</option>
-                  <option value="มัธยมศึกษาปีที่ 4">มัธยมศึกษาปีที่ 4</option>
-                  <option value="มัธยมศึกษาปีที่ 5">มัธยมศึกษาปีที่ 5</option>
-                  <option value="มัธยมศึกษาปีที่ 6">มัธยมศึกษาปีที่ 6</option>
+                  {allowedGrades.map((grade) => (
+                    <option key={grade} value={gradeLabel(grade)}>
+                      {gradeLabel(grade)}
+                    </option>
+                  ))}
                 </select>
               </motion.div>
             </div>

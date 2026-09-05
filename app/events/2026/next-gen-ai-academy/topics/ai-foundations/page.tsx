@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { FaArrowLeft, FaRegLightbulb, FaRobot } from "react-icons/fa";
 import { FaPuzzlePiece } from "react-icons/fa6";
-import { SiPython } from "react-icons/si";
+import { LuBrain } from "react-icons/lu";
 import {
   TbBrain,
   TbChartDots3,
@@ -117,7 +117,7 @@ export default function AIFundamentals() {
           </Link>
           <h1 className="text-xl sm:text-2xl font-bold text-center text-gray-800 flex items-center">
             <FaRobot className="text-yellow-500 mr-2 text-2xl sm:text-3xl" />
-            AI Fundamentals
+            AI Foundations
           </h1>
           <div className="w-24"></div>
         </div>
@@ -421,29 +421,25 @@ export default function AIFundamentals() {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link
-              href="/events/2026/next-gen-ai-academy/topics/python"
-              className="flex items-center p-4 bg-blue-50 rounded-xl border border-blue-200 hover:shadow-md transition-shadow"
-            >
-              <SiPython className="text-blue-500 text-2xl mr-3" />
-              <span className="font-medium text-gray-800">
-                Python เบื้องต้น
-              </span>
-            </Link>
-            <Link
               href="/events/2026/next-gen-ai-academy/topics/prompt-engineering"
               className="flex items-center p-4 bg-yellow-50 rounded-xl border border-yellow-200 hover:shadow-md transition-shadow"
             >
               <TbSparkles className="text-yellow-500 text-2xl mr-3" />
-              <span className="font-medium text-gray-800">
-                Prompt Engineering
-              </span>
+              <span className="font-medium text-gray-800">Prompt Engineering</span>
             </Link>
             <Link
-              href="/events/2026/next-gen-ai-academy/topics/claude-code"
+              href="/events/2026/next-gen-ai-academy/topics/design-thinking"
+              className="flex items-center p-4 bg-blue-50 rounded-xl border border-blue-200 hover:shadow-md transition-shadow"
+            >
+              <LuBrain className="text-blue-500 text-2xl mr-3" />
+              <span className="font-medium text-gray-800">Design Thinking</span>
+            </Link>
+            <Link
+              href="/events/2026/next-gen-ai-academy/topics/agentic-cli"
               className="flex items-center p-4 bg-blue-50 rounded-xl border border-blue-200 hover:shadow-md transition-shadow"
             >
               <TbTerminal2 className="text-blue-500 text-2xl mr-3" />
-              <span className="font-medium text-gray-800">Claude Code</span>
+              <span className="font-medium text-gray-800">Agentic CLI</span>
             </Link>
           </div>
         </div>

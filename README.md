@@ -115,7 +115,21 @@ CREATE POLICY "Authenticated users can manage events" ON events
 
 CREATE POLICY "Authenticated users can read applications" ON applications
   FOR SELECT USING (auth.role() = 'authenticated');
+
+-- Public capacity check used by /api/application (anon cannot read applications)
+CREATE OR REPLACE FUNCTION count_applications(p_event_id uuid)
+RETURNS integer
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT count(*)::integer FROM applications WHERE event_id = p_event_id;
+$$;
+GRANT EXECUTE ON FUNCTION count_applications(uuid) TO anon, authenticated;
 ```
+
+Per-event application rules that are not in the database (e.g. allowed grades)
+live in `lib/eventRules.ts`.
 
 2. Create an admin user: Supabase Dashboard → Authentication → Users → Add user
 

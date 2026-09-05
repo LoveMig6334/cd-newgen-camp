@@ -166,7 +166,9 @@ export const AILogin = () => {
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.75, ease: "easeOut" }}
-          ></motion.p>
+          >
+            เฉพาะนักเรียนชั้นมัธยมศึกษาปีที่ 3 – 6 เท่านั้น
+          </motion.p>
 
           <div className="mt-3 flex justify-center">
             <motion.div

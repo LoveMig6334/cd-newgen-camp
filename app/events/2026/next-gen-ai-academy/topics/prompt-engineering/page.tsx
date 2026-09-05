@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { FaArrowLeft, FaRegLightbulb, FaRobot } from "react-icons/fa";
 import { FaPuzzlePiece } from "react-icons/fa6";
-import { SiOpenai, SiPython } from "react-icons/si";
+import { SiOpenai } from "react-icons/si";
+import { LuBrain } from "react-icons/lu";
 import {
   TbListCheck,
   TbMessageChatbot,
@@ -259,7 +260,7 @@ export default function PromptEngineering() {
                     <li className="flex items-start">
                       <span className="text-yellow-500 mr-2">•</span>
                       <span>
-                        <strong>Claude Code</strong> — AI ช่วยเขียนโค้ด
+                        <strong>Agentic CLI</strong> (เช่น Claude Code) — AI Agent ช่วยเขียนโค้ด
                       </span>
                     </li>
                   </ul>
@@ -436,29 +437,25 @@ export default function PromptEngineering() {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link
-              href="/events/2026/next-gen-ai-academy/topics/ai-fundamentals"
+              href="/events/2026/next-gen-ai-academy/topics/ai-foundations"
               className="flex items-center p-4 bg-yellow-50 rounded-xl border border-yellow-200 hover:shadow-md transition-shadow"
             >
               <FaRobot className="text-yellow-500 text-2xl mr-3" />
-              <span className="font-medium text-gray-800">
-                AI Fundamentals
-              </span>
+              <span className="font-medium text-gray-800">AI Foundations</span>
             </Link>
             <Link
-              href="/events/2026/next-gen-ai-academy/topics/python"
+              href="/events/2026/next-gen-ai-academy/topics/design-thinking"
               className="flex items-center p-4 bg-blue-50 rounded-xl border border-blue-200 hover:shadow-md transition-shadow"
             >
-              <SiPython className="text-blue-500 text-2xl mr-3" />
-              <span className="font-medium text-gray-800">
-                Python เบื้องต้น
-              </span>
+              <LuBrain className="text-blue-500 text-2xl mr-3" />
+              <span className="font-medium text-gray-800">Design Thinking</span>
             </Link>
             <Link
-              href="/events/2026/next-gen-ai-academy/topics/claude-code"
+              href="/events/2026/next-gen-ai-academy/topics/agentic-cli"
               className="flex items-center p-4 bg-blue-50 rounded-xl border border-blue-200 hover:shadow-md transition-shadow"
             >
               <TbTerminal2 className="text-blue-500 text-2xl mr-3" />
-              <span className="font-medium text-gray-800">Claude Code</span>
+              <span className="font-medium text-gray-800">Agentic CLI</span>
             </Link>
           </div>
         </div>

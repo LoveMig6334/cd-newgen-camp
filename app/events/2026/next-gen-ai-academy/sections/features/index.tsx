@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import React from "react";
 import { FaRobot } from "react-icons/fa";
-import { SiPython } from "react-icons/si";
+import { LuBrain } from "react-icons/lu";
 import { TbSparkles, TbTerminal2 } from "react-icons/tb";
 import { RippleEffect } from "@/app/components/UI/RippleEffect";
 
@@ -137,41 +137,43 @@ export const AIFeatures = () => {
   const features: FeatureItem[] = [
     {
       id: 1,
-      title: "AI Fundamentals",
+      title: "AI Foundations",
       description:
         "เรียนรู้พื้นฐาน AI, Machine Learning และการทำงานของปัญญาประดิษฐ์",
       icon: <FaRobot className="text-yellow-500 text-5xl mb-2" />,
       color: "bg-yellow-50 border-yellow-200",
       brightColor: "from-yellow-300 to-yellow-100",
-      link: "/events/2026/next-gen-ai-academy/topics/ai-fundamentals",
+      link: "/events/2026/next-gen-ai-academy/topics/ai-foundations",
     },
     {
       id: 2,
-      title: "Python เบื้องต้น",
-      description: "สอนการเขียน Python เบื้องต้นสำหรับ AI และ Data Science",
-      icon: <SiPython className="text-blue-500 text-5xl mb-2" />,
-      color: "bg-blue-50 border-blue-200",
-      brightColor: "from-blue-300 to-blue-100",
-      link: "/events/2026/next-gen-ai-academy/topics/python",
-    },
-    {
-      id: 3,
       title: "Prompt Engineering",
       description:
-        "เทคนิคการใช้ ChatGPT และ AI Tools อย่างมีประสิทธิภาพ",
-      icon: <TbSparkles className="text-yellow-500 text-5xl mb-2" />,
-      color: "bg-yellow-50 border-yellow-200",
-      brightColor: "from-yellow-300 to-yellow-100",
+        "เทคนิคการสื่อสารกับ AI ให้ได้ผลลัพธ์ที่ต้องการอย่างมีประสิทธิภาพ",
+      icon: <TbSparkles className="text-blue-500 text-5xl mb-2" />,
+      color: "bg-blue-50 border-blue-200",
+      brightColor: "from-blue-300 to-blue-100",
       link: "/events/2026/next-gen-ai-academy/topics/prompt-engineering",
     },
     {
+      id: 3,
+      title: "Design Thinking",
+      description:
+        "กระบวนการคิดเชิงออกแบบ เพื่อสร้างนวัตกรรมที่แก้ปัญหาได้จริง",
+      icon: <LuBrain className="text-yellow-500 text-5xl mb-2" />,
+      color: "bg-yellow-50 border-yellow-200",
+      brightColor: "from-yellow-300 to-yellow-100",
+      link: "/events/2026/next-gen-ai-academy/topics/design-thinking",
+    },
+    {
       id: 4,
-      title: "Claude Code",
-      description: "เรียนรู้การใช้ AI ช่วยเขียนโค้ดและสร้างโปรเจคจริง",
+      title: "Agentic CLI",
+      description:
+        "ใช้ AI Agent อย่าง Claude Code ช่วยเขียนโค้ดและสร้างโปรเจคจริง",
       icon: <TbTerminal2 className="text-blue-500 text-5xl mb-2" />,
       color: "bg-blue-50 border-blue-200",
       brightColor: "from-blue-300 to-blue-100",
-      link: "/events/2026/next-gen-ai-academy/topics/claude-code",
+      link: "/events/2026/next-gen-ai-academy/topics/agentic-cli",
     },
   ];
 

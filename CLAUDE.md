@@ -37,6 +37,7 @@ This is a **Next.js 15 App Router** project (TypeScript + Tailwind CSS 4) for "C
 - `lib/supabase/client.ts` — Browser Supabase client (`createBrowserClient`)
 - `lib/supabase/server.ts` — Server Supabase client (`createServerClient` with cookies)
 - `lib/types.ts` — Shared TypeScript types: `Event`, `Application`, `ApplicationFormData`
+- `lib/eventRules.ts` — Per-event application rules not stored in DB (allowed grades per `year/slug`); used by the form and `/api/application`
 - `proxy.ts` — Auth middleware: protects `/admin/*`, redirects unauthenticated to `/admin/login`
 - `public/Fonts/` — Custom Thai fonts (Sukhumvit Set)
 
@@ -66,4 +67,4 @@ This is a **Next.js 15 App Router** project (TypeScript + Tailwind CSS 4) for "C
 
 ### API routes
 
-API routes live at `app/api/<name>/route.ts`. Always use `lib/supabase/server.ts` server-side — never import it in client components. Admin API routes check `supabase.auth.getUser()` and return 401 if unauthenticated.
+API routes live at `app/api/<name>/route.ts`. Always use `lib/supabase/server.ts` server-side — never import it in client components. Admin API routes check `supabase.auth.getUser()` and return 401 if unauthenticated. `/api/application` enforces `is_active`, allowed grades (`lib/eventRules.ts`) and `max_applicants` via the `count_applications` SQL function (see README).

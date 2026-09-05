@@ -1,10 +1,10 @@
 import { notFound, redirect } from "next/navigation";
 
 const VALID_TOPICS = [
-  "ai-fundamentals",
-  "python",
+  "ai-foundations",
   "prompt-engineering",
-  "claude-code",
+  "design-thinking",
+  "agentic-cli",
 ] as const;
 
 type Topic = (typeof VALID_TOPICS)[number];
