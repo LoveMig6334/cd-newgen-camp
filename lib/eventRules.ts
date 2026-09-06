@@ -28,6 +28,15 @@ export const classroomOptions = (grade: number): string[] =>
     (_, i) => `${grade}/${i + 1}`,
   );
 
+/** Display label for a classroom, e.g. "3/1" → "ม.3/1". */
+export const classroomLabel = (classroom: string) => `ม.${classroom}`;
+
+/** Grade number a classroom belongs to, e.g. "3/1" → 3. */
+export const gradeFromClassroom = (classroom: string): number | null => {
+  const m = /^([1-6])\/[1-9]$/.exec(classroom);
+  return m ? Number(m[1]) : null;
+};
+
 /** Highest seat number (เลขที่) accepted in a classroom. */
 export const MAX_CLASS_NUMBER = 60;
 

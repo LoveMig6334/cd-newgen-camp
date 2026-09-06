@@ -1,8 +1,7 @@
 import {
   MAX_CLASS_NUMBER,
-  classroomOptions,
   getEventRules,
-  gradeFromLabel,
+  gradeFromClassroom,
   gradeLabel,
 } from "@/lib/eventRules";
 import { createClient } from "@/lib/supabase/server";
@@ -12,8 +11,10 @@ interface ApplicationBody {
   event_id: string;
   first_name: string;
   last_name: string;
+  nickname: string;
   student_id: string;
-  grade: string;
+  /** Derived server-side from `classroom`; any client value is ignored. */
+  grade?: string;
   classroom: string;
   class_number: number;
   reason?: string | null;
@@ -29,8 +30,8 @@ export async function POST(req: Request) {
       "event_id",
       "first_name",
       "last_name",
+      "nickname",
       "student_id",
-      "grade",
       "classroom",
       "class_number",
       "expectations",
@@ -68,28 +69,22 @@ export async function POST(req: Request) {
       );
     }
 
-    // Grade must be within the event's allowed range
+    // Classroom must be valid and its grade within the event's allowed range
     const rules = getEventRules(event.year, event.slug);
-    const allowedLabels = rules.allowedGrades.map(gradeLabel);
-    if (!allowedLabels.includes(data.grade)) {
+    const gradeNumber = gradeFromClassroom(data.classroom);
+    if (gradeNumber === null) {
+      return NextResponse.json(
+        { error: "รูปแบบระดับชั้น/ห้องไม่ถูกต้อง" },
+        { status: 400 },
+      );
+    }
+    if (!rules.allowedGrades.includes(gradeNumber)) {
       const min = Math.min(...rules.allowedGrades);
       const max = Math.max(...rules.allowedGrades);
       return NextResponse.json(
         {
           error: `กิจกรรมนี้รับเฉพาะนักเรียนชั้น ม.${min} – ม.${max} เท่านั้น`,
         },
-        { status: 400 },
-      );
-    }
-
-    // Classroom must belong to the selected grade; seat number must be sane
-    const gradeNumber = gradeFromLabel(data.grade);
-    if (
-      gradeNumber === null ||
-      !classroomOptions(gradeNumber).includes(data.classroom)
-    ) {
-      return NextResponse.json(
-        { error: "ห้องไม่ตรงกับระดับชั้นที่เลือก" },
         { status: 400 },
       );
     }
@@ -131,8 +126,9 @@ export async function POST(req: Request) {
       event_id: data.event_id,
       first_name: data.first_name,
       last_name: data.last_name,
+      nickname: data.nickname,
       student_id: data.student_id,
-      grade: data.grade,
+      grade: gradeLabel(gradeNumber),
       classroom: data.classroom,
       class_number: data.class_number,
       reason: data.reason ?? null,

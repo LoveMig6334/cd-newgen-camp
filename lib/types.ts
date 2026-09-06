@@ -17,6 +17,7 @@ export interface Application {
   event_id: string;
   first_name: string;
   last_name: string;
+  nickname: string;
   student_id: string;
   grade: string;
   /** Classroom, e.g. "3/1". */

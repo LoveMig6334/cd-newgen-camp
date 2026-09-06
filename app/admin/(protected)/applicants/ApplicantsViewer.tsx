@@ -13,6 +13,7 @@ function exportCSV(applicants: Application[], eventName: string) {
   const headers = [
     "ชื่อ",
     "นามสกุล",
+    "ชื่อเล่น",
     "เลขประจำตัวนักเรียน",
     "ระดับชั้น",
     "ห้อง",
@@ -22,6 +23,7 @@ function exportCSV(applicants: Application[], eventName: string) {
   const rows = applicants.map((a) => [
     a.first_name,
     a.last_name,
+    a.nickname,
     a.student_id,
     a.grade,
     a.classroom,
@@ -75,6 +77,7 @@ export default function ApplicantsViewer({
     return (
       a.first_name.toLowerCase().includes(q) ||
       a.last_name.toLowerCase().includes(q) ||
+      (a.nickname ?? "").toLowerCase().includes(q) ||
       a.student_id.includes(q)
     );
   });
@@ -163,6 +166,9 @@ export default function ApplicantsViewer({
                     นามสกุล
                   </th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">
+                    ชื่อเล่น
+                  </th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">
                     เลขประจำตัว
                   </th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">
@@ -182,7 +188,7 @@ export default function ApplicantsViewer({
               <tbody className="divide-y divide-gray-100">
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="text-center py-8 text-gray-400">
+                    <td colSpan={9} className="text-center py-8 text-gray-400">
                       {applicants.length === 0
                         ? "ยังไม่มีผู้สมัคร"
                         : "ไม่พบผลลัพธ์"}
@@ -197,6 +203,9 @@ export default function ApplicantsViewer({
                       </td>
                       <td className="px-4 py-3 text-gray-900">
                         {applicant.last_name}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {applicant.nickname}
                       </td>
                       <td className="px-4 py-3 text-gray-600">
                         {applicant.student_id}

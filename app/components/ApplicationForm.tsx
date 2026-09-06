@@ -6,8 +6,9 @@ import { useState } from "react";
 import {
   ALL_GRADES,
   MAX_CLASS_NUMBER,
+  classroomLabel,
   classroomOptions,
-  gradeFromLabel,
+  gradeFromClassroom,
   gradeLabel,
 } from "@/lib/eventRules";
 
@@ -35,8 +36,8 @@ export default function ApplicationForm({
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
+    nickname: "",
     studentId: "",
-    grade: "",
     classroom: "",
     classNumber: "",
     reason: "",
@@ -64,10 +65,6 @@ export default function ApplicationForm({
       );
       return;
     }
-    if (name === "grade") {
-      setFormData((prev) => ({ ...prev, grade: value, classroom: "" }));
-      return;
-    }
     if (name === "classNumber") {
       const digits = value.replace(/\D/g, "").slice(0, 2);
       setFormData((prev) => ({ ...prev, classNumber: digits }));
@@ -76,8 +73,8 @@ export default function ApplicationForm({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const selectedGrade = gradeFromLabel(formData.grade);
-  const rooms = selectedGrade ? classroomOptions(selectedGrade) : [];
+  const selectedGrade = gradeFromClassroom(formData.classroom);
+  const classrooms = allowedGrades.flatMap(classroomOptions);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,8 +93,9 @@ export default function ApplicationForm({
           event_id: eventId,
           first_name: formData.firstName,
           last_name: formData.lastName,
+          nickname: formData.nickname,
           student_id: formData.studentId,
-          grade: formData.grade,
+          grade: selectedGrade ? gradeLabel(selectedGrade) : "",
           classroom: formData.classroom,
           class_number: Number(formData.classNumber),
           reason: formData.reason || null,
@@ -204,6 +202,26 @@ export default function ApplicationForm({
 
               <motion.div variants={itemVariants}>
                 <label
+                  htmlFor="nickname"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  ชื่อเล่น*
+                </label>
+                <input
+                  type="text"
+                  id="nickname"
+                  name="nickname"
+                  required
+                  maxLength={50}
+                  value={formData.nickname}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  placeholder="กรอกชื่อเล่นของคุณ"
+                />
+              </motion.div>
+
+              <motion.div variants={itemVariants}>
+                <label
                   htmlFor="studentId"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
@@ -250,64 +268,31 @@ export default function ApplicationForm({
 
               <motion.div variants={itemVariants}>
                 <label
-                  htmlFor="grade"
+                  htmlFor="classroom"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  ระดับชั้น/ชั้นปี*
+                  ระดับชั้น/ห้อง*
                 </label>
                 <select
-                  id="grade"
-                  name="grade"
+                  id="classroom"
+                  name="classroom"
                   required
-                  value={formData.grade}
+                  value={formData.classroom}
                   onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 >
                   <option value="" disabled>
-                    เลือกระดับชั้น
+                    เลือกระดับชั้น/ห้อง
                   </option>
-                  {allowedGrades.map((grade) => (
-                    <option key={grade} value={gradeLabel(grade)}>
-                      {gradeLabel(grade)}
+                  {classrooms.map((room) => (
+                    <option key={room} value={room}>
+                      {classroomLabel(room)}
                     </option>
                   ))}
                 </select>
               </motion.div>
 
               <AnimatePresence initial={false}>
-                {selectedGrade && (
-                  <motion.div
-                    key="classroom"
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.25 }}
-                  >
-                    <label
-                      htmlFor="classroom"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      ห้อง*
-                    </label>
-                    <select
-                      id="classroom"
-                      name="classroom"
-                      required
-                      value={formData.classroom}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    >
-                      <option value="" disabled>
-                        เลือกห้อง
-                      </option>
-                      {rooms.map((room) => (
-                        <option key={room} value={room}>
-                          {room}
-                        </option>
-                      ))}
-                    </select>
-                  </motion.div>
-                )}
                 {selectedGrade && (
                   <motion.div
                     key="classNumber"
