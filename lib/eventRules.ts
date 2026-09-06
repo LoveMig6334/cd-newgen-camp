@@ -5,6 +5,32 @@ export const ALL_GRADES = [1, 2, 3, 4, 5, 6] as const;
 
 export const gradeLabel = (grade: number) => `มัธยมศึกษาปีที่ ${grade}`;
 
+/** Parse the grade number back out of a `gradeLabel()` string. */
+export const gradeFromLabel = (label: string): number | null => {
+  const m = /(\d+)\s*$/.exec(label);
+  return m ? Number(m[1]) : null;
+};
+
+/** Number of classrooms (ห้อง) per grade. ม.5 has 2, every other grade has 3. */
+export const ROOMS_PER_GRADE: Record<number, number> = {
+  1: 3,
+  2: 3,
+  3: 3,
+  4: 3,
+  5: 2,
+  6: 3,
+};
+
+/** Classroom options for a grade, e.g. 3 → ["3/1", "3/2", "3/3"]. */
+export const classroomOptions = (grade: number): string[] =>
+  Array.from(
+    { length: ROOMS_PER_GRADE[grade] ?? 3 },
+    (_, i) => `${grade}/${i + 1}`,
+  );
+
+/** Highest seat number (เลขที่) accepted in a classroom. */
+export const MAX_CLASS_NUMBER = 60;
+
 export interface EventRules {
   /** Grades (ม.1–ม.6) allowed to apply. */
   allowedGrades: number[];

@@ -19,6 +19,10 @@ export interface Application {
   last_name: string;
   student_id: string;
   grade: string;
+  /** Classroom, e.g. "3/1". */
+  classroom: string;
+  /** Seat number (เลขที่) within the classroom. */
+  class_number: number;
   reason: string | null;
   expectations: string;
   how_did_you_hear: string | null;

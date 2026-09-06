@@ -1,4 +1,10 @@
-import { getEventRules, gradeLabel } from "@/lib/eventRules";
+import {
+  MAX_CLASS_NUMBER,
+  classroomOptions,
+  getEventRules,
+  gradeFromLabel,
+  gradeLabel,
+} from "@/lib/eventRules";
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
@@ -8,6 +14,8 @@ interface ApplicationBody {
   last_name: string;
   student_id: string;
   grade: string;
+  classroom: string;
+  class_number: number;
   reason?: string | null;
   expectations: string;
   how_did_you_hear?: string;
@@ -23,6 +31,8 @@ export async function POST(req: Request) {
       "last_name",
       "student_id",
       "grade",
+      "classroom",
+      "class_number",
       "expectations",
     ];
 
@@ -65,7 +75,31 @@ export async function POST(req: Request) {
       const min = Math.min(...rules.allowedGrades);
       const max = Math.max(...rules.allowedGrades);
       return NextResponse.json(
-        { error: `กิจกรรมนี้รับเฉพาะนักเรียนชั้น ม.${min} – ม.${max} เท่านั้น` },
+        {
+          error: `กิจกรรมนี้รับเฉพาะนักเรียนชั้น ม.${min} – ม.${max} เท่านั้น`,
+        },
+        { status: 400 },
+      );
+    }
+
+    // Classroom must belong to the selected grade; seat number must be sane
+    const gradeNumber = gradeFromLabel(data.grade);
+    if (
+      gradeNumber === null ||
+      !classroomOptions(gradeNumber).includes(data.classroom)
+    ) {
+      return NextResponse.json(
+        { error: "ห้องไม่ตรงกับระดับชั้นที่เลือก" },
+        { status: 400 },
+      );
+    }
+    if (
+      !Number.isInteger(data.class_number) ||
+      data.class_number < 1 ||
+      data.class_number > MAX_CLASS_NUMBER
+    ) {
+      return NextResponse.json(
+        { error: `เลขที่ต้องเป็นตัวเลข 1–${MAX_CLASS_NUMBER}` },
         { status: 400 },
       );
     }
@@ -99,6 +133,8 @@ export async function POST(req: Request) {
       last_name: data.last_name,
       student_id: data.student_id,
       grade: data.grade,
+      classroom: data.classroom,
+      class_number: data.class_number,
       reason: data.reason ?? null,
       expectations: data.expectations,
       how_did_you_hear: data.how_did_you_hear ?? null,

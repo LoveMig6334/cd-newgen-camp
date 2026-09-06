@@ -1,9 +1,15 @@
 "use client";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { ALL_GRADES, gradeLabel } from "@/lib/eventRules";
+import {
+  ALL_GRADES,
+  MAX_CLASS_NUMBER,
+  classroomOptions,
+  gradeFromLabel,
+  gradeLabel,
+} from "@/lib/eventRules";
 
 interface ApplicationFormProps {
   campName: string;
@@ -31,6 +37,8 @@ export default function ApplicationForm({
     lastName: "",
     studentId: "",
     grade: "",
+    classroom: "",
+    classNumber: "",
     reason: "",
     expectations: "",
     howDidYouHear: "",
@@ -56,8 +64,20 @@ export default function ApplicationForm({
       );
       return;
     }
+    if (name === "grade") {
+      setFormData((prev) => ({ ...prev, grade: value, classroom: "" }));
+      return;
+    }
+    if (name === "classNumber") {
+      const digits = value.replace(/\D/g, "").slice(0, 2);
+      setFormData((prev) => ({ ...prev, classNumber: digits }));
+      return;
+    }
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const selectedGrade = gradeFromLabel(formData.grade);
+  const rooms = selectedGrade ? classroomOptions(selectedGrade) : [];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,6 +98,8 @@ export default function ApplicationForm({
           last_name: formData.lastName,
           student_id: formData.studentId,
           grade: formData.grade,
+          classroom: formData.classroom,
+          class_number: Number(formData.classNumber),
           reason: formData.reason || null,
           expectations: formData.expectations,
           how_did_you_hear: formData.howDidYouHear,
@@ -251,6 +273,72 @@ export default function ApplicationForm({
                   ))}
                 </select>
               </motion.div>
+
+              <AnimatePresence initial={false}>
+                {selectedGrade && (
+                  <motion.div
+                    key="classroom"
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <label
+                      htmlFor="classroom"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      ห้อง*
+                    </label>
+                    <select
+                      id="classroom"
+                      name="classroom"
+                      required
+                      value={formData.classroom}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    >
+                      <option value="" disabled>
+                        เลือกห้อง
+                      </option>
+                      {rooms.map((room) => (
+                        <option key={room} value={room}>
+                          {room}
+                        </option>
+                      ))}
+                    </select>
+                  </motion.div>
+                )}
+                {selectedGrade && (
+                  <motion.div
+                    key="classNumber"
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.25, delay: 0.05 }}
+                  >
+                    <label
+                      htmlFor="classNumber"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      เลขที่*
+                    </label>
+                    <input
+                      type="text"
+                      id="classNumber"
+                      name="classNumber"
+                      required
+                      inputMode="numeric"
+                      autoComplete="off"
+                      pattern="[1-9][0-9]?"
+                      title={`เลขที่ต้องเป็นตัวเลข 1–${MAX_CLASS_NUMBER}`}
+                      value={formData.classNumber}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors tabular-nums"
+                      placeholder="เช่น 12"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             <motion.div variants={itemVariants} className="mt-6">

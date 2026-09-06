@@ -15,6 +15,8 @@ function exportCSV(applicants: Application[], eventName: string) {
     "นามสกุล",
     "เลขประจำตัวนักเรียน",
     "ระดับชั้น",
+    "ห้อง",
+    "เลขที่",
     "วันที่สมัคร",
   ];
   const rows = applicants.map((a) => [
@@ -22,6 +24,8 @@ function exportCSV(applicants: Application[], eventName: string) {
     a.last_name,
     a.student_id,
     a.grade,
+    a.classroom,
+    a.class_number,
     new Date(a.created_at).toLocaleDateString("th-TH"),
   ]);
 
@@ -165,6 +169,12 @@ export default function ApplicantsViewer({
                     ระดับชั้น
                   </th>
                   <th className="text-left px-4 py-3 font-medium text-gray-600">
+                    ห้อง
+                  </th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">
+                    เลขที่
+                  </th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">
                     วันที่สมัคร
                   </th>
                 </tr>
@@ -172,7 +182,7 @@ export default function ApplicantsViewer({
               <tbody className="divide-y divide-gray-100">
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="text-center py-8 text-gray-400">
+                    <td colSpan={8} className="text-center py-8 text-gray-400">
                       {applicants.length === 0
                         ? "ยังไม่มีผู้สมัคร"
                         : "ไม่พบผลลัพธ์"}
@@ -193,6 +203,12 @@ export default function ApplicantsViewer({
                       </td>
                       <td className="px-4 py-3 text-gray-600">
                         {applicant.grade}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {applicant.classroom}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600 tabular-nums">
+                        {applicant.class_number}
                       </td>
                       <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
                         {new Date(applicant.created_at).toLocaleDateString(
