@@ -7,8 +7,6 @@ interface ApplicationBody {
   first_name: string;
   last_name: string;
   student_id: string;
-  phone: string;
-  school: string;
   grade: string;
   reason?: string | null;
   expectations: string;
@@ -24,8 +22,6 @@ export async function POST(req: Request) {
       "first_name",
       "last_name",
       "student_id",
-      "phone",
-      "school",
       "grade",
       "expectations",
     ];
@@ -41,7 +37,7 @@ export async function POST(req: Request) {
 
     if (!/^\d{4}$/.test(data.student_id)) {
       return NextResponse.json(
-        { error: "Student ID must be exactly 4 digits" },
+        { error: "เลขประจำตัวนักเรียนต้องเป็นตัวเลข 4 หลัก" },
         { status: 400 },
       );
     }
@@ -102,8 +98,6 @@ export async function POST(req: Request) {
       first_name: data.first_name,
       last_name: data.last_name,
       student_id: data.student_id,
-      phone: data.phone,
-      school: data.school,
       grade: data.grade,
       reason: data.reason ?? null,
       expectations: data.expectations,

@@ -102,7 +102,7 @@ cdsc/
 events (id, name, year, slug, description, is_active, max_applicants, created_at, updated_at)
 
 -- Applications table
-applications (id, event_id, first_name, last_name, email, phone, school, grade, reason, expectations, how_did_you_hear, created_at)
+applications (id, event_id, first_name, last_name, student_id, grade, reason, expectations, how_did_you_hear, created_at)
 ```
 
 ## 🔐 Admin Setup

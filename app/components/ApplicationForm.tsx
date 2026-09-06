@@ -30,8 +30,6 @@ export default function ApplicationForm({
     firstName: "",
     lastName: "",
     studentId: "",
-    phone: "",
-    school: "จิตรลดา",
     grade: "",
     reason: "",
     expectations: "",
@@ -41,6 +39,8 @@ export default function ApplicationForm({
   const router = useRouter();
   const pathname = usePathname();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [studentIdError, setStudentIdError] = useState<string | null>(null);
+  const STUDENT_ID_ERROR = "เลขประจำตัวนักเรียนต้องเป็นตัวเลข 4 หลัก";
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -48,11 +48,24 @@ export default function ApplicationForm({
     >,
   ) => {
     const { name, value } = e.target;
+    if (name === "studentId") {
+      const digits = value.replace(/\D/g, "").slice(0, 4);
+      setFormData((prev) => ({ ...prev, studentId: digits }));
+      setStudentIdError(
+        digits.length === 0 || digits.length === 4 ? null : STUDENT_ID_ERROR,
+      );
+      return;
+    }
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!/^\d{4}$/.test(formData.studentId)) {
+      setStudentIdError(STUDENT_ID_ERROR);
+      document.getElementById("studentId")?.focus();
+      return;
+    }
     setIsSubmitting(true);
 
     try {
@@ -64,8 +77,6 @@ export default function ApplicationForm({
           first_name: formData.firstName,
           last_name: formData.lastName,
           student_id: formData.studentId,
-          phone: formData.phone,
-          school: formData.school,
           grade: formData.grade,
           reason: formData.reason || null,
           expectations: formData.expectations,
@@ -181,50 +192,38 @@ export default function ApplicationForm({
                   id="studentId"
                   name="studentId"
                   required
+                  inputMode="numeric"
+                  autoComplete="off"
+                  spellCheck={false}
                   maxLength={4}
                   pattern="[0-9]{4}"
+                  title={STUDENT_ID_ERROR}
+                  aria-invalid={studentIdError ? true : undefined}
+                  aria-describedby="studentId-hint"
                   value={formData.studentId}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  onBlur={() =>
+                    setStudentIdError(
+                      formData.studentId.length === 0 ||
+                        /^\d{4}$/.test(formData.studentId)
+                        ? null
+                        : STUDENT_ID_ERROR,
+                    )
+                  }
+                  className={`w-full px-4 py-3 rounded-lg border focus:ring-2 transition-colors tabular-nums ${
+                    studentIdError
+                      ? "border-red-400 focus:ring-red-500 focus:border-red-500"
+                      : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  }`}
                   placeholder="เช่น 1234"
                 />
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <label
-                  htmlFor="phone"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                <p
+                  id="studentId-hint"
+                  aria-live="polite"
+                  className={`mt-1 text-sm ${studentIdError ? "text-red-600" : "text-gray-500"}`}
                 >
-                  เบอร์โทรศัพท์*
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  required
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  placeholder="0812345678"
-                />
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <label
-                  htmlFor="school"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  โรงเรียน*
-                </label>
-                <input
-                  type="text"
-                  id="school"
-                  name="school"
-                  required
-                  readOnly
-                  value={formData.school}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-500 cursor-not-allowed"
-                />
+                  {studentIdError ?? "ตัวเลข 4 หลัก"}
+                </p>
               </motion.div>
 
               <motion.div variants={itemVariants}>
@@ -260,7 +259,9 @@ export default function ApplicationForm({
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
                 เหตุผลที่อยากเข้าร่วมค่าย
-                <span className="ml-1 text-gray-400 font-normal">(ไม่บังคับ)</span>
+                <span className="ml-1 text-gray-400 font-normal">
+                  (ไม่บังคับ)
+                </span>
               </label>
               <textarea
                 id="reason"
@@ -288,12 +289,24 @@ export default function ApplicationForm({
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               >
-                <option value="" disabled>โปรดเลือก</option>
-                <option value="เรียนรู้ทักษะใหม่ด้านเทคโนโลยี">เรียนรู้ทักษะใหม่ด้านเทคโนโลยี</option>
-                <option value="ได้ประสบการณ์การทำงานจริง">ได้ประสบการณ์การทำงานจริง</option>
-                <option value="สร้างเครือข่ายและเพื่อนใหม่">สร้างเครือข่ายและเพื่อนใหม่</option>
-                <option value="พัฒนาพอร์ตโฟลิโอและผลงาน">พัฒนาพอร์ตโฟลิโอและผลงาน</option>
-                <option value="ทดสอบความสนใจในสายงาน IT">ทดสอบความสนใจในสายงาน IT</option>
+                <option value="" disabled>
+                  โปรดเลือก
+                </option>
+                <option value="เรียนรู้ทักษะใหม่ด้านเทคโนโลยี">
+                  เรียนรู้ทักษะใหม่ด้านเทคโนโลยี
+                </option>
+                <option value="ได้ประสบการณ์การทำงานจริง">
+                  ได้ประสบการณ์การทำงานจริง
+                </option>
+                <option value="สร้างเครือข่ายและเพื่อนใหม่">
+                  สร้างเครือข่ายและเพื่อนใหม่
+                </option>
+                <option value="พัฒนาพอร์ตโฟลิโอและผลงาน">
+                  พัฒนาพอร์ตโฟลิโอและผลงาน
+                </option>
+                <option value="ทดสอบความสนใจในสายงาน IT">
+                  ทดสอบความสนใจในสายงาน IT
+                </option>
                 <option value="อื่นๆ">อื่นๆ</option>
               </select>
             </motion.div>

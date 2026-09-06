@@ -18,8 +18,6 @@ export interface Application {
   first_name: string;
   last_name: string;
   student_id: string;
-  phone: string;
-  school: string;
   grade: string;
   reason: string | null;
   expectations: string;
