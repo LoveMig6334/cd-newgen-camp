@@ -283,7 +283,7 @@ export default function ApplicationForm({
                   required
                   value={formData.classroom}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="select-arrow w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 >
                   <option value="" disabled>
                     เลือกระดับชั้น/ห้อง
@@ -354,7 +354,7 @@ export default function ApplicationForm({
                 required
                 value={formData.expectations}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                className="select-arrow w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               >
                 <option value="" disabled>
                   โปรดเลือก
@@ -390,7 +390,7 @@ export default function ApplicationForm({
                 name="howDidYouHear"
                 value={formData.howDidYouHear}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                className="select-arrow w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               >
                 <option value="" disabled>
                   โปรดเลือก

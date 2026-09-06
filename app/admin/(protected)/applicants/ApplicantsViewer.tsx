@@ -95,7 +95,7 @@ export default function ApplicantsViewer({
           <select
             value={selectedEventId}
             onChange={(e) => handleEventChange(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 min-w-55"
+            className="select-arrow border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 min-w-55"
           >
             <option value="">-- เลือกกิจกรรม --</option>
             {events.map((event) => (
