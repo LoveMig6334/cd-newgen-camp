@@ -127,7 +127,7 @@ export const AIHero: React.FC = () => {
             transition={{ duration: 1 }}
           >
             <motion.span
-              className="block bg-linear-to-r text-6xl from-blue-600 via-indigo-500 to-blue-800 bg-clip-text text-transparent"
+              className="block bg-linear-to-r text-3xl sm:text-4xl md:text-5xl lg:text-6xl from-blue-600 via-indigo-500 to-blue-800 bg-clip-text text-transparent"
               initial={{ y: 20 }}
               animate={{ y: 0 }}
               transition={{ delay: 0.7, duration: 1.5 }}
@@ -143,7 +143,7 @@ export const AIHero: React.FC = () => {
             transition={{ delay: 1, duration: 1 }}
           >
             <motion.span
-              className="block text-9xl bg-linear-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent"
+              className="block text-4xl sm:text-6xl md:text-7xl lg:text-9xl bg-linear-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent"
               initial={{ y: 20 }}
               animate={{ y: 0 }}
               transition={{ delay: 0.9, duration: 1.6 }}
@@ -159,7 +159,7 @@ export const AIHero: React.FC = () => {
             transition={{ delay: 2, duration: 1 }}
           >
             <motion.span
-              className="block text-6xl bg-linear-to-r from-gray-400 to-gray-600 bg-clip-text text-transparent"
+              className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl bg-linear-to-r from-gray-400 to-gray-600 bg-clip-text text-transparent"
               initial={{ y: 0 }}
               animate={{ y: 0 }}
               transition={{ delay: 1.2, duration: 1.6 }}
