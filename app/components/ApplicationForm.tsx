@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { ALL_GRADES, gradeLabel } from "@/lib/eventRules";
 
@@ -37,8 +38,9 @@ export default function ApplicationForm({
     howDidYouHear: "",
   });
 
+  const router = useRouter();
+  const pathname = usePathname();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -74,7 +76,8 @@ export default function ApplicationForm({
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Something went wrong");
 
-      setIsSubmitted(true);
+      // Hand off to the Discord invite page; keep the spinner until it loads.
+      router.push(`${pathname.replace(/\/$/, "")}/success`);
     } catch (error) {
       console.error("Error submitting form:", error);
       alert(
@@ -82,7 +85,6 @@ export default function ApplicationForm({
           ? error.message
           : "เกิดข้อผิดพลาดในการส่งใบสมัคร โปรดลองอีกครั้ง",
       );
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -96,51 +98,6 @@ export default function ApplicationForm({
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
-
-  if (isSubmitted) {
-    return (
-      <div className="min-h-screen bg-linear-to-b from-blue-50 to-white py-16 flex items-center">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8 text-center"
-          >
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-10 w-10 text-green-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              ส่งใบสมัครสำเร็จ!
-            </h2>
-            <p className="text-gray-600 mb-8">
-              ขอบคุณสำหรับการสมัครเข้าร่วม {campName}{" "}
-              ทีมงานของเราจะติดต่อกลับไปหาคุณเร็วๆ นี้
-            </p>
-            <Link
-              href="/"
-              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
-            >
-              กลับสู่หน้าแรก
-            </Link>
-          </motion.div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-linear-to-b from-blue-50 to-white py-16">
