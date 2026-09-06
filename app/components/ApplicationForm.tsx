@@ -1,5 +1,5 @@
 "use client";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -239,7 +239,9 @@ export default function ApplicationForm({
                   pattern="[0-9]{4}"
                   title={STUDENT_ID_ERROR}
                   aria-invalid={studentIdError ? true : undefined}
-                  aria-describedby="studentId-hint"
+                  aria-describedby={
+                    studentIdError ? "studentId-error" : undefined
+                  }
                   value={formData.studentId}
                   onChange={handleChange}
                   onBlur={() =>
@@ -257,13 +259,15 @@ export default function ApplicationForm({
                   }`}
                   placeholder="เช่น 1234"
                 />
-                <p
-                  id="studentId-hint"
-                  aria-live="polite"
-                  className={`mt-1 text-sm ${studentIdError ? "text-red-600" : "text-gray-500"}`}
-                >
-                  {studentIdError ?? "ตัวเลข 4 หลัก"}
-                </p>
+                {studentIdError && (
+                  <p
+                    id="studentId-error"
+                    aria-live="polite"
+                    className="mt-1 text-sm text-red-600"
+                  >
+                    {studentIdError}
+                  </p>
+                )}
               </motion.div>
 
               <motion.div variants={itemVariants}>
@@ -292,38 +296,28 @@ export default function ApplicationForm({
                 </select>
               </motion.div>
 
-              <AnimatePresence initial={false}>
-                {selectedGrade && (
-                  <motion.div
-                    key="classNumber"
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.25, delay: 0.05 }}
-                  >
-                    <label
-                      htmlFor="classNumber"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      เลขที่*
-                    </label>
-                    <input
-                      type="text"
-                      id="classNumber"
-                      name="classNumber"
-                      required
-                      inputMode="numeric"
-                      autoComplete="off"
-                      pattern="[1-9][0-9]?"
-                      title={`เลขที่ต้องเป็นตัวเลข 1–${MAX_CLASS_NUMBER}`}
-                      value={formData.classNumber}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors tabular-nums"
-                      placeholder="เช่น 12"
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <motion.div variants={itemVariants}>
+                <label
+                  htmlFor="classNumber"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  เลขที่*
+                </label>
+                <input
+                  type="text"
+                  id="classNumber"
+                  name="classNumber"
+                  required
+                  inputMode="numeric"
+                  autoComplete="off"
+                  pattern="[1-9][0-9]?"
+                  title={`เลขที่ต้องเป็นตัวเลข 1–${MAX_CLASS_NUMBER}`}
+                  value={formData.classNumber}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors tabular-nums"
+                  placeholder="เช่น 12"
+                />
+              </motion.div>
             </div>
 
             <motion.div variants={itemVariants} className="mt-6">
