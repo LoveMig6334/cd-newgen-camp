@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
   HiOutlineCalendarDays,
+  HiOutlineChartPie,
   HiOutlineHome,
   HiOutlineSparkles,
   HiOutlineUsers,
@@ -29,6 +30,11 @@ const navItems = [
     href: "/admin/prompt-battle",
     label: "Prompt Battle",
     icon: <HiOutlineSparkles className="h-5 w-5" />,
+  },
+  {
+    href: "/admin/wheel",
+    label: "วงล้อสุ่ม",
+    icon: <HiOutlineChartPie className="h-5 w-5" />,
   },
 ];
 

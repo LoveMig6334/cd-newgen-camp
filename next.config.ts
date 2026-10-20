@@ -12,9 +12,10 @@ const nextConfig: NextConfig = {
     ],
   },
   async redirects() {
-    // Short link for the Prompt Battle QR code.
+    // Short links for QR codes / the projector.
     return [
       { source: "/prompt-battle", destination: PROMPT_BATTLE_PATH, permanent: false },
+      { source: "/wheel", destination: "/admin/wheel", permanent: false },
     ];
   },
 };
