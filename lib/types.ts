@@ -51,5 +51,7 @@ export interface PromptBattleSubmission {
   application_id: string;
   prompt: string;
   html: string;
+  /** AI tools the student used, e.g. ["Claude", "ChatGPT"]. */
+  ai_tools: string[];
   submitted_at: string;
 }

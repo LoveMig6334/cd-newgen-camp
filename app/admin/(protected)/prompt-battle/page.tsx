@@ -31,7 +31,7 @@ export default async function AdminPromptBattlePage() {
     // Prompts only — the HTML is loaded on the view page.
     supabase
       .from("prompt_battle_submissions")
-      .select("id, application_id, prompt, submitted_at")
+      .select("id, application_id, prompt, ai_tools, submitted_at")
       .eq("event_id", event.id)
       .order("submitted_at", { ascending: false }),
   ]);
@@ -67,6 +67,7 @@ export default async function AdminPromptBattlePage() {
       submissionId: sub.row.id,
       student,
       prompt: sub.row.prompt,
+      aiTools: sub.row.ai_tools ?? [],
       submittedAt: formatBangkokTime(sub.row.submitted_at),
       count: sub.count,
     });

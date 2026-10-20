@@ -9,7 +9,8 @@ import type { PromptBattleParticipant } from "@/lib/types";
 import { NextResponse } from "next/server";
 
 // Public: submit (or resubmit) a Prompt Battle entry.
-// multipart/form-data: participant_id, prompt, and either file or html.
+// multipart/form-data: participant_id, prompt, ai_tool (repeated), and
+// either file or html.
 export async function POST(req: Request) {
   try {
     const contentLength = Number(req.headers.get("content-length") ?? 0);
@@ -55,6 +56,7 @@ export async function POST(req: Request) {
         prompt: form.get("prompt"),
         pastedHtml: form.get("html"),
         file,
+        aiTools: form.getAll("ai_tool"),
       },
       new Set((participants as PromptBattleParticipant[]).map((p) => p.id)),
     );
@@ -67,6 +69,7 @@ export async function POST(req: Request) {
       p_application_id: result.participantId,
       p_prompt: result.prompt,
       p_html: result.html,
+      p_ai_tools: result.aiTools,
     });
 
     if (error) {

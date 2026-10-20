@@ -2,11 +2,12 @@ import { formatBangkokTime } from "@/lib/promptBattle";
 import { createClient } from "@/lib/supabase/server";
 import type { Application, PromptBattleSubmission } from "@/lib/types";
 import Link from "next/link";
+import AiToolBadges from "../AiToolBadges";
 import SandboxedHtml from "../SandboxedHtml";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-type Row = Pick<PromptBattleSubmission, "id" | "prompt" | "html" | "submitted_at"> & {
+type Row = Pick<PromptBattleSubmission, "id" | "prompt" | "html" | "ai_tools" | "submitted_at"> & {
   applications: Pick<Application, "first_name" | "last_name" | "nickname" | "classroom"> | null;
 };
 
@@ -22,7 +23,7 @@ export default async function PromptBattleViewPage({
   const { data } = wanted.length
     ? await supabase
         .from("prompt_battle_submissions")
-        .select("id, prompt, html, submitted_at, applications(first_name, last_name, nickname, classroom)")
+        .select("id, prompt, html, ai_tools, submitted_at, applications(first_name, last_name, nickname, classroom)")
         .in("id", wanted)
     : { data: [] };
 
@@ -69,6 +70,7 @@ export default async function PromptBattleViewPage({
               <p className="text-xs font-medium text-gray-500 mb-2">
                 Prompt · ส่งเมื่อ {formatBangkokTime(row.submitted_at)} น.
               </p>
+              <AiToolBadges tools={row.ai_tools ?? []} className="mb-2" />
               <p
                 className={`text-sm text-gray-800 whitespace-pre-wrap wrap-break-word overflow-auto ${
                   single ? "lg:max-h-[75vh]" : "max-h-48"

@@ -1,6 +1,8 @@
 "use client";
 import {
+  AI_TOOLS,
   ERRORS,
+  MAX_AI_TOOL_CHARS,
   MAX_HTML_BYTES,
   MAX_PROMPT_CHARS,
   htmlByteLength,
@@ -28,6 +30,9 @@ export default function PromptBattleForm({
   const [file, setFile] = useState<File | null>(null);
   const [pastedHtml, setPastedHtml] = useState("");
   const [prompt, setPrompt] = useState("");
+  const [aiTools, setAiTools] = useState<string[]>([]);
+  const [otherChecked, setOtherChecked] = useState(false);
+  const [otherTool, setOtherTool] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<Status>(null);
   const statusRef = useRef<HTMLDivElement>(null);
@@ -69,11 +74,24 @@ export default function PromptBattleForm({
     setFile(picked);
   };
 
+  const toggleTool = (tool: string) => {
+    setStatus(null);
+    setAiTools((prev) =>
+      prev.includes(tool) ? prev.filter((t) => t !== tool) : [...prev, tool],
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus(null);
 
+    const selectedTools = [
+      ...aiTools,
+      ...(otherChecked && otherTool.trim() ? [otherTool.trim()] : []),
+    ];
+
     if (!participantId) return showStatus({ kind: "error", message: ERRORS.participant });
+    if (selectedTools.length === 0) return showStatus({ kind: "error", message: ERRORS.aiTools });
     if (mode === "file" && !file) return showStatus({ kind: "error", message: ERRORS.htmlMissing });
     if (mode === "paste" && !pastedHtml.trim())
       return showStatus({ kind: "error", message: ERRORS.htmlMissing });
@@ -84,6 +102,7 @@ export default function PromptBattleForm({
     const body = new FormData();
     body.set("participant_id", participantId);
     body.set("prompt", prompt);
+    for (const tool of selectedTools) body.append("ai_tool", tool);
     if (mode === "file" && file) body.set("file", file);
     else body.set("html", pastedHtml);
 
@@ -187,6 +206,59 @@ export default function PromptBattleForm({
                   ))}
                 </select>
               </div>
+
+              <fieldset className="mt-6">
+                <legend className="block text-sm font-medium text-gray-700 mb-2">
+                  AI ที่ใช้*{" "}
+                  <span className="text-gray-400 font-normal">(เลือกได้มากกว่า 1)</span>
+                </legend>
+                <div className="flex flex-wrap gap-2">
+                  {[...AI_TOOLS, "อื่น ๆ"].map((tool) => {
+                    const isOther = tool === "อื่น ๆ";
+                    const checked = isOther ? otherChecked : aiTools.includes(tool);
+                    return (
+                      <label
+                        key={tool}
+                        className={`cursor-pointer select-none px-4 py-2 rounded-full border text-sm font-medium transition-colors has-focus-visible:ring-2 has-focus-visible:ring-blue-500 ${
+                          checked
+                            ? "bg-blue-600 border-blue-600 text-white"
+                            : "bg-white border-gray-300 text-gray-700 hover:border-blue-400"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          className="sr-only"
+                          checked={checked}
+                          onChange={() => {
+                            if (isOther) {
+                              setStatus(null);
+                              setOtherChecked((v) => !v);
+                            } else toggleTool(tool);
+                          }}
+                        />
+                        {tool}
+                      </label>
+                    );
+                  })}
+                </div>
+                {otherChecked && (
+                  <div className="mt-3">
+                    <label htmlFor="otherTool" className="sr-only">
+                      ชื่อ AI อื่น ๆ
+                    </label>
+                    <input
+                      id="otherTool"
+                      type="text"
+                      value={otherTool}
+                      onChange={(e) => setOtherTool(e.target.value)}
+                      maxLength={MAX_AI_TOOL_CHARS}
+                      autoComplete="off"
+                      className={inputClass}
+                      placeholder="ระบุชื่อ AI เช่น Copilot, Grok"
+                    />
+                  </div>
+                )}
+              </fieldset>
 
               <fieldset className="mt-6">
                 <legend className="block text-sm font-medium text-gray-700 mb-2">

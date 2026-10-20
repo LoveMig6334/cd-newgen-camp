@@ -2,11 +2,13 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import AiToolBadges from "./AiToolBadges";
 
 export interface GalleryEntry {
   submissionId: string;
   student: { name: string; nickname: string | null; classroom: string | null };
   prompt: string;
+  aiTools: string[];
   /** Pre-formatted (Asia/Bangkok) so server and client render the same text. */
   submittedAt: string;
   /** How many times this student has submitted. */
@@ -51,6 +53,12 @@ export default function PromptBattleGallery({
 
   const total = entries.length + missing.length;
 
+  // How many students used each tool, most used first.
+  const toolCounts = new Map<string, number>();
+  for (const e of entries)
+    for (const tool of e.aiTools) toolCounts.set(tool, (toolCounts.get(tool) ?? 0) + 1);
+  const toolSummary = [...toolCounts].sort((a, b) => b[1] - a[1]);
+
   return (
     <div>
       <div className="mb-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
@@ -63,6 +71,12 @@ export default function PromptBattleGallery({
             </span>{" "}
             คน
           </p>
+          {toolSummary.length > 0 && (
+            <p className="text-sm text-gray-500 mt-1">
+              AI ที่ใช้:{" "}
+              {toolSummary.map(([tool, n]) => `${tool} ${n}`).join(" · ")}
+            </p>
+          )}
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <label className="flex items-center gap-2 text-sm text-gray-600">
@@ -137,6 +151,7 @@ export default function PromptBattleGallery({
                     เทียบ
                   </label>
                 </div>
+                <AiToolBadges tools={entry.aiTools} className="mt-3" />
                 <p className="mt-3 text-sm text-gray-700 whitespace-pre-wrap line-clamp-5 flex-1">
                   {entry.prompt}
                 </p>

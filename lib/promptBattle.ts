@@ -15,6 +15,11 @@ export const MAX_PROMPT_CHARS = 10_000;
 /** Reject request bodies above this before parsing them. */
 export const MAX_REQUEST_BYTES = MAX_HTML_BYTES + MAX_PROMPT_CHARS * 4 + 64 * 1024;
 
+/** AI tools offered as checkboxes; anything else goes in "อื่น ๆ". */
+export const AI_TOOLS = ["Claude", "ChatGPT", "Gemini", "DeepSeek", "Qwen"] as const;
+export const MAX_AI_TOOLS = 6;
+export const MAX_AI_TOOL_CHARS = 40;
+
 const ALLOWED_FILE_TYPES = ["", "text/html", "application/octet-stream"];
 
 export const ERRORS = {
@@ -26,6 +31,8 @@ export const ERRORS = {
   fileType: "รับเฉพาะไฟล์ .html เท่านั้น",
   tooLarge: "ไฟล์/โค้ด HTML ต้องมีขนาดไม่เกิน 2 MB",
   notText: "ไฟล์นี้ไม่ใช่ไฟล์ HTML ที่อ่านได้ (ต้องเป็นข้อความ UTF-8)",
+  aiTools: "กรุณาเลือก AI ที่ใช้อย่างน้อย 1 อย่าง",
+  aiToolsInvalid: `ชื่อ AI ต้องยาวไม่เกิน ${MAX_AI_TOOL_CHARS} ตัวอักษร และเลือกได้ไม่เกิน ${MAX_AI_TOOLS} อย่าง`,
 } as const;
 
 export interface UploadedHtmlFile {
@@ -39,10 +46,12 @@ export interface SubmissionInput {
   prompt: unknown;
   pastedHtml: unknown;
   file: UploadedHtmlFile | null;
+  /** One entry per checked tool (free text for "อื่น ๆ"). */
+  aiTools: unknown[];
 }
 
 export type ValidationResult =
-  | { ok: true; participantId: string; prompt: string; html: string }
+  | { ok: true; participantId: string; prompt: string; html: string; aiTools: string[] }
   | { ok: false; error: string };
 
 export interface ParticipantName {
@@ -77,6 +86,24 @@ export function htmlByteLength(html: string): number {
 }
 
 /**
+ * Trim, dedupe and match known tools case-insensitively ("claude" → "Claude").
+ * Returns null when an entry is not a short single-line string.
+ */
+export function normalizeAiTools(raw: unknown[]): string[] | null {
+  const tools: string[] = [];
+  for (const item of raw) {
+    if (typeof item !== "string") return null;
+    const trimmed = item.trim();
+    if (!trimmed) continue;
+    if (trimmed.length > MAX_AI_TOOL_CHARS || /[\u0000-\u001f\u007f]/.test(trimmed)) return null;
+    const known = AI_TOOLS.find((t) => t.toLowerCase() === trimmed.toLowerCase());
+    const tool = known ?? trimmed;
+    if (!tools.some((t) => t.toLowerCase() === tool.toLowerCase())) tools.push(tool);
+  }
+  return tools.length > MAX_AI_TOOLS ? null : tools;
+}
+
+/**
  * Validate a submission against this year's participant ids.
  * Returns the normalized prompt and HTML to store.
  */
@@ -96,6 +123,10 @@ export function validateSubmission(
       : "";
   if (!prompt) return fail(ERRORS.prompt);
   if (prompt.length > MAX_PROMPT_CHARS) return fail(ERRORS.promptTooLong);
+
+  const aiTools = normalizeAiTools(input.aiTools);
+  if (!aiTools) return fail(ERRORS.aiToolsInvalid);
+  if (aiTools.length === 0) return fail(ERRORS.aiTools);
 
   const pasted = typeof input.pastedHtml === "string" ? input.pastedHtml : "";
   const hasPasted = pasted.trim().length > 0;
@@ -120,5 +151,5 @@ export function validateSubmission(
 
   if (!html.trim()) return fail(ERRORS.htmlMissing);
 
-  return { ok: true, participantId: input.participantId, prompt, html };
+  return { ok: true, participantId: input.participantId, prompt, html, aiTools };
 }

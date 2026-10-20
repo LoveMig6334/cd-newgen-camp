@@ -105,11 +105,11 @@ events (id, name, year, slug, description, is_active, max_applicants, created_at
 applications (id, event_id, first_name, last_name, nickname, student_id, grade, classroom, class_number, reason, expectations, how_did_you_hear, created_at)
 
 -- Prompt Battle (2026): every submission is kept; the gallery shows the latest per student
-prompt_battle_submissions (id, event_id, application_id, prompt, html, submitted_at)
+prompt_battle_submissions (id, event_id, application_id, prompt, html, ai_tools, submitted_at)
 ```
 
 Prompt Battle: students submit at `/prompt-battle`; TAs view at `/admin/prompt-battle`.
-Setup: run `supabase/migrations/20261020090000_prompt_battle.sql`.
+Setup: run `supabase/migrations/20261020090000_prompt_battle.sql`, then `20261020100000_prompt_battle_ai_tools.sql`.
 
 ## 🔐 Admin Setup
 
