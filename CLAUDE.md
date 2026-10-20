@@ -9,6 +9,7 @@ npm run dev        # Start dev server with Turbopack (http://localhost:3000)
 npm run build      # Production build
 npm run start      # Start production server
 npm run lint       # Run ESLint
+npm test           # Node test runner (scripts/*.test.mjs)
 npm run production # Build then start (shortcut for deployment)
 ```
 
@@ -34,9 +35,13 @@ This is a **Next.js 15 App Router** project (TypeScript + Tailwind CSS 4) for "C
     - `application/route.ts` — Public: submit application to Supabase
     - `admin/events/route.ts` — Admin: CRUD for events table
     - `admin/applicants/route.ts` — Admin: read applications by event
+    - `prompt-battle/route.ts` — Public: Prompt Battle submission (multipart: participant, prompt, HTML file or pasted HTML)
+  - `app/events/2026/next-gen-ai-academy/prompt-battle/` — Prompt Battle submit page (`/prompt-battle` redirects here)
+  - `app/admin/(protected)/prompt-battle/` — TA gallery + view/compare page; student HTML is rendered only via `SandboxedHtml` (`<iframe sandbox="allow-scripts" srcdoc>`)
 - `lib/supabase/client.ts` — Browser Supabase client (`createBrowserClient`)
 - `lib/supabase/server.ts` — Server Supabase client (`createServerClient` with cookies)
 - `lib/types.ts` — Shared TypeScript types: `Event`, `Application`, `ApplicationFormData`
+- `lib/promptBattle.ts` — Prompt Battle limits + server-side validation (tested by `npm test`, `scripts/*.test.mjs`)
 - `lib/eventRules.ts` — Per-event application rules not stored in DB (allowed grades per `year/slug`); used by the form and `/api/application`
 - `proxy.ts` — Auth middleware: protects `/admin/*`, redirects unauthenticated to `/admin/login`
 - `public/Fonts/` — Custom Thai fonts (Sukhumvit Set)
@@ -45,7 +50,7 @@ This is a **Next.js 15 App Router** project (TypeScript + Tailwind CSS 4) for "C
 
 - **Supabase** (PostgreSQL) via `@supabase/ssr` and `@supabase/supabase-js`
 - Requires `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.local`
-- Tables: `events`, `applications` (with RLS policies)
+- Tables: `events`, `applications`, `prompt_battle_submissions` (with RLS policies). Anon reads/writes Prompt Battle data only through the `prompt_battle_participants()` / `submit_prompt_battle()` SECURITY DEFINER functions (`supabase/migrations/20261020090000_prompt_battle.sql`)
 - Server-side: use `lib/supabase/server.ts` in Server Components, API routes, `proxy.ts`
 - Client-side: use `lib/supabase/client.ts` in Client Components only
 - Vercel Analytics is integrated in the root layout

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import {
   HiOutlineCalendarDays,
   HiOutlineHome,
+  HiOutlineSparkles,
   HiOutlineUsers,
 } from "react-icons/hi2";
 import LogoutButton from "../components/LogoutButton";
@@ -23,6 +24,11 @@ const navItems = [
     href: "/admin/applicants",
     label: "ผู้สมัคร",
     icon: <HiOutlineUsers className="h-5 w-5" />,
+  },
+  {
+    href: "/admin/prompt-battle",
+    label: "Prompt Battle",
+    icon: <HiOutlineSparkles className="h-5 w-5" />,
   },
 ];
 

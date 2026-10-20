@@ -35,3 +35,21 @@ export type ApplicationFormData = Omit<
   Application,
   "id" | "event_id" | "created_at"
 >;
+
+// Prompt Battle (see lib/promptBattle.ts)
+export interface PromptBattleParticipant {
+  id: string;
+  first_name: string;
+  last_initial: string | null;
+  nickname: string | null;
+  classroom: string | null;
+}
+
+export interface PromptBattleSubmission {
+  id: string;
+  event_id: string;
+  application_id: string;
+  prompt: string;
+  html: string;
+  submitted_at: string;
+}

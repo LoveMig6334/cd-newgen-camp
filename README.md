@@ -103,7 +103,13 @@ events (id, name, year, slug, description, is_active, max_applicants, created_at
 
 -- Applications table
 applications (id, event_id, first_name, last_name, nickname, student_id, grade, classroom, class_number, reason, expectations, how_did_you_hear, created_at)
+
+-- Prompt Battle (2026): every submission is kept; the gallery shows the latest per student
+prompt_battle_submissions (id, event_id, application_id, prompt, html, submitted_at)
 ```
+
+Prompt Battle: students submit at `/prompt-battle`; TAs view at `/admin/prompt-battle`.
+Setup: run `supabase/migrations/20261020090000_prompt_battle.sql`.
 
 ## 🔐 Admin Setup
 
@@ -142,6 +148,7 @@ npm run dev        # Start dev server with Turbopack
 npm run build      # Production build
 npm run start      # Start production server
 npm run lint       # Run ESLint
+npm test           # Run unit tests
 npm run production # Build then start
 ```
 
