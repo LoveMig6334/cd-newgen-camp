@@ -16,12 +16,15 @@ export interface WheelState {
   excluded: string[];
   /** When false, picked students leave the wheel. */
   allowRepeat: boolean;
+  /** Only students who have submitted a pitch prototype. */
+  onlySubmitted: boolean;
 }
 
 export const DEFAULT_WHEEL_STATE: WheelState = {
   picked: [],
   excluded: [],
   allowRepeat: false,
+  onlySubmitted: false,
 };
 
 const mod360 = (deg: number) => ((deg % 360) + 360) % 360;
@@ -66,11 +69,13 @@ export function spinTarget(
 export function wheelPool<T extends { id: string }>(
   people: T[],
   state: WheelState,
+  submitted: ReadonlySet<string> = new Set(),
 ): T[] {
   return people.filter(
     (p) =>
       !state.excluded.includes(p.id) &&
-      (state.allowRepeat || !state.picked.includes(p.id)),
+      (state.allowRepeat || !state.picked.includes(p.id)) &&
+      (!state.onlySubmitted || submitted.has(p.id)),
   );
 }
 
@@ -83,5 +88,6 @@ export function sanitizeWheelState(raw: unknown, ids: ReadonlySet<string>): Whee
     picked: list(r.picked),
     excluded: [...new Set(list(r.excluded))],
     allowRepeat: r.allowRepeat === true,
+    onlySubmitted: r.onlySubmitted === true,
   };
 }

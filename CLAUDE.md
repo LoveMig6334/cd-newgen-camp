@@ -38,6 +38,9 @@ This is a **Next.js 15 App Router** project (TypeScript + Tailwind CSS 4) for "C
     - `prompt-battle/route.ts` — Public: Prompt Battle submission (multipart: participant, prompt, HTML file or pasted HTML)
   - `app/events/2026/next-gen-ai-academy/prompt-battle/` — Prompt Battle submit page (`/prompt-battle` redirects here)
   - `app/admin/(protected)/prompt-battle/` — TA gallery + view/compare page; student HTML is rendered only via `SandboxedHtml` (`<iframe sandbox="allow-scripts" srcdoc>`)
+  - `app/events/2026/next-gen-ai-academy/pitch/` + `app/api/pitch/` — Prototype PITCH submit (`/pitch` redirects here); validation in `lib/pitch.ts`
+  - `app/admin/(protected)/pitch/` — pitch gallery + per-student presenter view; sketches served by `app/api/admin/pitch/sketch/[id]` (type from magic bytes)
+  - `app/admin/(protected)/wheel/` — random picker wheel (`/wheel`); math in `lib/wheel.ts`, state in localStorage
 - `lib/supabase/client.ts` — Browser Supabase client (`createBrowserClient`)
 - `lib/supabase/server.ts` — Server Supabase client (`createServerClient` with cookies)
 - `lib/types.ts` — Shared TypeScript types: `Event`, `Application`, `ApplicationFormData`

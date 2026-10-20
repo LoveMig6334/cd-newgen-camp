@@ -5,6 +5,7 @@ import {
   HiOutlineCalendarDays,
   HiOutlineChartPie,
   HiOutlineHome,
+  HiOutlinePresentationChartBar,
   HiOutlineSparkles,
   HiOutlineUsers,
 } from "react-icons/hi2";
@@ -35,6 +36,11 @@ const navItems = [
     href: "/admin/wheel",
     label: "วงล้อสุ่ม",
     icon: <HiOutlineChartPie className="h-5 w-5" />,
+  },
+  {
+    href: "/admin/pitch",
+    label: "Prototype PITCH",
+    icon: <HiOutlinePresentationChartBar className="h-5 w-5" />,
   },
 ];
 

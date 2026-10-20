@@ -8,6 +8,8 @@ import {
   wheelPool,
   type WheelState,
 } from "@/lib/wheel";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export interface WheelPerson {
@@ -24,6 +26,8 @@ const COLORS = [
 ];
 const RADIUS = 96;
 const MAX_LABEL = 10;
+/** Pick up new pitch submissions while the wheel is idle. */
+const REFRESH_MS = 20_000;
 
 function segmentColor(i: number, count: number) {
   // Avoid the last segment matching the first one it touches.
@@ -56,25 +60,38 @@ function readStored(key: string, ids: ReadonlySet<string>): WheelState {
 export default function PickerWheel({
   eventId,
   people,
+  submittedIds,
 }: {
   eventId: string;
   people: WheelPerson[];
+  /** Students who have submitted a Prototype PITCH. */
+  submittedIds: string[];
 }) {
+  const router = useRouter();
   const storageKey = `picker-wheel:${eventId}`;
   const ids = useMemo(() => new Set(people.map((p) => p.id)), [people]);
   const [state, setState] = useState<WheelState>(DEFAULT_WHEEL_STATE);
   const [loaded, setLoaded] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
-  /** Winner on display; stays on the wheel until the next spin or close. */
+  /** Winner on display. */
   const [winnerId, setWinnerId] = useState<string | null>(null);
+  /**
+   * Segments captured when a spin starts and kept until the winner is closed,
+   * so the wheel under the pointer can't change (refresh, no-repeat removal).
+   */
+  const [frozen, setFrozen] = useState<WheelPerson[] | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const spinningRef = useRef(false);
+  const submitted = useMemo(() => new Set(submittedIds), [submittedIds]);
 
+  // Load once; later refreshes re-render with a new `people` array.
   useEffect(() => {
+    if (loaded) return;
     setState(readStored(storageKey, ids));
     setLoaded(true);
-  }, [storageKey, ids]);
+  }, [loaded, storageKey, ids]);
 
   useEffect(() => {
     if (!loaded) return;
@@ -89,12 +106,15 @@ export default function PickerWheel({
     if (timerRef.current) clearTimeout(timerRef.current);
   }, []);
 
-  const pool = wheelPool(people, state);
-  // While a winner is announced in no-repeat mode, keep their segment so the
-  // pointer still points at the announced name.
-  const segments = people.filter(
-    (p) => pool.includes(p) || (p.id === winnerId && !state.excluded.includes(p.id)),
-  );
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!spinningRef.current) router.refresh();
+    }, REFRESH_MS);
+    return () => clearInterval(timer);
+  }, [router]);
+
+  const pool = wheelPool(people, state, submitted);
+  const segments = frozen ?? pool;
   const byId = new Map(people.map((p) => [p.id, p]));
   const winner = winnerId ? byId.get(winnerId) ?? null : null;
 
@@ -104,9 +124,12 @@ export default function PickerWheel({
     const chosen = pool[index];
     const target = spinTarget(rotation, pool.length, index, secureRandomInt(1000) / 1000);
     setWinnerId(null);
+    setFrozen(pool);
     setSpinning(true);
+    spinningRef.current = true;
     setRotation(target);
     timerRef.current = setTimeout(() => {
+      spinningRef.current = false;
       setSpinning(false);
       setWinnerId(chosen.id);
       setState((s) => ({ ...s, picked: [...s.picked, chosen.id] }));
@@ -134,8 +157,13 @@ export default function PickerWheel({
     };
   }, [spin]);
 
+  const closeWinner = () => {
+    setWinnerId(null);
+    setFrozen(null);
+  };
+
   const toggleExcluded = (id: string) => {
-    if (id === winnerId) setWinnerId(null);
+    closeWinner();
     setState((s) => ({
       ...s,
       excluded: s.excluded.includes(id) ? s.excluded.filter((x) => x !== id) : [...s.excluded, id],
@@ -144,7 +172,7 @@ export default function PickerWheel({
 
   const reset = () => {
     if (state.picked.length && !window.confirm("ล้างลำดับการนำเสนอและนำทุกคนกลับเข้าวงล้อ?")) return;
-    setWinnerId(null);
+    closeWinner();
     setState((s) => ({ ...s, picked: [] }));
   };
 
@@ -258,9 +286,22 @@ export default function PickerWheel({
                         {winner.classroom ? ` · ม.${winner.classroom}` : ""}
                       </p>
                       <div className="mt-6 flex justify-center gap-3">
+                        {submitted.has(winner.id) ? (
+                          <Link
+                            href={`/admin/pitch/${winner.id}`}
+                            target="_blank"
+                            className="px-5 py-2.5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700"
+                          >
+                            เปิด Pitch ↗
+                          </Link>
+                        ) : (
+                          <span className="px-5 py-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800">
+                            ยังไม่ส่ง
+                          </span>
+                        )}
                         <button
                           type="button"
-                          onClick={() => setWinnerId(null)}
+                          onClick={closeWinner}
                           className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50"
                         >
                           ปิด
@@ -308,8 +349,26 @@ export default function PickerWheel({
                 checked={!state.allowRepeat}
                 disabled={spinning}
                 onChange={(e) => {
-                  setWinnerId(null);
+                  closeWinner();
                   setState((s) => ({ ...s, allowRepeat: !e.target.checked }));
+                }}
+                className="h-5 w-5"
+              />
+            </label>
+            <label className="flex items-center justify-between gap-3 text-sm text-gray-700">
+              <span>
+                เฉพาะคนที่ส่งแล้ว{" "}
+                <span className="text-gray-400 tabular-nums">
+                  ({people.filter((p) => submitted.has(p.id)).length}/{people.length})
+                </span>
+              </span>
+              <input
+                type="checkbox"
+                checked={state.onlySubmitted}
+                disabled={spinning}
+                onChange={(e) => {
+                  closeWinner();
+                  setState((s) => ({ ...s, onlySubmitted: e.target.checked }));
                 }}
                 className="h-5 w-5"
               />
@@ -372,8 +431,11 @@ export default function PickerWheel({
                       <span className="truncate">
                         {p.label} <span className="text-gray-400">· {p.fullName}</span>
                       </span>
-                      <span className="shrink-0 text-xs no-underline">
+                      <span className="shrink-0 text-xs no-underline flex items-center gap-1.5">
                         {excluded ? "นำออกแล้ว" : done ? "✓ นำเสนอแล้ว" : ""}
+                        {submitted.has(p.id) && (
+                          <span className="h-2 w-2 rounded-full bg-green-500" title="ส่งต้นแบบแล้ว" />
+                        )}
                       </span>
                     </button>
                   </li>

@@ -111,6 +111,13 @@ prompt_battle_submissions (id, event_id, application_id, prompt, html, ai_tools,
 Prompt Battle: students submit at `/prompt-battle`; TAs view at `/admin/prompt-battle`.
 Setup: run `supabase/migrations/20261020090000_prompt_battle.sql`, then `20261020100000_prompt_battle_ai_tools.sql`.
 
+Prototype PITCH (2026): students submit at `/pitch`; TAs use `/admin/pitch` (gallery + presenter view) and the picker wheel at `/admin/wheel` (`/wheel`).
+Setup: run `supabase/migrations/20261020120000_pitch_submissions.sql`.
+
+```sql
+pitch_submissions (id, event_id, application_id, problem, hmw, idea, html, link_url, sketch, sketch_mime, has_html, submitted_at)
+```
+
 ## 🔐 Admin Setup
 
 1. Run RLS policies in Supabase SQL Editor:

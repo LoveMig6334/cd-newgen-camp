@@ -68,7 +68,7 @@ test("excluded students are never picked (with and without repeats)", () => {
   const people = roster(12);
   const excluded = ["s2", "s5", "s11"];
   for (const allowRepeat of [false, true]) {
-    let state = { picked: [], excluded, allowRepeat };
+    let state = { ...DEFAULT_WHEEL_STATE, picked: [], excluded, allowRepeat };
     for (let i = 0; i < 200; i++) {
       const pool = wheelPool(people, state);
       if (pool.length === 0) state = { ...state, picked: [] };
@@ -86,6 +86,17 @@ test("stored state is sanitized against the roster", () => {
     picked: ["a"],
     excluded: ["b"],
     allowRepeat: false,
+    onlySubmitted: false,
   });
   assert.deepEqual(sanitizeWheelState(null, ids), DEFAULT_WHEEL_STATE);
+});
+
+test("only-submitted filter keeps just students with a pitch", () => {
+  const people = roster(6);
+  const submitted = new Set(["s1", "s4"]);
+  const state = { ...DEFAULT_WHEEL_STATE, onlySubmitted: true };
+  assert.deepEqual(wheelPool(people, state, submitted).map((p) => p.id), ["s1", "s4"]);
+  assert.deepEqual(wheelPool(people, { ...state, excluded: ["s4"] }, submitted).map((p) => p.id), ["s1"]);
+  // Off by default: everyone is on the wheel.
+  assert.equal(wheelPool(people, DEFAULT_WHEEL_STATE, submitted).length, 6);
 });

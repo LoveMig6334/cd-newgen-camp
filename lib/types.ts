@@ -55,3 +55,18 @@ export interface PromptBattleSubmission {
   ai_tools: string[];
   submitted_at: string;
 }
+
+// Prototype PITCH (see lib/pitch.ts)
+export interface PitchSubmission {
+  id: string;
+  event_id: string;
+  application_id: string;
+  problem: string;
+  hmw: string;
+  idea: string;
+  html: string | null;
+  link_url: string | null;
+  sketch_mime: string | null;
+  has_html: boolean;
+  submitted_at: string;
+}

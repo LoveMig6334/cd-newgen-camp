@@ -21,12 +21,18 @@ export default async function AdminWheelPage() {
     return <p className="text-gray-600">ไม่พบกิจกรรม {PROMPT_BATTLE_EVENT.year}</p>;
   }
 
-  const { data } = await supabase
-    .from("applications")
-    .select("id, first_name, last_name, nickname, classroom")
-    .eq("event_id", event.id)
-    .order("classroom")
-    .order("class_number");
+  const [{ data }, { data: pitches }] = await Promise.all([
+    supabase
+      .from("applications")
+      .select("id, first_name, last_name, nickname, classroom")
+      .eq("event_id", event.id)
+      .order("classroom")
+      .order("class_number"),
+    supabase.from("pitch_submissions").select("application_id").eq("event_id", event.id),
+  ]);
+  const submittedIds = [
+    ...new Set(((pitches as { application_id: string }[]) ?? []).map((r) => r.application_id)),
+  ];
 
   const people: WheelPerson[] = ((data as Participant[]) ?? []).map((p) => ({
     id: p.id,
@@ -35,5 +41,5 @@ export default async function AdminWheelPage() {
     classroom: p.classroom,
   }));
 
-  return <PickerWheel eventId={event.id} people={people} />;
+  return <PickerWheel eventId={event.id} people={people} submittedIds={submittedIds} />;
 }
