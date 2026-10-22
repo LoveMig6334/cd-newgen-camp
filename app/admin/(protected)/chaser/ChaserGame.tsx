@@ -1,6 +1,5 @@
 "use client";
 import {
-  BEEP_SECONDS,
   DANGER_SECONDS,
   DEFAULT_SETTINGS,
   MAX_NAME_CHARS,
@@ -16,6 +15,7 @@ import {
   sanitizeSettings,
   secondsLeft,
   shuffle,
+  toDisplayState,
   type ChaserGame as Game,
   type ChaserSettings,
   type GameEventKind,
@@ -23,7 +23,6 @@ import {
   type Verdict,
 } from "@/lib/chaser";
 import { SAMPLE_QUESTIONS } from "@/lib/chaserQuestions";
-import { Chakra_Petch } from "next/font/google";
 import Link from "next/link";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import {
@@ -39,11 +38,12 @@ import {
   HiSpeakerWave,
   HiSpeakerXMark,
   HiTrash,
+  HiTv,
   HiXMark,
 } from "react-icons/hi2";
-import { sfx } from "./sounds";
-
-const display = Chakra_Petch({ subsets: ["thai", "latin"], weight: ["500", "700"] });
+import { display } from "./fonts";
+import { playCountdown, playEventSound, sfx } from "./sounds";
+import { DISPLAY_PATH, DISPLAY_TIMEOUT_MS, openSync } from "./sync";
 
 const STORAGE = { settings: "chaser:settings", bank: "chaser:bank", muted: "chaser:muted" };
 
@@ -116,16 +116,70 @@ export default function ChaserGame() {
   const [muted, setMuted] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+  /** An audience display window is open; `sound` = it plays the effects. */
+  const [displayLink, setDisplayLink] = useState({ on: false, sound: false });
+  const displayOn = displayLink.on;
   const rootRef = useRef<HTMLDivElement>(null);
   const gameRef = useRef(game);
   const mutedRef = useRef(muted);
+  const displaySoundRef = useRef(false);
   const playedSeq = useRef(0);
   const lastBeep = useRef("");
+  const syncRef = useRef<ReturnType<typeof openSync>>(null);
+  const displaySeenAt = useRef(0);
 
   useEffect(() => {
     gameRef.current = game;
     mutedRef.current = muted;
+    displaySoundRef.current = displayLink.on && displayLink.sound;
   });
+  const silent = () => mutedRef.current || displaySoundRef.current;
+
+  // ---- audience display sync ----
+  // In setup the display previews the names being typed.
+  const displayState = toDisplayState(
+    game.phase === "setup" ? { ...game, settings: sanitizeSettings(draft) } : game,
+  );
+  const displayStateRef = useRef(displayState);
+  useEffect(() => {
+    displayStateRef.current = displayState;
+  });
+
+  useEffect(() => {
+    const off = { on: false, sound: false };
+    const sync = openSync((msg) => {
+      if (msg.type === "hello") sync?.post({ type: "state", state: displayStateRef.current });
+      else if (msg.type === "ping") {
+        displaySeenAt.current = Date.now();
+        setDisplayLink((d) => (d.on && d.sound === msg.sound ? d : { on: true, sound: msg.sound }));
+      } else if (msg.type === "bye") {
+        displaySeenAt.current = 0;
+        setDisplayLink(off);
+      }
+    });
+    syncRef.current = sync;
+    const timer = setInterval(() => {
+      if (Date.now() - displaySeenAt.current > DISPLAY_TIMEOUT_MS) setDisplayLink((d) => (d.on ? off : d));
+    }, 1000);
+    const bye = () => sync?.post({ type: "bye" });
+    window.addEventListener("pagehide", bye);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("pagehide", bye);
+      sync?.close();
+      syncRef.current = null;
+    };
+  }, []);
+
+  // Post only real changes (a new object is built every render).
+  const displayJson = JSON.stringify(displayState);
+  useEffect(() => {
+    syncRef.current?.post({ type: "state", state: displayStateRef.current });
+  }, [displayJson]);
+
+  const openDisplay = () => {
+    window.open(DISPLAY_PATH, "chaser-display", "popup,width=1280,height=720");
+  };
 
   // ---- persistence ----
   useEffect(() => {
@@ -160,37 +214,21 @@ export default function ChaserGame() {
     return () => clearInterval(timer);
   }, [ticking]);
 
-  // ---- sounds ----
+  // ---- sounds (here only when no audience display is open) ----
   const secs = secondsLeft(game.remainingMs);
   useEffect(() => {
-    if (!ticking || secs < 1 || secs > BEEP_SECONDS) return;
+    if (!ticking || secs < 1 || secs > DANGER_SECONDS) return;
     const key = `${game.phase}:${secs}`;
     if (lastBeep.current === key) return;
     lastBeep.current = key;
-    if (!mutedRef.current) sfx.beep(secs === 1);
+    if (!silent()) playCountdown(secs);
   }, [ticking, secs, game.phase]);
 
   useEffect(() => {
     const e = game.event;
     if (!e || e.seq === playedSeq.current) return;
     playedSeq.current = e.seq;
-    if (mutedRef.current) return;
-    switch (e.kind) {
-      case "correct":
-      case "pushback-success":
-        return sfx.correct();
-      case "wrong":
-      case "pushback-fail":
-        return sfx.wrong();
-      case "skip":
-        return sfx.skip();
-      case "pushback":
-        return sfx.pushback();
-      case "round-over":
-        return sfx.buzzer();
-      case "game-over":
-        return sfx.gameOver(gameRef.current.winner ?? "player");
-    }
+    if (!silent()) playEventSound(e.kind, gameRef.current.phase, gameRef.current.winner);
   }, [game.event]);
 
   // ---- controls ----
@@ -303,10 +341,23 @@ export default function ChaserGame() {
             <span className="hidden truncate text-sm text-white/50 sm:inline">{PHASE_LABEL[game.phase]}</span>
           </div>
           <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={openDisplay}
+              title={displayOn ? "จอผู้ชมเชื่อมต่ออยู่" : "เปิดจอผู้ชมในหน้าต่างใหม่"}
+              className={`flex h-10 items-center gap-1.5 rounded-xl border px-3 text-sm transition-colors ${
+                displayOn
+                  ? "border-emerald-400/50 bg-emerald-500/15 text-emerald-200"
+                  : "border-white/15 bg-white/5 text-white/80 hover:bg-white/10"
+              }`}
+            >
+              <HiTv className="h-5 w-5" />
+              <span className="hidden sm:inline">{displayOn ? "จอผู้ชม ●" : "เปิดจอผู้ชม"}</span>
+            </button>
             <IconButton
-              label={muted ? "เปิดเสียง" : "ปิดเสียง"}
+              label={displayLink.on && displayLink.sound ? "เสียงเล่นที่จอผู้ชม" : muted ? "เปิดเสียง" : "ปิดเสียง"}
               onClick={() => setMuted((m) => !m)}
-              active={muted}
+              active={muted || (displayLink.on && displayLink.sound)}
             >
               {muted ? <HiSpeakerXMark className="h-5 w-5" /> : <HiSpeakerWave className="h-5 w-5" />}
             </IconButton>

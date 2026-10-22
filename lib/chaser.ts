@@ -223,6 +223,54 @@ export function chaserReducer(game: ChaserGame, action: ChaserAction): ChaserGam
   }
 }
 
+// ---------- audience display ----------
+
+/** What the players' screen needs — never the answer. */
+export interface DisplayState {
+  phase: Phase;
+  settings: ChaserSettings;
+  /** Shown only while the clock runs or during Pushback (like the host view). */
+  question: string | null;
+  questionNumber: number;
+  started: boolean;
+  running: boolean;
+  remainingMs: number;
+  totalMs: number;
+  playerScore: number;
+  chaserScore: number;
+  pushback: boolean;
+  pushbackAttempts: number;
+  pushbackWins: number;
+  winner: Side | null;
+  endReason: ChaserGame["endReason"];
+  chaserTimeLeftMs: number | null;
+  event: ChaserGame["event"];
+}
+
+export function toDisplayState(game: ChaserGame): DisplayState {
+  const inRound = game.phase === "round1" || game.phase === "round2";
+  const visible = inRound && game.started && (game.running || game.pushback);
+  return {
+    phase: game.phase,
+    settings: game.settings,
+    question: visible ? (currentQuestion(game)?.question ?? null) : null,
+    questionNumber: game.cursor + 1,
+    started: game.started,
+    running: game.running,
+    remainingMs: game.remainingMs,
+    totalMs: (game.phase === "round2" || game.phase === "result" ? game.settings.round2Seconds : game.settings.round1Seconds) * 1000,
+    playerScore: game.playerScore,
+    chaserScore: game.chaserScore,
+    pushback: game.pushback,
+    pushbackAttempts: game.pushbackAttempts,
+    pushbackWins: game.pushbackWins,
+    winner: game.winner,
+    endReason: game.endReason,
+    chaserTimeLeftMs: game.chaserTimeLeftMs,
+    event: game.event,
+  };
+}
+
 // ---------- settings + question bank ----------
 
 const clampSeconds = (v: unknown) => {

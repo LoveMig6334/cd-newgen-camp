@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
       { source: "/wheel", destination: "/admin/wheel", permanent: false },
       { source: "/pitch", destination: PITCH_PATH, permanent: false },
       { source: "/chaser", destination: "/admin/chaser", permanent: false },
+      { source: "/chaser/display", destination: "/admin/chaser/display", permanent: false },
     ];
   },
 };

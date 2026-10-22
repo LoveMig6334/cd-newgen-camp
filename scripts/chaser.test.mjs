@@ -14,6 +14,7 @@ import {
   sanitizeSettings,
   secondsLeft,
   shuffle,
+  toDisplayState,
 } from "../lib/chaser.ts";
 
 const deck = Array.from({ length: 5 }, (_, i) => ({ id: `q${i}`, question: `Q${i}`, answer: `A${i}` }));
@@ -230,4 +231,24 @@ test("shuffle keeps every item", () => {
   const out = shuffle(list);
   assert.deepEqual([...out].sort((a, b) => a - b), list);
   assert.deepEqual(list[0], 0, "input untouched");
+});
+
+test("display state never carries answers and hides the question while paused", () => {
+  const ready = run(newGame(settings), { type: "start", settings, deck });
+  assert.equal(toDisplayState(ready).question, null, "hidden before the clock starts");
+  const running = run(ready, { type: "go" });
+  const d = toDisplayState(running);
+  assert.equal(d.question, "Q0");
+  assert.equal(d.totalMs, 120_000);
+  assert.ok(!JSON.stringify(d).includes("A0"), "no answer in the payload");
+  assert.ok(!("deck" in d));
+  assert.equal(toDisplayState(run(running, { type: "pause" })).question, null);
+});
+
+test("display state keeps the question during Pushback", () => {
+  const g = run(round2(3), W);
+  const d = toDisplayState(g);
+  assert.equal(d.pushback, true);
+  assert.equal(d.question, currentQuestion(g).question);
+  assert.equal(d.event.kind, "pushback");
 });
