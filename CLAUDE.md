@@ -41,6 +41,7 @@ This is a **Next.js 15 App Router** project (TypeScript + Tailwind CSS 4) for "C
   - `app/events/2026/next-gen-ai-academy/pitch/` + `app/api/pitch/` — Prototype PITCH submit (`/pitch` redirects here); validation in `lib/pitch.ts`
   - `app/admin/(protected)/pitch/` — pitch gallery + per-student presenter view; sketches served by `app/api/admin/pitch/sketch/[id]` (type from magic bytes)
   - `app/admin/(protected)/wheel/` — random picker wheel (`/wheel`); math in `lib/wheel.ts`, state in localStorage
+  - `app/admin/(protected)/chaser/` — host-run "Chaser" quiz game (`/chaser`); rules as a pure reducer in `lib/chaser.ts` (tested), sample bank in `lib/chaserQuestions.ts`, Web Audio effects in `sounds.ts`; settings + question bank in localStorage
 - `lib/supabase/client.ts` — Browser Supabase client (`createBrowserClient`)
 - `lib/supabase/server.ts` — Server Supabase client (`createServerClient` with cookies)
 - `lib/types.ts` — Shared TypeScript types: `Event`, `Application`, `ApplicationFormData`

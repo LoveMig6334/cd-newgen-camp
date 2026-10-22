@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
       { source: "/prompt-battle", destination: PROMPT_BATTLE_PATH, permanent: false },
       { source: "/wheel", destination: "/admin/wheel", permanent: false },
       { source: "/pitch", destination: PITCH_PATH, permanent: false },
+      { source: "/chaser", destination: "/admin/chaser", permanent: false },
     ];
   },
 };

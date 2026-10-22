@@ -159,3 +159,59 @@ body {
   filter: drop-shadow(0 0 8px currentColor);
   z-index: 10;
 }
+
+/* ===== Chaser game (/admin/chaser) ===== */
+@keyframes chaser-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+.chaser-blink {
+  animation: chaser-blink 0.8s ease-in-out infinite;
+}
+
+@keyframes chaser-flash {
+  from { opacity: 0.5; }
+  to { opacity: 0; }
+}
+.chaser-flash {
+  animation: chaser-flash 0.7s ease-out forwards;
+}
+
+@keyframes chaser-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.chaser-pop {
+  animation: chaser-pop 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+@keyframes chaser-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px) rotate(-6deg); }
+  40% { transform: translateX(6px) rotate(6deg); }
+  60% { transform: translateX(-4px) rotate(-3deg); }
+  80% { transform: translateX(4px) rotate(3deg); }
+}
+.chaser-shake {
+  animation: chaser-shake 0.5s ease-in-out;
+}
+
+@keyframes chaser-alarm {
+  0%, 100% { box-shadow: inset 0 0 60px 8px rgba(56, 189, 248, 0.55); }
+  50% { box-shadow: inset 0 0 120px 24px rgba(251, 191, 36, 0.6); }
+}
+.chaser-alarm {
+  animation: chaser-alarm 1.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chaser-pop,
+  .chaser-shake,
+  .chaser-alarm {
+    animation: none;
+  }
+  .chaser-blink {
+    animation-duration: 2s;
+  }
+}

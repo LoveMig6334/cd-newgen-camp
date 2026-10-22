@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
   HiOutlineCalendarDays,
+  HiOutlineBolt,
   HiOutlineChartPie,
   HiOutlineHome,
   HiOutlinePresentationChartBar,
@@ -41,6 +42,11 @@ const navItems = [
     href: "/admin/pitch",
     label: "Prototype PITCH",
     icon: <HiOutlinePresentationChartBar className="h-5 w-5" />,
+  },
+  {
+    href: "/admin/chaser",
+    label: "เกม Chaser",
+    icon: <HiOutlineBolt className="h-5 w-5" />,
   },
 ];
 
