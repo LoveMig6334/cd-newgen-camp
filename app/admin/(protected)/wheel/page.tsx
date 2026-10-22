@@ -21,17 +21,17 @@ export default async function AdminWheelPage() {
     return <p className="text-gray-600">ไม่พบกิจกรรม {PROMPT_BATTLE_EVENT.year}</p>;
   }
 
-  const [{ data }, { data: pitches }] = await Promise.all([
+  const [{ data }, { data: finals }] = await Promise.all([
     supabase
       .from("applications")
       .select("id, first_name, last_name, nickname, classroom")
       .eq("event_id", event.id)
       .order("classroom")
       .order("class_number"),
-    supabase.from("pitch_submissions").select("application_id").eq("event_id", event.id),
+    supabase.from("final_project_submissions").select("application_id").eq("event_id", event.id),
   ]);
   const submittedIds = [
-    ...new Set(((pitches as { application_id: string }[]) ?? []).map((r) => r.application_id)),
+    ...new Set(((finals as { application_id: string }[]) ?? []).map((r) => r.application_id)),
   ];
 
   const people: WheelPerson[] = ((data as Participant[]) ?? []).map((p) => ({

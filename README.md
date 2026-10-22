@@ -111,11 +111,15 @@ prompt_battle_submissions (id, event_id, application_id, prompt, html, ai_tools,
 Prompt Battle: students submit at `/prompt-battle`; TAs view at `/admin/prompt-battle`.
 Setup: run `supabase/migrations/20261020090000_prompt_battle.sql`, then `20261020100000_prompt_battle_ai_tools.sql`.
 
-Prototype PITCH (2026): students submit at `/pitch`; TAs use `/admin/pitch` (gallery + presenter view) and the picker wheel at `/admin/wheel` (`/wheel`).
+Prototype PITCH (2026, closed): TAs can still view past entries at `/admin/pitch`.
 Setup: run `supabase/migrations/20261020120000_pitch_submissions.sql`.
+
+Final Project (2026): students submit a deployed link + pitch deck PDF at `/final` (`/pitch` redirects there too); TAs use `/admin/final-project` (gallery + presenter view) and the picker wheel at `/admin/wheel` (`/wheel`).
+Setup: run `supabase/migrations/20261022090000_final_project.sql` — it also creates the private Storage bucket `final-project-decks` (PDF only, 30 MB). The browser uploads the PDF straight to Storage, so it isn't limited by Vercel's 4.5 MB request cap.
 
 ```sql
 pitch_submissions (id, event_id, application_id, problem, hmw, idea, html, link_url, sketch, sketch_mime, has_html, submitted_at)
+final_project_submissions (id, event_id, application_id, deploy_url, deck_path, deck_size, submitted_at)
 ```
 
 ## 🔐 Admin Setup

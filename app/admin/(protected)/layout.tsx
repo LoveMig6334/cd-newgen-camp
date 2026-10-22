@@ -6,6 +6,7 @@ import {
   HiOutlineBolt,
   HiOutlineChartPie,
   HiOutlineHome,
+  HiOutlineRocketLaunch,
   HiOutlinePresentationChartBar,
   HiOutlineSparkles,
   HiOutlineUsers,
@@ -42,6 +43,11 @@ const navItems = [
     href: "/admin/pitch",
     label: "Prototype PITCH",
     icon: <HiOutlinePresentationChartBar className="h-5 w-5" />,
+  },
+  {
+    href: "/admin/final-project",
+    label: "Final Project",
+    icon: <HiOutlineRocketLaunch className="h-5 w-5" />,
   },
   {
     href: "/admin/chaser",

@@ -70,3 +70,15 @@ export interface PitchSubmission {
   has_html: boolean;
   submitted_at: string;
 }
+
+// Final Project (see lib/finalProject.ts)
+export interface FinalProjectSubmission {
+  id: string;
+  event_id: string;
+  application_id: string;
+  deploy_url: string;
+  /** Path inside the private `final-project-decks` Storage bucket. */
+  deck_path: string;
+  deck_size: number | null;
+  submitted_at: string;
+}

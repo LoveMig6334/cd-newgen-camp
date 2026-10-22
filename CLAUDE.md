@@ -38,9 +38,10 @@ This is a **Next.js 15 App Router** project (TypeScript + Tailwind CSS 4) for "C
     - `prompt-battle/route.ts` — Public: Prompt Battle submission (multipart: participant, prompt, HTML file or pasted HTML)
   - `app/events/2026/next-gen-ai-academy/prompt-battle/` — Prompt Battle submit page (`/prompt-battle` redirects here)
   - `app/admin/(protected)/prompt-battle/` — TA gallery + view/compare page; student HTML is rendered only via `SandboxedHtml` (`<iframe sandbox="allow-scripts" srcdoc>`)
-  - `app/events/2026/next-gen-ai-academy/pitch/` + `app/api/pitch/` — Prototype PITCH submit (`/pitch` redirects here); validation in `lib/pitch.ts`
-  - `app/admin/(protected)/pitch/` — pitch gallery + per-student presenter view; sketches served by `app/api/admin/pitch/sketch/[id]` (type from magic bytes)
-  - `app/admin/(protected)/wheel/` — random picker wheel (`/wheel`); math in `lib/wheel.ts`, state in localStorage
+  - `app/admin/(protected)/pitch/` — Prototype PITCH (submissions closed; `lib/pitch.ts`) gallery + per-student presenter view; sketches served by `app/api/admin/pitch/sketch/[id]` (type from magic bytes)
+  - `app/events/2026/next-gen-ai-academy/final-project/` + `app/api/final-project/` — Final Project submit: deployed link + pitch deck PDF (`/final` and `/pitch` redirect here); validation in `lib/finalProject.ts`. The PDF is uploaded from the browser straight to the private Storage bucket `final-project-decks`; the API only receives its path
+  - `app/admin/(protected)/final-project/` — Final Project gallery + presenter view (deck via signed Storage URL, deployed site in a sandboxed iframe)
+  - `app/admin/(protected)/wheel/` — random picker wheel (`/wheel`); "submitted" = has a Final Project; math in `lib/wheel.ts`, state in localStorage
   - `app/admin/(protected)/chaser/` — host-run "Chaser" quiz game (`/chaser`); rules as a pure reducer in `lib/chaser.ts` (tested), sample bank in `lib/chaserQuestions.ts`, Web Audio effects in `sounds.ts`; settings + question bank in localStorage
     - `chaser/display/` — audience screen (`/chaser/display`), opened from the host page; mirrors it over BroadcastChannel (`sync.ts`, same browser only) and receives `toDisplayState()` — never the answers. Sound plays on the display when it's open with sound on, otherwise on the host
 - `lib/supabase/client.ts` — Browser Supabase client (`createBrowserClient`)

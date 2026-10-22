@@ -26,7 +26,7 @@ const COLORS = [
 ];
 const RADIUS = 96;
 const MAX_LABEL = 10;
-/** Pick up new pitch submissions while the wheel is idle. */
+/** Pick up new Final Project submissions while the wheel is idle. */
 const REFRESH_MS = 20_000;
 
 function segmentColor(i: number, count: number) {
@@ -64,7 +64,7 @@ export default function PickerWheel({
 }: {
   eventId: string;
   people: WheelPerson[];
-  /** Students who have submitted a Prototype PITCH. */
+  /** Students who have submitted a Final Project. */
   submittedIds: string[];
 }) {
   const router = useRouter();
@@ -288,11 +288,11 @@ export default function PickerWheel({
                       <div className="mt-6 flex justify-center gap-3">
                         {submitted.has(winner.id) ? (
                           <Link
-                            href={`/admin/pitch/${winner.id}`}
+                            href={`/admin/final-project/${winner.id}`}
                             target="_blank"
                             className="px-5 py-2.5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700"
                           >
-                            เปิด Pitch ↗
+                            เปิดผลงาน ↗
                           </Link>
                         ) : (
                           <span className="px-5 py-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800">
