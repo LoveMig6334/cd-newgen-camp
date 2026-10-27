@@ -43,7 +43,7 @@ This is a **Next.js 15 App Router** project (TypeScript + Tailwind CSS 4) for "C
   - `app/admin/(protected)/final-project/` — Final Project gallery + presenter view (deck via signed Storage URL, deployed site in a sandboxed iframe)
   - `app/admin/(protected)/wheel/` — random picker wheel (`/wheel`); "submitted" = has a Final Project; math in `lib/wheel.ts`, state in localStorage
   - `app/admin/(protected)/chaser/` — host-run "Chaser" quiz game (`/chaser`); rules as a pure reducer in `lib/chaser.ts` (tested), sample bank in `lib/chaserQuestions.ts`, Web Audio effects in `sounds.ts`; settings + question bank in localStorage
-    - `chaser/display/` — audience screen (`/chaser/display`), opened from the host page; mirrors it over BroadcastChannel (`sync.ts`, same browser only) and receives `toDisplayState()` — never the answers. Sound plays on the display when it's open with sound on, otherwise on the host
+    - `chaser/display/` — audience screen (`/chaser/display`), opened from the host page; mirrors it via `sync.ts` — BroadcastChannel (same browser) plus Supabase Realtime Broadcast on `chaser:<room>` (any device; 6-char room code kept in localStorage on the host, display joins with `?room=CODE` or by typing it; clock-only updates throttled to 5/s) — and receives `toDisplayState()` — never the answers. Sound plays on the display when it's open with sound on, otherwise on the host
 - `lib/supabase/client.ts` — Browser Supabase client (`createBrowserClient`)
 - `lib/supabase/server.ts` — Server Supabase client (`createServerClient` with cookies)
 - `lib/types.ts` — Shared TypeScript types: `Event`, `Application`, `ApplicationFormData`

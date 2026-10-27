@@ -31,6 +31,7 @@ import {
   HiArrowsPointingIn,
   HiArrowsPointingOut,
   HiCheck,
+  HiLink,
   HiForward,
   HiPause,
   HiPlay,
@@ -43,9 +44,9 @@ import {
 } from "react-icons/hi2";
 import { display } from "./fonts";
 import { playCountdown, playEventSound, sfx } from "./sounds";
-import { DISPLAY_PATH, DISPLAY_TIMEOUT_MS, openSync } from "./sync";
+import { DISPLAY_TIMEOUT_MS, cleanRoomCode, displayUrl, newRoomCode, openSync, type RemoteStatus } from "./sync";
 
-const STORAGE = { settings: "chaser:settings", bank: "chaser:bank", muted: "chaser:muted" };
+const STORAGE = { settings: "chaser:settings", bank: "chaser:bank", muted: "chaser:muted", room: "chaser:room" };
 
 const GLOW = {
   player: "[text-shadow:0_0_12px_rgba(56,189,248,0.9),0_0_40px_rgba(56,189,248,0.5)]",
@@ -127,6 +128,10 @@ export default function ChaserGame() {
   const lastBeep = useRef("");
   const syncRef = useRef<ReturnType<typeof openSync>>(null);
   const displaySeenAt = useRef(0);
+  /** Room code that lets displays on other devices join; kept across reloads. */
+  const [room, setRoom] = useState<string | null>(null);
+  const [remote, setRemote] = useState<RemoteStatus>("off");
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     gameRef.current = game;
@@ -146,30 +151,49 @@ export default function ChaserGame() {
   });
 
   useEffect(() => {
+    let code = cleanRoomCode(readJson(STORAGE.room));
+    if (!code) {
+      code = newRoomCode();
+      writeJson(STORAGE.room, code);
+    }
+    setRoom(code);
+  }, []);
+
+  useEffect(() => {
+    if (!room) return;
     const off = { on: false, sound: false };
-    const sync = openSync((msg) => {
-      if (msg.type === "hello") sync?.post({ type: "state", state: displayStateRef.current });
-      else if (msg.type === "ping") {
-        displaySeenAt.current = Date.now();
-        setDisplayLink((d) => (d.on && d.sound === msg.sound ? d : { on: true, sound: msg.sound }));
-      } else if (msg.type === "bye") {
-        displaySeenAt.current = 0;
-        setDisplayLink(off);
-      }
+    const sync = openSync({
+      room,
+      onMessage: (msg) => {
+        if (msg.type === "hello") sync.post({ type: "state", state: displayStateRef.current });
+        else if (msg.type === "ping") {
+          displaySeenAt.current = Date.now();
+          setDisplayLink((d) => (d.on && d.sound === msg.sound ? d : { on: true, sound: msg.sound }));
+        } else if (msg.type === "bye") {
+          displaySeenAt.current = 0;
+          setDisplayLink(off);
+        }
+      },
+      onRemote: (status) => {
+        setRemote(status);
+        // (Re)joined: displays already waiting in the room get the current state.
+        if (status === "online") sync.post({ type: "state", state: displayStateRef.current });
+      },
     });
     syncRef.current = sync;
     const timer = setInterval(() => {
       if (Date.now() - displaySeenAt.current > DISPLAY_TIMEOUT_MS) setDisplayLink((d) => (d.on ? off : d));
     }, 1000);
-    const bye = () => sync?.post({ type: "bye" });
+    const bye = () => sync.post({ type: "bye" });
     window.addEventListener("pagehide", bye);
     return () => {
       clearInterval(timer);
       window.removeEventListener("pagehide", bye);
-      sync?.close();
+      sync.close();
       syncRef.current = null;
+      setRemote("off");
     };
-  }, []);
+  }, [room]);
 
   // Post only real changes (a new object is built every render).
   const displayJson = JSON.stringify(displayState);
@@ -178,7 +202,27 @@ export default function ChaserGame() {
   }, [displayJson]);
 
   const openDisplay = () => {
-    window.open(DISPLAY_PATH, "chaser-display", "popup,width=1280,height=720");
+    if (room) window.open(displayUrl(room), "chaser-display", "popup,width=1280,height=720");
+  };
+
+  /** Link for a display on another device (phone, second laptop). */
+  const copyDisplayLink = async () => {
+    if (!room) return;
+    const url = displayUrl(room, window.location.origin);
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      window.prompt("คัดลอกลิงก์จอผู้ชม", url);
+    }
+  };
+
+  const changeRoom = () => {
+    if (!window.confirm("เปลี่ยนรหัสห้อง? จอผู้ชมเครื่องอื่นจะหลุด ต้องเข้าด้วยรหัสใหม่")) return;
+    const code = newRoomCode();
+    writeJson(STORAGE.room, code);
+    setRoom(code);
   };
 
   // ---- persistence ----
@@ -341,6 +385,18 @@ export default function ChaserGame() {
             <span className="hidden truncate text-sm text-white/50 sm:inline">{PHASE_LABEL[game.phase]}</span>
           </div>
           <div className="flex shrink-0 items-center gap-2">
+            {room && (
+              <button
+                type="button"
+                onClick={copyDisplayLink}
+                title={`คัดลอกลิงก์จอผู้ชมสำหรับเครื่องอื่น · ${REMOTE_LABEL[remote]}`}
+                className="hidden h-10 items-center gap-1.5 rounded-xl md:flex border border-white/15 bg-white/5 px-3 text-sm text-white/80 transition-colors hover:bg-white/10"
+              >
+                <span className={`h-2 w-2 rounded-full ${REMOTE_DOT[remote]}`} aria-hidden />
+                {copied ? <HiCheck className="h-4 w-4 text-emerald-300" /> : <HiLink className="h-4 w-4" />}
+                <span className="font-mono tracking-widest">{room}</span>
+              </button>
+            )}
             <button
               type="button"
               onClick={openDisplay}
@@ -389,12 +445,77 @@ export default function ChaserGame() {
               setBank={setBank}
               validCount={validBank.length}
               onStart={start}
+              link={{ room, remote, copied, displayOn, onCopy: copyDisplayLink, onChangeRoom: changeRoom }}
             />
           )}
           {inRound && <RoundScreen game={game} onDecide={decide} onPrimary={primary} />}
           {game.phase === "interlude" && <InterludeScreen game={game} onStart={primary} />}
           {game.phase === "result" && <ResultScreen game={game} onReplay={endGame} />}
         </main>
+      </div>
+    </div>
+  );
+}
+
+const REMOTE_LABEL: Record<RemoteStatus, string> = {
+  off: "ยังไม่เชื่อมต่อเครือข่าย",
+  connecting: "กำลังเชื่อมต่อ…",
+  online: "พร้อมให้เครื่องอื่นเข้า",
+  error: "เครือข่ายขัดข้อง กำลังลองใหม่…",
+};
+const REMOTE_DOT: Record<RemoteStatus, string> = {
+  off: "bg-white/30",
+  connecting: "bg-amber-400 animate-pulse",
+  online: "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]",
+  error: "bg-rose-500 animate-pulse",
+};
+
+interface DisplayLinkProps {
+  room: string | null;
+  remote: RemoteStatus;
+  copied: boolean;
+  displayOn: boolean;
+  onCopy: () => void;
+  onChangeRoom: () => void;
+}
+
+/** How to put the audience screen on another device. */
+function DisplayLinkCard({ room, remote, copied, displayOn, onCopy, onChangeRoom }: DisplayLinkProps) {
+  return (
+    <div className="space-y-3 rounded-xl border border-white/10 bg-black/20 p-4">
+      <div className="flex items-center justify-between gap-2">
+        <span className="flex items-center gap-2 text-sm font-medium text-white/85">
+          <HiTv className="h-4 w-4" />
+          จอผู้ชมบนเครื่องอื่น
+        </span>
+        <span className="flex items-center gap-1.5 text-xs text-white/60">
+          <span className={`h-2 w-2 rounded-full ${REMOTE_DOT[remote]}`} aria-hidden />
+          {displayOn ? "มีจอผู้ชมเชื่อมต่ออยู่" : REMOTE_LABEL[remote]}
+        </span>
+      </div>
+      <p className="text-center font-mono text-3xl font-bold tracking-[0.35em] text-white">{room ?? "······"}</p>
+      <p className="text-xs leading-relaxed text-white/55">
+        เปิด <span className="font-mono text-white/75">/admin/chaser/display</span> บนอีกเครื่อง (ล็อกอินแอดมิน)
+        แล้วใส่รหัสนี้ หรือคัดลอกลิงก์ไปเปิดได้เลย
+      </p>
+      <div className="grid grid-cols-[1fr_auto] gap-2">
+        <button
+          type="button"
+          onClick={onCopy}
+          disabled={!room}
+          className="flex h-10 items-center justify-center gap-1.5 rounded-xl border border-white/15 bg-white/10 text-sm text-white hover:bg-white/15 disabled:opacity-40"
+        >
+          {copied ? <HiCheck className="h-4 w-4 text-emerald-300" /> : <HiLink className="h-4 w-4" />}
+          {copied ? "คัดลอกแล้ว" : "คัดลอกลิงก์จอผู้ชม"}
+        </button>
+        <button
+          type="button"
+          onClick={onChangeRoom}
+          title="สุ่มรหัสห้องใหม่"
+          className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white/70 hover:bg-white/10"
+        >
+          <HiArrowPath className="h-4 w-4" />
+        </button>
       </div>
     </div>
   );
@@ -496,6 +617,7 @@ function SetupScreen({
   setBank,
   validCount,
   onStart,
+  link,
 }: {
   draft: Draft;
   setDraft: React.Dispatch<React.SetStateAction<Draft>>;
@@ -503,6 +625,7 @@ function SetupScreen({
   setBank: React.Dispatch<React.SetStateAction<Question[]>>;
   validCount: number;
   onStart: () => void;
+  link: DisplayLinkProps;
 }) {
   const set = (key: keyof Draft) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setDraft((d) => ({ ...d, [key]: e.target.value }));
@@ -516,7 +639,7 @@ function SetupScreen({
           >
             CHASER
           </h1>
-          <p className="mt-1 text-sm text-white/60">เกมควิซไล่ล่า · พิธีกรควบคุมบนจอเดียว</p>
+          <p className="mt-1 text-sm text-white/60">เกมควิซไล่ล่า · พิธีกรควบคุม จอผู้ชมเปิดได้หลายเครื่อง</p>
         </div>
 
         <label className="block">
@@ -571,6 +694,8 @@ function SetupScreen({
           เริ่มเกม
         </button>
         {validCount === 0 && <p className="text-center text-sm text-amber-300">เพิ่มคำถามอย่างน้อย 1 ข้อก่อนเริ่ม</p>}
+
+        <DisplayLinkCard {...link} />
 
         <details className="rounded-xl border border-white/10 bg-black/20 p-3 text-sm text-white/70">
           <summary className="cursor-pointer font-medium text-white/85">กติกาย่อ & ปุ่มลัด</summary>

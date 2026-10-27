@@ -1,13 +1,14 @@
 "use client";
 // Audience screen for the Chaser game. Mirrors the host page over
-// BroadcastChannel (same browser) and adds the show: big clock, the step
-// tube, particles, shakes, call-outs and sound.
+// BroadcastChannel (same browser) and, with a room code, Supabase Realtime
+// (any device) — see ../sync.ts. Adds the show: big clock, the step tube,
+// particles, shakes, call-outs and sound.
 import { DANGER_SECONDS, formatClock, secondsLeft, type DisplayState } from "@/lib/chaser";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { HiArrowsPointingIn, HiArrowsPointingOut, HiPause, HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import { display } from "../fonts";
 import { playCountdown, playEventSound, sfx } from "../sounds";
-import { DISPLAY_PING_MS, openSync } from "../sync";
+import { DISPLAY_PING_MS, ROOM_LENGTH, cleanRoomCode, displayUrl, openSync } from "../sync";
 import { ParticleField } from "./particles";
 
 const BLUE = ["#e0f2fe", "#7dd3fc", "#38bdf8", "#0ea5e9", "#ffffff"];
@@ -51,7 +52,8 @@ const reducedMotion = () =>
 
 let nextId = 1;
 
-export default function ChaserDisplay() {
+export default function ChaserDisplay({ initialRoom = null }: { initialRoom?: string | null }) {
+  const [room, setRoom] = useState<string | null>(initialRoom);
   const [state, setState] = useState<DisplayState | null>(null);
   const [armed, setArmed] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -80,23 +82,27 @@ export default function ChaserDisplay() {
 
   // ---- sync with the host page ----
   useEffect(() => {
-    const sync = openSync((msg) => {
-      if (msg.type === "state") {
-        setState(msg.state);
-        setNoHost(false);
-      } else if (msg.type === "bye") {
-        setState(null);
-        prevRef.current = null;
-      }
+    setNoHost(false);
+    const sync = openSync({
+      room,
+      onMessage: (msg) => {
+        if (msg.type === "state") {
+          setState(msg.state);
+          setNoHost(false);
+        } else if (msg.type === "bye") {
+          setState(null);
+          prevRef.current = null;
+        }
+      },
+      // (Re)joined the room: ask the host for the current state.
+      onRemote: (status) => {
+        if (status === "online") sync.post({ type: "hello" });
+      },
     });
     syncRef.current = sync;
-    if (!sync) {
-      setNoHost(true);
-      return;
-    }
     sync.post({ type: "hello" });
     const ping = setInterval(() => sync.post({ type: "ping", sound: soundRef.current }), DISPLAY_PING_MS);
-    const waiting = setTimeout(() => setNoHost((n) => n || prevRef.current === null), 2500);
+    const waiting = setTimeout(() => setNoHost((n) => n || prevRef.current === null), room ? 6000 : 2500);
     const bye = () => sync.post({ type: "bye" });
     window.addEventListener("pagehide", bye);
     return () => {
@@ -107,7 +113,12 @@ export default function ChaserDisplay() {
       sync.close();
       syncRef.current = null;
     };
-  }, []);
+  }, [room]);
+
+  const joinRoom = (code: string) => {
+    setRoom(code);
+    window.history.replaceState(null, "", displayUrl(code));
+  };
 
   // ---- canvas ----
   useEffect(() => {
@@ -150,6 +161,7 @@ export default function ChaserDisplay() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.target instanceof HTMLInputElement) return; // typing a room code
       if (e.key === "m" || e.key === "M") setMuted((m) => !m);
       if (e.key === "f" || e.key === "F") toggleFullscreen();
     };
@@ -349,7 +361,7 @@ export default function ChaserDisplay() {
 
       <div ref={stageRef} className="relative z-10 flex h-full flex-col overflow-y-auto px-[4vw] py-[3vh]">
         {!state ? (
-          <Waiting noHost={noHost} />
+          <Waiting noHost={noHost} room={room} onJoin={joinRoom} />
         ) : state.phase === "setup" ? (
           <Intro state={state} />
         ) : (
@@ -512,7 +524,13 @@ function CornerButton({ label, onClick, children }: { label: string; onClick: ()
 
 // ---------- screens ----------
 
-function Waiting({ noHost }: { noHost: boolean }) {
+function Waiting({ noHost, room, onJoin }: { noHost: boolean; room: string | null; onJoin: (room: string) => void }) {
+  const [input, setInput] = useState("");
+  const code = cleanRoomCode(input);
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (code) onJoin(code);
+  };
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-6 text-center">
       <p
@@ -522,8 +540,36 @@ function Waiting({ noHost }: { noHost: boolean }) {
         CHASER
       </p>
       <p className="text-xl text-white/60 sm:text-2xl">
-        {noHost ? "ยังไม่พบหน้าพิธีกร — เปิด /admin/chaser ในเบราว์เซอร์เดียวกัน" : "กำลังเชื่อมต่อหน้าพิธีกร…"}
+        {!noHost
+          ? room
+            ? `กำลังเชื่อมต่อห้อง ${room}…`
+            : "กำลังเชื่อมต่อหน้าพิธีกร…"
+          : room
+            ? `ยังไม่พบหน้าพิธีกรในห้อง ${room} — ตรวจรหัสบนหน้า /admin/chaser`
+            : "ยังไม่พบหน้าพิธีกร — ใส่รหัสห้องจากหน้า /admin/chaser"}
       </p>
+      {(noHost || !room) && (
+        <form onSubmit={submit} className="flex items-center gap-3">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value.toUpperCase())}
+            placeholder={room ?? "รหัสห้อง"}
+            maxLength={ROOM_LENGTH + 2}
+            autoCapitalize="characters"
+            autoComplete="off"
+            spellCheck={false}
+            aria-label="รหัสห้อง"
+            className="h-14 w-56 rounded-2xl border border-white/20 bg-white/5 px-4 text-center font-mono text-2xl tracking-[0.3em] text-white placeholder:tracking-normal placeholder:text-white/30 focus:border-sky-400 focus:outline-none"
+          />
+          <button
+            type="submit"
+            disabled={!code}
+            className="h-14 rounded-2xl bg-sky-500 px-6 text-lg font-semibold text-white transition hover:bg-sky-400 disabled:opacity-40"
+          >
+            เชื่อมต่อ
+          </button>
+        </form>
+      )}
     </div>
   );
 }
