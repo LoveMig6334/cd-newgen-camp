@@ -13,9 +13,11 @@ import {
   dayKey,
   formatClock,
   formatQuestions,
+  insertByCategory,
   listCategories,
   mixByCategory,
   newGame,
+  newStandardQuestions,
   parseQuestions,
   questionKey,
   sanitizeBank,
@@ -424,4 +426,26 @@ test("display state keeps the question during Pushback", () => {
   assert.equal(d.pushback, true);
   assert.equal(d.question, currentQuestion(g).question);
   assert.equal(d.event.kind, "pushback");
+});
+
+test("insertByCategory puts each new question after its category, new categories at the end", () => {
+  const q = (id, category) => ({ id, category });
+  const bank = [q("a1", "A"), q("b1", "B"), q("a2", "A")];
+  assert.deepEqual(
+    insertByCategory(bank, [q("b2", "B"), q("c1", "C"), q("a3", "A"), q("c2", "C")]).map((x) => x.id),
+    ["a1", "b1", "b2", "a2", "a3", "c1", "c2"],
+  );
+  assert.equal(bank.length, 3, "input untouched");
+});
+
+test("newStandardQuestions: new ones arrive, deleted ones stay deleted", () => {
+  const std = bankOf(["ก"], 4); // ก คำถาม 0..3
+  const bank = [std[0], std[1]];
+  // First run after the update: whatever isn't in the bank is offered.
+  assert.deepEqual(newStandardQuestions(bank, std, null).map((x) => x.id), ["ก2", "ก3"]);
+  // Later: the host deleted ก1 (seen before) — not offered again; ก3 is new.
+  const seen = new Set([std[0], std[1], std[2]].map(questionKey));
+  assert.deepEqual(newStandardQuestions([std[0], std[2]], std, seen).map((x) => x.id), ["ก3"]);
+  // Same text with another id counts as already there.
+  assert.deepEqual(newStandardQuestions([{ ...std[3], id: "x" }, ...bank], std, seen), []);
 });

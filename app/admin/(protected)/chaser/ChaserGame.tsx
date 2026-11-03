@@ -16,8 +16,10 @@ import {
   formatClock,
   formatQuestions,
   isQuestionVisible,
+  insertByCategory,
   listCategories,
   newGame,
+  newStandardQuestions,
   parseQuestions,
   questionKey,
   sanitizeBank,
@@ -67,6 +69,8 @@ const STORAGE = {
   used: "chaser:used",
   /** Categories switched off for new games. */
   categoriesOff: "chaser:categories-off",
+  /** questionKey()s of standard questions already given to this browser. */
+  standardSeen: "chaser:standard-seen",
   muted: "chaser:muted",
   room: "chaser:room",
 };
@@ -142,6 +146,8 @@ export default function ChaserGame() {
   const [categoriesOff, setCategoriesOff] = useState<string[]>([]);
   /** deck[0..deckFresh) hadn't been asked today when this game started. */
   const [deckFresh, setDeckFresh] = useState(0);
+  /** New standard questions merged into a saved bank on this load. */
+  const [standardAdded, setStandardAdded] = useState(0);
   const [muted, setMuted] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
@@ -258,7 +264,15 @@ export default function ChaserGame() {
     const settings = readJson(STORAGE.settings);
     if (settings) setDraft(toDraft(sanitizeSettings(settings)));
     const stored = sanitizeBank(readJson(STORAGE.bank));
-    if (stored) setBank(stored);
+    const seenRaw = readJson(STORAGE.standardSeen);
+    const seen = Array.isArray(seenRaw) ? new Set(seenRaw.filter((k): k is string => typeof k === "string")) : null;
+    if (stored) {
+      // Questions added to the standard bank since this browser saved its own.
+      const fresh = newStandardQuestions(stored, STANDARD_QUESTIONS, seen);
+      setBank(fresh.length ? insertByCategory(stored, fresh) : stored);
+      setStandardAdded(fresh.length);
+    }
+    writeJson(STORAGE.standardSeen, [...new Set([...(seen ?? []), ...STANDARD_QUESTIONS.map(questionKey)])]);
     setLegacyBank(sanitizeBank(readJson(STORAGE.legacyBank)) ?? []);
     setUsedLog(sanitizeUsed(readJson(STORAGE.used), dayKey()));
     const off = readJson(STORAGE.categoriesOff);
@@ -514,6 +528,7 @@ export default function ChaserGame() {
               bank={bank}
               setBank={setBank}
               legacyBank={legacyBank}
+              standardAdded={standardAdded}
               validCount={validBank.length}
               pool={pool}
               onStart={start}
@@ -695,6 +710,7 @@ function SetupScreen({
   bank,
   setBank,
   legacyBank,
+  standardAdded,
   validCount,
   pool,
   onStart,
@@ -706,6 +722,7 @@ function SetupScreen({
   bank: Question[];
   setBank: React.Dispatch<React.SetStateAction<Question[]>>;
   legacyBank: Question[];
+  standardAdded: number;
   validCount: number;
   /** Questions in the categories switched on; `fresh` = not asked yet today. */
   pool: { total: number; fresh: number };
@@ -810,7 +827,13 @@ function SetupScreen({
 
       <div className="flex min-w-0 flex-col gap-5">
         <CategoryPicker {...categories} />
-        <QuestionBank bank={bank} setBank={setBank} legacyBank={legacyBank} validCount={validCount} />
+        <QuestionBank
+          bank={bank}
+          setBank={setBank}
+          legacyBank={legacyBank}
+          validCount={validCount}
+          standardAdded={standardAdded}
+        />
       </div>
     </div>
   );
@@ -933,11 +956,14 @@ function QuestionBank({
   setBank,
   legacyBank,
   validCount,
+  standardAdded,
 }: {
   bank: Question[];
   setBank: React.Dispatch<React.SetStateAction<Question[]>>;
   legacyBank: Question[];
   validCount: number;
+  /** New standard questions merged in on this load (shown once). */
+  standardAdded: number;
 }) {
   const [adding, setAdding] = useState({ question: "", answer: "", category: "" });
   const [showText, setShowText] = useState(false);
@@ -1046,6 +1072,12 @@ function QuestionBank({
           </button>
         </div>
       </div>
+
+      {standardAdded > 0 && (
+        <p className="mt-3 rounded-lg border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200">
+          เพิ่มคำถามใหม่จากชุดมาตรฐานเข้าคลังแล้ว {standardAdded} ข้อ
+        </p>
+      )}
 
       {showText && (
         <div className="mt-4 space-y-2 rounded-xl border border-white/10 bg-black/30 p-3">

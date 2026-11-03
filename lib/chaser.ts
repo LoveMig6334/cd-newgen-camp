@@ -392,6 +392,44 @@ export function bankFromText(text: string, prefix = "std"): Question[] {
   return parseQuestions(text).questions.map((q) => ({ id: `${prefix}-${questionKey(q)}`, ...q }));
 }
 
+/**
+ * `bank` plus `additions`, each placed right after the last question of its
+ * category (a new category goes at the end), keeping the additions' order.
+ */
+export function insertByCategory<T extends Pick<Question, "category">>(bank: readonly T[], additions: readonly T[]): T[] {
+  const out = [...bank];
+  for (const q of additions) {
+    let at = -1;
+    for (let i = out.length - 1; i >= 0; i--) {
+      if (out[i].category === q.category) {
+        at = i;
+        break;
+      }
+    }
+    if (at < 0) out.push(q);
+    else out.splice(at + 1, 0, q);
+  }
+  return out;
+}
+
+/**
+ * Standard questions this browser hasn't been offered yet. `seen` = the
+ * questionKey()s of standard questions already offered (null on the first
+ * run: everything already in the bank counts as offered). Questions the host
+ * deleted stay deleted; questions added to the standard bank later arrive.
+ */
+export function newStandardQuestions<T extends Question>(
+  bank: readonly Question[],
+  standard: readonly T[],
+  seen: ReadonlySet<string> | null,
+): T[] {
+  const inBank = new Set(bank.map(questionKey));
+  return standard.filter((q) => {
+    const key = questionKey(q);
+    return !inBank.has(key) && (seen === null || !seen.has(key));
+  });
+}
+
 /** Categories in first-seen order with their question counts. */
 export function listCategories(bank: readonly Pick<Question, "category">[]): { name: string; count: number }[] {
   const counts = new Map<string, number>();
