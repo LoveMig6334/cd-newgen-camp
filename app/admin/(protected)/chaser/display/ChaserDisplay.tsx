@@ -907,7 +907,16 @@ function QuestionPanel({ state }: { state: DisplayState }) {
       )}
       {state.question ? (
         <>
-          {!pushback && <p className="text-base text-white/45 sm:text-lg">ข้อที่ {state.questionNumber}</p>}
+          {!pushback && (
+            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-base text-white/45 sm:text-lg">
+              <span>ข้อที่ {state.questionNumber}</span>
+              {state.category && (
+                <span className="rounded-full border border-white/20 bg-white/5 px-3 py-0.5 text-white/75">
+                  {state.category}
+                </span>
+              )}
+            </p>
+          )}
           <p className="font-semibold leading-snug text-white" style={{ fontSize: "clamp(1.6rem, 4.6vh, 3.75rem)" }}>
             {state.question}
           </p>

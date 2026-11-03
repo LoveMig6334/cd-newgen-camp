@@ -11,6 +11,9 @@ export const DEFAULT_ROUND_SECONDS = 120;
 export const MIN_ROUND_SECONDS = 10;
 export const MAX_ROUND_SECONDS = 600;
 export const MAX_NAME_CHARS = 40;
+export const MAX_CATEGORY_CHARS = 30;
+/** Category for questions imported without one. */
+export const DEFAULT_CATEGORY = "อื่น ๆ";
 /** Countdown beeps on the last N seconds. */
 export const BEEP_SECONDS = 5;
 /** Clock turns red and blinks on the last N seconds. */
@@ -33,7 +36,11 @@ export interface Question {
   id: string;
   question: string;
   answer: string;
+  category: string;
 }
+
+/** A question as typed or imported (no id yet). */
+export type QuestionInput = Omit<Question, "id">;
 
 export interface ChaserSettings {
   playerName: string;
@@ -231,6 +238,7 @@ export interface DisplayState {
   settings: ChaserSettings;
   /** Shown only while the clock runs or during Pushback (like the host view). */
   question: string | null;
+  category: string | null;
   questionNumber: number;
   started: boolean;
   running: boolean;
@@ -247,13 +255,19 @@ export interface DisplayState {
   event: ChaserGame["event"];
 }
 
-export function toDisplayState(game: ChaserGame): DisplayState {
+/** The current question is on screen (clock running, or Pushback). */
+export function isQuestionVisible(game: ChaserGame): boolean {
   const inRound = game.phase === "round1" || game.phase === "round2";
-  const visible = inRound && game.started && (game.running || game.pushback);
+  return inRound && game.started && (game.running || game.pushback);
+}
+
+export function toDisplayState(game: ChaserGame): DisplayState {
+  const q = isQuestionVisible(game) ? currentQuestion(game) : null;
   return {
     phase: game.phase,
     settings: game.settings,
-    question: visible ? (currentQuestion(game)?.question ?? null) : null,
+    question: q?.question ?? null,
+    category: q?.category ?? null,
     questionNumber: game.cursor + 1,
     started: game.started,
     running: game.running,
@@ -283,6 +297,12 @@ const clampSeconds = (v: unknown) => {
 const cleanName = (v: unknown, fallback: string) =>
   (typeof v === "string" ? v.trim().slice(0, MAX_NAME_CHARS) : "") || fallback;
 
+/** Trimmed, single-spaced, capped; empty → DEFAULT_CATEGORY. */
+export function cleanCategory(v: unknown): string {
+  const s = typeof v === "string" ? v.replace(/\s+/g, " ").trim().slice(0, MAX_CATEGORY_CHARS).trim() : "";
+  return s || DEFAULT_CATEGORY;
+}
+
 export function sanitizeSettings(raw: unknown): ChaserSettings {
   const r = (raw ?? {}) as Partial<Record<keyof ChaserSettings, unknown>>;
   return {
@@ -306,35 +326,77 @@ export function sanitizeBank(raw: unknown): Question[] | null {
     const answer = q.answer.trim();
     if (!question || !answer) continue;
     seen.add(q.id);
-    out.push({ id: q.id, question, answer });
+    out.push({ id: q.id, question, answer, category: cleanCategory(q.category) });
   }
   return out;
 }
 
 /**
- * One question per line: `คำถาม | คำตอบ`, or tab-separated (pasted from a
- * spreadsheet). Splits on the last separator so questions may contain "|".
+ * One question per line: `คำถาม | คำตอบ` (split on the last "|", so questions
+ * may contain one), or pasted spreadsheet columns `คำถาม⇥คำตอบ` /
+ * `หมวด⇥คำถาม⇥คำตอบ`. A line `# หมวด` sets the category of the lines below it
+ * (until the next header); before any header it is `category`.
  */
-export function parseQuestions(text: string): {
-  questions: { question: string; answer: string }[];
-  skipped: number;
-} {
-  const questions: { question: string; answer: string }[] = [];
+export function parseQuestions(
+  text: string,
+  category: string = DEFAULT_CATEGORY,
+): { questions: QuestionInput[]; skipped: number } {
+  const questions: QuestionInput[] = [];
+  let current = cleanCategory(category);
   let skipped = 0;
   for (const line of text.split(/\r?\n/)) {
-    if (!line.trim()) continue;
-    const sep = line.includes("\t") ? "\t" : "|";
-    const at = line.lastIndexOf(sep);
-    const question = at > 0 ? line.slice(0, at).trim() : "";
-    const answer = at > 0 ? line.slice(at + 1).trim() : "";
-    if (question && answer) questions.push({ question, answer });
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    const tabs = line.includes("\t");
+    if (trimmed.startsWith("#") && !tabs && !line.includes("|")) {
+      current = cleanCategory(trimmed.replace(/^#+/, ""));
+      continue;
+    }
+    let cat = current;
+    let question = "";
+    let answer = "";
+    if (tabs) {
+      const cols = line.split("\t").map((c) => c.trim());
+      answer = cols.pop() ?? "";
+      if (cols.length >= 2) cat = cleanCategory(cols.shift());
+      question = cols.join(" ").trim();
+    } else {
+      const at = line.lastIndexOf("|");
+      question = at > 0 ? line.slice(0, at).trim() : "";
+      answer = at > 0 ? line.slice(at + 1).trim() : "";
+    }
+    if (question && answer) questions.push({ question, answer, category: cat });
     else skipped++;
   }
   return { questions, skipped };
 }
 
-export function formatQuestions(list: { question: string; answer: string }[]): string {
-  return list.map((q) => `${q.question} | ${q.answer}`).join("\n");
+/** Inverse of parseQuestions: a `# หมวด` line wherever the category changes. */
+export function formatQuestions(list: readonly QuestionInput[]): string {
+  const lines: string[] = [];
+  let current: string | null = null;
+  for (const q of list) {
+    const cat = cleanCategory(q.category);
+    if (cat !== current) {
+      if (lines.length) lines.push("");
+      lines.push(`# ${cat}`);
+      current = cat;
+    }
+    lines.push(`${q.question} | ${q.answer}`);
+  }
+  return lines.join("\n");
+}
+
+/** Built-in bank text → questions whose ids stay the same across deploys. */
+export function bankFromText(text: string, prefix = "std"): Question[] {
+  return parseQuestions(text).questions.map((q) => ({ id: `${prefix}-${questionKey(q)}`, ...q }));
+}
+
+/** Categories in first-seen order with their question counts. */
+export function listCategories(bank: readonly Pick<Question, "category">[]): { name: string; count: number }[] {
+  const counts = new Map<string, number>();
+  for (const q of bank) counts.set(q.category, (counts.get(q.category) ?? 0) + 1);
+  return [...counts].map(([name, count]) => ({ name, count }));
 }
 
 /** Fisher–Yates; `random` returns [0, 1). */
@@ -345,4 +407,125 @@ export function shuffle<T>(list: readonly T[], random: () => number = Math.rando
     [out[i], out[j]] = [out[j], out[i]];
   }
   return out;
+}
+
+// ---------- deck: spread categories, no repeats within a day ----------
+
+/**
+ * Stable short key for "the same question" — by its text, so re-importing the
+ * same question (new id) still counts as already asked. FNV-1a, base36.
+ */
+export function questionKey(q: Pick<Question, "question">): string {
+  const text = q.question.normalize("NFC").replace(/\s+/g, " ").trim().toLowerCase();
+  let h = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) {
+    h ^= text.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(36);
+}
+
+/** Local calendar day, e.g. "2026-11-03" (the device's time zone). */
+export function dayKey(date: Date = new Date()): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+/** Questions already shown today: `{ day, keys }` from questionKey(). */
+export interface UsedLog {
+  day: string;
+  keys: string[];
+}
+
+const MAX_USED_KEYS = 5000;
+
+/** Stored log → today's keys only (a log from another day is empty). */
+export function sanitizeUsed(raw: unknown, today: string): UsedLog {
+  const r = (raw ?? {}) as Partial<Record<keyof UsedLog, unknown>>;
+  if (r.day !== today || !Array.isArray(r.keys)) return { day: today, keys: [] };
+  const keys = [...new Set(r.keys.filter((k): k is string => typeof k === "string" && k.length > 0 && k.length < 32))];
+  return { day: today, keys: keys.slice(-MAX_USED_KEYS) };
+}
+
+/** Add one key for `today` (starting a new log when the day has changed). */
+export function addUsed(log: UsedLog, key: string, today: string): UsedLog {
+  const keys = log.day === today ? log.keys : [];
+  if (keys.includes(key)) return log.day === today ? log : { day: today, keys };
+  return { day: today, keys: [...keys, key].slice(-MAX_USED_KEYS) };
+}
+
+/**
+ * Random order that spreads categories out: each pick avoids the last two
+ * categories (when there are enough of them) and favours the categories with
+ * the most questions left, so every stretch of the deck mixes the whole bank.
+ * `recent` = categories just before this list (to keep a seam spread too).
+ */
+export function mixByCategory<T extends Pick<Question, "category">>(
+  list: readonly T[],
+  random: () => number = Math.random,
+  recent: readonly string[] = [],
+): T[] {
+  const groups = new Map<string, T[]>();
+  for (const q of shuffle(list, random)) {
+    const g = groups.get(q.category);
+    if (g) g.push(q);
+    else groups.set(q.category, [q]);
+  }
+  const gap = Math.min(2, groups.size - 1);
+  const last = gap > 0 ? recent.slice(-gap) : [];
+  const out: T[] = [];
+  while (out.length < list.length) {
+    const live = [...groups].filter(([, qs]) => qs.length > 0);
+    let choices = live.filter(([c]) => !last.includes(c));
+    if (!choices.length) choices = live.filter(([c]) => c !== last[last.length - 1]);
+    if (!choices.length) choices = live;
+    const total = choices.reduce((n, [, qs]) => n + qs.length, 0);
+    let r = random() * total;
+    let pick = choices[choices.length - 1];
+    for (const choice of choices) {
+      r -= choice[1].length;
+      if (r < 0) {
+        pick = choice;
+        break;
+      }
+    }
+    out.push(pick[1].pop()!);
+    if (gap > 0) {
+      last.push(pick[0]);
+      if (last.length > gap) last.shift();
+    }
+  }
+  return out;
+}
+
+export interface DeckOptions {
+  /** questionKey()s already shown today. */
+  used?: ReadonlySet<string>;
+  /** Categories switched off for this game. */
+  off?: ReadonlySet<string>;
+  random?: () => number;
+}
+
+/**
+ * The game deck: questions not yet shown today first (spread by category),
+ * then — only if a game outlasts them — today's used ones. Duplicate question
+ * texts in the bank count once. `fresh` = how many come before the repeats.
+ */
+export function buildDeck<T extends Question>(
+  bank: readonly T[],
+  { used = new Set(), off = new Set(), random = Math.random }: DeckOptions = {},
+): { deck: T[]; fresh: number } {
+  const seen = new Set<string>();
+  const unused: T[] = [];
+  const again: T[] = [];
+  for (const q of bank) {
+    if (off.has(q.category)) continue;
+    const key = questionKey(q);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    (used.has(key) ? again : unused).push(q);
+  }
+  const first = mixByCategory(unused, random);
+  const rest = mixByCategory(again, random, first.slice(-2).map((q) => q.category));
+  return { deck: [...first, ...rest], fresh: first.length };
 }

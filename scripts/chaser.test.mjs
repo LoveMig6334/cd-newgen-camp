@@ -3,21 +3,49 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
+  DEFAULT_CATEGORY,
   DEFAULT_SETTINGS,
+  addUsed,
+  buildDeck,
   chaserReducer,
+  cleanCategory,
   currentQuestion,
+  dayKey,
   formatClock,
   formatQuestions,
+  listCategories,
+  mixByCategory,
   newGame,
   parseQuestions,
+  questionKey,
   sanitizeBank,
   sanitizeSettings,
+  sanitizeUsed,
   secondsLeft,
   shuffle,
   toDisplayState,
 } from "../lib/chaser.ts";
+import { STANDARD_BANK_TEXT, STANDARD_QUESTIONS } from "../lib/chaserQuestions.ts";
 
-const deck = Array.from({ length: 5 }, (_, i) => ({ id: `q${i}`, question: `Q${i}`, answer: `A${i}` }));
+const deck = Array.from({ length: 5 }, (_, i) => ({ id: `q${i}`, question: `Q${i}`, answer: `A${i}`, category: "ทดสอบ" }));
+
+/** Deterministic [0, 1) generator (mulberry32) so deck tests are repeatable. */
+function seeded(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** `perCat` questions in each of `cats` categories. */
+const bankOf = (cats, perCat) =>
+  cats.flatMap((c) =>
+    Array.from({ length: perCat }, (_, i) => ({ id: `${c}${i}`, question: `${c} คำถาม ${i}`, answer: "x", category: c })),
+  );
 const settings = { ...DEFAULT_SETTINGS, round1Seconds: 120, round2Seconds: 120 };
 const run = (game, ...actions) => actions.reduce(chaserReducer, game);
 const v = (verdict) => ({ type: "verdict", verdict });
@@ -207,23 +235,166 @@ test("stored bank is sanitized", () => {
       { id: "a", question: "dup", answer: "x" },
       { id: "b", question: "", answer: "x" },
       { id: 3, question: "Q", answer: "A" },
+      { id: "c", question: "Q2", answer: "A2", category: "  ฟิสิกส์   ทดลอง " },
       null,
     ]),
-    [{ id: "a", question: "Q", answer: "A" }],
+    [
+      { id: "a", question: "Q", answer: "A", category: DEFAULT_CATEGORY },
+      { id: "c", question: "Q2", answer: "A2", category: "ฟิสิกส์ ทดลอง" },
+    ],
   );
+  assert.equal(cleanCategory("   "), DEFAULT_CATEGORY);
+  assert.equal(cleanCategory("ก".repeat(50)).length, 30);
 });
 
 test("parseQuestions reads `q | a` and tab-separated lines", () => {
   const { questions, skipped } = parseQuestions(
     "1+1 เท่ากับ? | 2\n\nA|B คืออะไร | ตัวอักษร\r\nเมืองหลวงไทย\tกรุงเทพฯ\nไม่มีคำตอบ\n| ไม่มีคำถาม",
   );
+  const c = DEFAULT_CATEGORY;
   assert.deepEqual(questions, [
-    { question: "1+1 เท่ากับ?", answer: "2" },
-    { question: "A|B คืออะไร", answer: "ตัวอักษร" },
-    { question: "เมืองหลวงไทย", answer: "กรุงเทพฯ" },
+    { question: "1+1 เท่ากับ?", answer: "2", category: c },
+    { question: "A|B คืออะไร", answer: "ตัวอักษร", category: c },
+    { question: "เมืองหลวงไทย", answer: "กรุงเทพฯ", category: c },
   ]);
   assert.equal(skipped, 2);
   assert.deepEqual(parseQuestions(formatQuestions(questions)).questions, questions);
+});
+
+test("parseQuestions: `# หมวด` headers and 3-column spreadsheet rows set the category", () => {
+  const text = [
+    "ก่อนหัวข้อ | 0",
+    "# ฟิสิกส์",
+    "หน่วยของแรง | นิวตัน",
+    "ใน Python ใช้อะไรขึ้นต้นคอมเมนต์ | #",
+    "## เกม ",
+    "#แท็กในคำถาม | ใช่",
+    "ชีววิทยา\tอวัยวะสูบฉีดเลือด\tหัวใจ",
+    "สองคอลัมน์\tใช้หมวดปัจจุบัน",
+    "#",
+    "หลังหัวข้อว่าง | ได้",
+  ].join("\n");
+  const { questions, skipped } = parseQuestions(text, "เริ่มต้น");
+  assert.equal(skipped, 0);
+  assert.deepEqual(
+    questions.map((q) => [q.category, q.question, q.answer]),
+    [
+      ["เริ่มต้น", "ก่อนหัวข้อ", "0"],
+      ["ฟิสิกส์", "หน่วยของแรง", "นิวตัน"],
+      ["ฟิสิกส์", "ใน Python ใช้อะไรขึ้นต้นคอมเมนต์", "#"],
+      ["เกม", "#แท็กในคำถาม", "ใช่"],
+      ["ชีววิทยา", "อวัยวะสูบฉีดเลือด", "หัวใจ"],
+      ["เกม", "สองคอลัมน์", "ใช้หมวดปัจจุบัน"],
+      [DEFAULT_CATEGORY, "หลังหัวข้อว่าง", "ได้"],
+    ],
+  );
+  // format → parse keeps order and categories, even when they interleave.
+  assert.deepEqual(parseQuestions(formatQuestions(questions)).questions, questions);
+  assert.match(formatQuestions(questions), /^# เริ่มต้น\nก่อนหัวข้อ \| 0\n\n# ฟิสิกส์\n/);
+});
+
+test("listCategories counts in first-seen order", () => {
+  assert.deepEqual(listCategories([{ category: "b" }, { category: "a" }, { category: "b" }]), [
+    { name: "b", count: 2 },
+    { name: "a", count: 1 },
+  ]);
+});
+
+test("questionKey ignores spacing/case and differs between questions", () => {
+  assert.equal(questionKey({ question: "  Hello   World " }), questionKey({ question: "hello world" }));
+  assert.notEqual(questionKey({ question: "ข้อ 1" }), questionKey({ question: "ข้อ 2" }));
+  assert.match(questionKey({ question: "x" }), /^[0-9a-z]+$/);
+});
+
+test("used log: only today's keys count, and a new day starts empty", () => {
+  assert.equal(dayKey(new Date(2026, 10, 3, 23, 59)), "2026-11-03");
+  assert.equal(dayKey(new Date(2026, 0, 9)), "2026-01-09");
+  assert.deepEqual(sanitizeUsed(null, "2026-11-03"), { day: "2026-11-03", keys: [] });
+  assert.deepEqual(sanitizeUsed({ day: "2026-11-02", keys: ["a"] }, "2026-11-03").keys, []);
+  assert.deepEqual(sanitizeUsed({ day: "2026-11-03", keys: ["a", "a", 5, "", "b"] }, "2026-11-03").keys, ["a", "b"]);
+
+  const log = addUsed({ day: "2026-11-03", keys: ["a"] }, "b", "2026-11-03");
+  assert.deepEqual(log.keys, ["a", "b"]);
+  assert.equal(addUsed(log, "b", "2026-11-03"), log, "same key twice is a no-op");
+  assert.deepEqual(addUsed(log, "c", "2026-11-04"), { day: "2026-11-04", keys: ["c"] });
+});
+
+test("mixByCategory keeps every question and never repeats a category back-to-back when it can avoid it", () => {
+  const bank = bankOf(["ก", "ข", "ค", "ง", "จ"], 10);
+  for (let seed = 1; seed <= 20; seed++) {
+    const out = mixByCategory(bank, seeded(seed));
+    assert.deepEqual(out.map((q) => q.id).sort(), bank.map((q) => q.id).sort());
+    for (let i = 2; i < out.length - 6; i++) {
+      // Away from the very end (where only one category may be left), no category within 3 in a row.
+      const window = new Set([out[i - 2].category, out[i - 1].category, out[i].category]);
+      assert.equal(window.size, 3, `seed ${seed} at ${i}`);
+    }
+  }
+});
+
+test("mixByCategory spreads categories: every early stretch covers them all", () => {
+  const cats = ["ก", "ข", "ค", "ง", "จ", "ฉ"];
+  const bank = bankOf(cats, 20);
+  for (let seed = 1; seed <= 10; seed++) {
+    const first = mixByCategory(bank, seeded(seed)).slice(0, 24);
+    for (const c of cats) {
+      const n = first.filter((q) => q.category === c).length;
+      assert.ok(n >= 2 && n <= 7, `seed ${seed}: ${c} appears ${n}× in the first 24`);
+    }
+  }
+});
+
+test("mixByCategory with one category is just a shuffle", () => {
+  const bank = bankOf(["ก"], 8);
+  assert.equal(mixByCategory(bank, seeded(3)).length, 8);
+  assert.deepEqual(mixByCategory([], seeded(3)), []);
+});
+
+test("buildDeck: today's unused questions first, repeats only after them", () => {
+  const bank = bankOf(["ก", "ข", "ค"], 5);
+  const used = new Set(bank.filter((q, i) => i % 3 === 0).map(questionKey));
+  const { deck, fresh } = buildDeck(bank, { used, random: seeded(7) });
+  assert.equal(deck.length, bank.length);
+  assert.equal(fresh, bank.length - used.size);
+  assert.ok(deck.slice(0, fresh).every((q) => !used.has(questionKey(q))));
+  assert.ok(deck.slice(fresh).every((q) => used.has(questionKey(q))));
+});
+
+test("buildDeck: categories switched off are left out, duplicate texts count once", () => {
+  const bank = [...bankOf(["ก", "ข"], 4), { id: "dup", question: "ก  คำถาม 0", answer: "y", category: "ก" }];
+  const { deck, fresh } = buildDeck(bank, { off: new Set(["ข"]), random: seeded(1) });
+  assert.equal(fresh, 4);
+  assert.deepEqual(deck.map((q) => q.category), ["ก", "ก", "ก", "ก"]);
+  assert.ok(!deck.some((q) => q.id === "dup"));
+  assert.deepEqual(buildDeck(bank, { off: new Set(["ก", "ข"]) }), { deck: [], fresh: 0 });
+});
+
+test("replaying the same day never repeats a question until the bank runs out", () => {
+  const bank = bankOf(["ก", "ข", "ค", "ง"], 10);
+  let used = new Set();
+  const asked = [];
+  for (let game = 0; game < 4; game++) {
+    const { deck } = buildDeck(bank, { used, random: seeded(100 + game) });
+    for (const q of deck.slice(0, 10)) {
+      asked.push(q.id);
+      used = new Set([...used, questionKey(q)]);
+    }
+  }
+  assert.equal(new Set(asked).size, 40, "4 games × 10 questions, all different");
+  // Bank exhausted: the next game still gets a full deck (repeats allowed again).
+  assert.equal(buildDeck(bank, { used }).deck.length, 40);
+  assert.equal(buildDeck(bank, { used }).fresh, 0);
+});
+
+test("standard bank: every line parses, ids are unique, categories are balanced", () => {
+  assert.equal(parseQuestions(STANDARD_BANK_TEXT).skipped, 0);
+  const ids = new Set(STANDARD_QUESTIONS.map((q) => q.id));
+  assert.equal(ids.size, STANDARD_QUESTIONS.length, "no duplicate question texts");
+  assert.ok(STANDARD_QUESTIONS.length >= 300);
+  const cats = listCategories(STANDARD_QUESTIONS);
+  assert.ok(cats.length >= 15);
+  assert.ok(cats.every((c) => c.name !== DEFAULT_CATEGORY && c.count >= 15), JSON.stringify(cats));
+  assert.deepEqual(sanitizeBank(STANDARD_QUESTIONS), STANDARD_QUESTIONS, "already clean");
 });
 
 test("shuffle keeps every item", () => {
@@ -239,10 +410,12 @@ test("display state never carries answers and hides the question while paused", 
   const running = run(ready, { type: "go" });
   const d = toDisplayState(running);
   assert.equal(d.question, "Q0");
+  assert.equal(d.category, "ทดสอบ");
   assert.equal(d.totalMs, 120_000);
   assert.ok(!JSON.stringify(d).includes("A0"), "no answer in the payload");
   assert.ok(!("deck" in d));
   assert.equal(toDisplayState(run(running, { type: "pause" })).question, null);
+  assert.equal(toDisplayState(run(running, { type: "pause" })).category, null);
 });
 
 test("display state keeps the question during Pushback", () => {

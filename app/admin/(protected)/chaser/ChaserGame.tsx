@@ -1,30 +1,40 @@
 "use client";
 import {
   DANGER_SECONDS,
+  DEFAULT_CATEGORY,
   DEFAULT_SETTINGS,
+  MAX_CATEGORY_CHARS,
   MAX_NAME_CHARS,
   MAX_ROUND_SECONDS,
   MIN_ROUND_SECONDS,
+  addUsed,
+  buildDeck,
   chaserReducer,
+  cleanCategory,
   currentQuestion,
+  dayKey,
   formatClock,
   formatQuestions,
+  isQuestionVisible,
+  listCategories,
   newGame,
   parseQuestions,
+  questionKey,
   sanitizeBank,
   sanitizeSettings,
+  sanitizeUsed,
   secondsLeft,
-  shuffle,
   toDisplayState,
   type ChaserGame as Game,
   type ChaserSettings,
   type GameEventKind,
   type Question,
+  type UsedLog,
   type Verdict,
 } from "@/lib/chaser";
-import { SAMPLE_QUESTIONS } from "@/lib/chaserQuestions";
+import { STANDARD_QUESTIONS } from "@/lib/chaserQuestions";
 import Link from "next/link";
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
   HiArrowLeft,
   HiArrowPath,
@@ -33,6 +43,7 @@ import {
   HiCheck,
   HiLink,
   HiForward,
+  HiMagnifyingGlass,
   HiPause,
   HiPlay,
   HiPlus,
@@ -46,7 +57,19 @@ import { display } from "./fonts";
 import { playCountdown, playEventSound, sfx } from "./sounds";
 import { DISPLAY_TIMEOUT_MS, cleanRoomCode, displayUrl, newRoomCode, openSync, type RemoteStatus } from "./sync";
 
-const STORAGE = { settings: "chaser:settings", bank: "chaser:bank", muted: "chaser:muted", room: "chaser:room" };
+const STORAGE = {
+  settings: "chaser:settings",
+  /** v2 = questions with categories; the standard bank changed with it. */
+  bank: "chaser:bank:v2",
+  /** Bank saved before v2 (no categories) — offered back, never deleted. */
+  legacyBank: "chaser:bank",
+  /** Questions already shown today (questionKey()s), see lib/chaser.ts. */
+  used: "chaser:used",
+  /** Categories switched off for new games. */
+  categoriesOff: "chaser:categories-off",
+  muted: "chaser:muted",
+  room: "chaser:room",
+};
 
 const GLOW = {
   player: "[text-shadow:0_0_12px_rgba(56,189,248,0.9),0_0_40px_rgba(56,189,248,0.5)]",
@@ -113,7 +136,12 @@ const VERDICT_KEYS: Record<string, Verdict> = {
 export default function ChaserGame() {
   const [game, dispatch] = useReducer(chaserReducer, undefined, () => newGame());
   const [draft, setDraft] = useState<Draft>(() => toDraft(DEFAULT_SETTINGS));
-  const [bank, setBank] = useState<Question[]>(SAMPLE_QUESTIONS);
+  const [bank, setBank] = useState<Question[]>(STANDARD_QUESTIONS);
+  const [legacyBank, setLegacyBank] = useState<Question[]>([]);
+  const [usedLog, setUsedLog] = useState<UsedLog>({ day: "", keys: [] });
+  const [categoriesOff, setCategoriesOff] = useState<string[]>([]);
+  /** deck[0..deckFresh) hadn't been asked today when this game started. */
+  const [deckFresh, setDeckFresh] = useState(0);
   const [muted, setMuted] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
@@ -231,6 +259,10 @@ export default function ChaserGame() {
     if (settings) setDraft(toDraft(sanitizeSettings(settings)));
     const stored = sanitizeBank(readJson(STORAGE.bank));
     if (stored) setBank(stored);
+    setLegacyBank(sanitizeBank(readJson(STORAGE.legacyBank)) ?? []);
+    setUsedLog(sanitizeUsed(readJson(STORAGE.used), dayKey()));
+    const off = readJson(STORAGE.categoriesOff);
+    if (Array.isArray(off)) setCategoriesOff(off.filter((c): c is string => typeof c === "string"));
     setMuted(readJson(STORAGE.muted) === true);
     setLoaded(true);
   }, []);
@@ -243,6 +275,19 @@ export default function ChaserGame() {
   useEffect(() => {
     if (loaded) writeJson(STORAGE.muted, muted);
   }, [loaded, muted]);
+  useEffect(() => {
+    if (loaded && usedLog.day) writeJson(STORAGE.used, usedLog);
+  }, [loaded, usedLog]);
+  useEffect(() => {
+    if (loaded) writeJson(STORAGE.categoriesOff, categoriesOff);
+  }, [loaded, categoriesOff]);
+
+  // ---- no repeats today: every question that reaches the screen is logged ----
+  const shown = isQuestionVisible(game) ? currentQuestion(game) : null;
+  const shownKey = shown ? questionKey(shown) : null;
+  useEffect(() => {
+    if (shownKey) setUsedLog((log) => addUsed(log, shownKey, dayKey()));
+  }, [shownKey]);
 
   // ---- clock ----
   const inRound = game.phase === "round1" || game.phase === "round2";
@@ -329,16 +374,41 @@ export default function ChaserGame() {
     else void rootRef.current?.requestFullscreen?.();
   };
 
-  const validBank = bank
-    .map((q) => ({ ...q, question: q.question.trim(), answer: q.answer.trim() }))
-    .filter((q) => q.question && q.answer);
+  const validBank = useMemo(
+    () =>
+      bank
+        .map((q) => ({ ...q, question: q.question.trim(), answer: q.answer.trim(), category: cleanCategory(q.category) }))
+        .filter((q) => q.question && q.answer),
+    [bank],
+  );
+
+  // Today's log (a page left open past midnight starts a fresh day).
+  const today = dayKey();
+  const usedToday = useMemo(
+    () => new Set(usedLog.day === today ? usedLog.keys : []),
+    [usedLog, today],
+  );
+  const off = useMemo(() => new Set(categoriesOff), [categoriesOff]);
+  // Counts for the setup screen only (the clock re-renders this page 10×/s).
+  const pool = useMemo(() => {
+    if (game.phase !== "setup") return { total: 0, fresh: 0 };
+    const { deck, fresh } = buildDeck(validBank, { used: usedToday, off, random: () => 0 });
+    return { total: deck.length, fresh };
+  }, [game.phase, validBank, usedToday, off]);
 
   const start = () => {
-    if (validBank.length === 0) return;
+    const { deck, fresh } = buildDeck(validBank, { used: usedToday, off });
+    if (deck.length === 0) return;
     const settings = sanitizeSettings(draft);
     setDraft(toDraft(settings));
+    setDeckFresh(fresh);
     sfx.unlock();
-    dispatch({ type: "start", settings, deck: shuffle(validBank) });
+    dispatch({ type: "start", settings, deck });
+  };
+
+  const clearUsedToday = () => {
+    if (!window.confirm(`ล้างประวัติคำถามที่ใช้วันนี้ (${usedToday.size} ข้อ)? คำถามเหล่านี้จะถูกสุ่มได้อีก`)) return;
+    setUsedLog({ day: dayKey(), keys: [] });
   };
 
   const endGame = () => {
@@ -443,12 +513,21 @@ export default function ChaserGame() {
               setDraft={setDraft}
               bank={bank}
               setBank={setBank}
+              legacyBank={legacyBank}
               validCount={validBank.length}
+              pool={pool}
               onStart={start}
               link={{ room, remote, copied, displayOn, onCopy: copyDisplayLink, onChangeRoom: changeRoom }}
+              categories={{
+                bank: validBank,
+                usedToday,
+                off: categoriesOff,
+                setOff: setCategoriesOff,
+                onClearUsed: clearUsedToday,
+              }}
             />
           )}
-          {inRound && <RoundScreen game={game} onDecide={decide} onPrimary={primary} />}
+          {inRound && <RoundScreen game={game} fresh={deckFresh} onDecide={decide} onPrimary={primary} />}
           {game.phase === "interlude" && <InterludeScreen game={game} onStart={primary} />}
           {game.phase === "result" && <ResultScreen game={game} onReplay={endGame} />}
         </main>
@@ -615,17 +694,24 @@ function SetupScreen({
   setDraft,
   bank,
   setBank,
+  legacyBank,
   validCount,
+  pool,
   onStart,
   link,
+  categories,
 }: {
   draft: Draft;
   setDraft: React.Dispatch<React.SetStateAction<Draft>>;
   bank: Question[];
   setBank: React.Dispatch<React.SetStateAction<Question[]>>;
+  legacyBank: Question[];
   validCount: number;
+  /** Questions in the categories switched on; `fresh` = not asked yet today. */
+  pool: { total: number; fresh: number };
   onStart: () => void;
   link: DisplayLinkProps;
+  categories: CategoryPickerProps;
 }) {
   const set = (key: keyof Draft) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setDraft((d) => ({ ...d, [key]: e.target.value }));
@@ -688,12 +774,23 @@ function SetupScreen({
         <button
           type="button"
           onClick={onStart}
-          disabled={validCount === 0}
+          disabled={pool.total === 0}
           className={`${display.className} w-full rounded-2xl bg-linear-to-r from-sky-500 via-indigo-500 to-rose-500 py-4 text-2xl font-bold tracking-wider text-white shadow-[0_0_30px_rgba(99,102,241,0.5)] transition hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40`}
         >
           เริ่มเกม
         </button>
-        {validCount === 0 && <p className="text-center text-sm text-amber-300">เพิ่มคำถามอย่างน้อย 1 ข้อก่อนเริ่ม</p>}
+        {validCount === 0 ? (
+          <p className="text-center text-sm text-amber-300">เพิ่มคำถามอย่างน้อย 1 ข้อก่อนเริ่ม</p>
+        ) : pool.total === 0 ? (
+          <p className="text-center text-sm text-amber-300">เลือกหมวดคำถามอย่างน้อย 1 หมวด</p>
+        ) : (
+          <p className={`text-center text-sm ${pool.fresh < FEW_FRESH ? "text-amber-300" : "text-white/55"}`}>
+            {pool.fresh > 0
+              ? `สุ่มจาก ${pool.fresh} ข้อที่ยังไม่ถูกถามวันนี้`
+              : "คำถามในหมวดที่เลือกถูกถามครบแล้ววันนี้ — เกมนี้จะวนใช้ข้อเดิม"}
+            {pool.fresh > 0 && pool.fresh < FEW_FRESH && " · เหลือน้อย เกมยาวอาจได้ข้อที่ใช้แล้ว"}
+          </p>
+        )}
 
         <DisplayLinkCard {...link} />
 
@@ -711,8 +808,113 @@ function SetupScreen({
         </details>
       </section>
 
-      <QuestionBank bank={bank} setBank={setBank} validCount={validCount} />
+      <div className="flex min-w-0 flex-col gap-5">
+        <CategoryPicker {...categories} />
+        <QuestionBank bank={bank} setBank={setBank} legacyBank={legacyBank} validCount={validCount} />
+      </div>
     </div>
+  );
+}
+
+/** Below this many unasked questions the host gets a heads-up (a fast game uses ~30–50). */
+const FEW_FRESH = 40;
+
+interface CategoryPickerProps {
+  bank: Question[];
+  usedToday: ReadonlySet<string>;
+  off: string[];
+  setOff: React.Dispatch<React.SetStateAction<string[]>>;
+  onClearUsed: () => void;
+}
+
+/** Which categories go into the next game, and what's left unasked today. */
+function CategoryPicker({ bank, usedToday, off, setOff, onClearUsed }: CategoryPickerProps) {
+  const freshBy = new Map<string, number>();
+  for (const q of bank) {
+    if (!usedToday.has(questionKey(q))) freshBy.set(q.category, (freshBy.get(q.category) ?? 0) + 1);
+  }
+  const stats = listCategories(bank).map((c) => ({ ...c, fresh: freshBy.get(c.name) ?? 0 }));
+  const offSet = new Set(off);
+  const onCount = stats.filter((c) => !offSet.has(c.name)).length;
+  const toggle = (name: string) =>
+    setOff((o) => (o.includes(name) ? o.filter((c) => c !== name) : [...o, name]));
+
+  if (stats.length === 0) return null;
+  return (
+    <section className={`${panel} p-5`}>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-lg font-semibold">
+          หมวดในเกม{" "}
+          <span className="ml-1 text-white/50 tabular-nums">
+            {onCount}/{stats.length} หมวด
+          </span>
+        </h2>
+        <div className="flex gap-2 text-sm">
+          <button
+            type="button"
+            onClick={() => setOff([])}
+            className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 hover:bg-white/10"
+          >
+            เลือกทั้งหมด
+          </button>
+          <button
+            type="button"
+            onClick={() => setOff(stats.map((c) => c.name))}
+            className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 hover:bg-white/10"
+          >
+            ไม่เลือกเลย
+          </button>
+        </div>
+      </div>
+      <p className="mt-1 text-sm text-white/50">
+        สุ่มสลับหมวดกันไป ไม่ให้หมวดเดียวกันมาติดกัน · ตัวเลข = ข้อที่ยังไม่ถูกถามวันนี้ / ทั้งหมด
+      </p>
+
+      <div className="mt-3 flex flex-wrap gap-2">
+        {stats.map((c) => {
+          const on = !offSet.has(c.name);
+          return (
+            <button
+              key={c.name}
+              type="button"
+              onClick={() => toggle(c.name)}
+              aria-pressed={on}
+              className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition ${
+                on
+                  ? "border-sky-400/50 bg-sky-500/15 text-white hover:bg-sky-500/25"
+                  : "border-white/10 bg-transparent text-white/35 line-through hover:text-white/60"
+              }`}
+            >
+              {c.name}
+              <span
+                className={`rounded-full px-1.5 text-xs tabular-nums no-underline ${
+                  on ? (c.fresh === 0 ? "bg-amber-400/20 text-amber-200" : "bg-white/10 text-white/70") : "text-white/30"
+                }`}
+              >
+                {c.fresh === c.count ? c.count : `${c.fresh}/${c.count}`}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-3 text-sm">
+        <span className="text-white/60">
+          {usedToday.size > 0
+            ? `วันนี้ถามไปแล้ว ${usedToday.size} ข้อ — เล่นรอบใหม่จะไม่ได้ข้อซ้ำ`
+            : "วันนี้ยังไม่ได้ถามคำถามข้อไหน"}
+        </span>
+        {usedToday.size > 0 && (
+          <button
+            type="button"
+            onClick={onClearUsed}
+            className="flex items-center gap-1 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-white/75 hover:bg-white/10"
+          >
+            <HiArrowPath className="h-4 w-4" /> ล้างประวัติวันนี้
+          </button>
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -724,19 +926,37 @@ function Kbd({ children }: { children: React.ReactNode }) {
   );
 }
 
+const ALL = "";
+
 function QuestionBank({
   bank,
   setBank,
+  legacyBank,
   validCount,
 }: {
   bank: Question[];
   setBank: React.Dispatch<React.SetStateAction<Question[]>>;
+  legacyBank: Question[];
   validCount: number;
 }) {
-  const [adding, setAdding] = useState({ question: "", answer: "" });
+  const [adding, setAdding] = useState({ question: "", answer: "", category: "" });
   const [showText, setShowText] = useState(false);
   const [text, setText] = useState("");
   const [message, setMessage] = useState("");
+  const [filter, setFilter] = useState(ALL);
+  const [search, setSearch] = useState("");
+
+  const categories = listCategories(bank.map((q) => ({ category: cleanCategory(q.category) })));
+  const bankKeys = new Set(bank.map(questionKey));
+  const legacyMissing = legacyBank.filter((q) => !bankKeys.has(questionKey(q)));
+  const needle = search.trim().toLowerCase();
+  const rows = bank
+    .map((q, i) => ({ q, n: i + 1 }))
+    .filter(
+      ({ q }) =>
+        (filter === ALL || cleanCategory(q.category) === filter) &&
+        (!needle || q.question.toLowerCase().includes(needle) || q.answer.toLowerCase().includes(needle)),
+    );
 
   const update = (id: string, patch: Partial<Question>) =>
     setBank((b) => b.map((q) => (q.id === id ? { ...q, ...patch } : q)));
@@ -746,12 +966,21 @@ function QuestionBank({
     const question = adding.question.trim();
     const answer = adding.answer.trim();
     if (!question || !answer) return;
-    setBank((b) => [...b, { id: newId(), question, answer }]);
-    setAdding({ question: "", answer: "" });
+    const category = cleanCategory(adding.category || filter);
+    setBank((b) => [...b, { id: newId(), question, answer, category }]);
+    // Keep the category for the next one — questions usually come in batches.
+    setAdding({ question: "", answer: "", category: adding.category });
+  };
+
+  const restoreLegacy = () => {
+    if (!window.confirm(`เพิ่มคำถามจากคลังเดิม ${legacyMissing.length} ข้อต่อท้าย? (จะอยู่หมวด "${DEFAULT_CATEGORY}" แก้หมวดได้ภายหลัง)`))
+      return;
+    setBank((b) => [...b, ...legacyMissing.map((q) => ({ ...q, id: newId() }))]);
+    setMessage("");
   };
 
   const importText = (replace: boolean) => {
-    const { questions, skipped } = parseQuestions(text);
+    const { questions, skipped } = parseQuestions(text, filter || DEFAULT_CATEGORY);
     if (questions.length === 0) {
       setMessage("ไม่พบคำถามที่อ่านได้ — ใช้รูปแบบ คำถาม | คำตอบ บรรทัดละข้อ");
       return;
@@ -786,12 +1015,26 @@ function QuestionBank({
           <button
             type="button"
             onClick={() => {
-              if (window.confirm("แทนที่คลังคำถามด้วยชุดตัวอย่าง?")) setBank(SAMPLE_QUESTIONS);
+              const n = listCategories(STANDARD_QUESTIONS).length;
+              if (window.confirm(`แทนที่คลังคำถามด้วยชุดมาตรฐาน ${STANDARD_QUESTIONS.length} ข้อ (${n} หมวด)?`)) {
+                setBank(STANDARD_QUESTIONS);
+                setFilter(ALL);
+              }
             }}
             className="flex items-center gap-1 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 hover:bg-white/10"
           >
-            <HiArrowPath className="h-4 w-4" /> ชุดตัวอย่าง
+            <HiArrowPath className="h-4 w-4" /> ชุดมาตรฐาน
           </button>
+          {legacyMissing.length > 0 && (
+            <button
+              type="button"
+              onClick={restoreLegacy}
+              title="คำถามที่เคยบันทึกไว้ก่อนอัปเดตระบบหมวด"
+              className="flex items-center gap-1 rounded-lg border border-amber-300/30 bg-amber-400/10 px-3 py-1.5 text-amber-100 hover:bg-amber-400/20"
+            >
+              <HiPlus className="h-4 w-4" /> คลังเดิม ({legacyMissing.length})
+            </button>
+          )}
           <button
             type="button"
             onClick={() => {
@@ -806,16 +1049,23 @@ function QuestionBank({
 
       {showText && (
         <div className="mt-4 space-y-2 rounded-xl border border-white/10 bg-black/30 p-3">
-          <p className="text-sm text-white/60">
-            บรรทัดละ 1 ข้อ: <code className="text-sky-300">คำถาม | คำตอบ</code> หรือคัดลอก 2 คอลัมน์จาก Google
-            Sheets / Excel มาวางได้เลย
+          <p className="text-sm leading-relaxed text-white/60">
+            บรรทัดละ 1 ข้อ: <code className="text-sky-300">คำถาม | คำตอบ</code> · ขึ้นหมวดใหม่ด้วยบรรทัด{" "}
+            <code className="text-sky-300"># ชื่อหมวด</code> · หรือคัดลอกจาก Google Sheets / Excel มาวางได้เลย (2
+            คอลัมน์ คำถาม–คำตอบ หรือ 3 คอลัมน์ หมวด–คำถาม–คำตอบ)
+            {filter !== ALL && (
+              <>
+                {" "}
+                · ข้อที่ไม่มีหัวหมวดจะอยู่หมวด <span className="text-white/85">{filter}</span>
+              </>
+            )}
           </p>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={8}
             className={`${field} font-mono text-sm`}
-            placeholder={"เมืองหลวงของญี่ปุ่นคือเมืองใด | โตเกียว\n7 × 8 เท่ากับเท่าไร | 56"}
+            placeholder={"# ภูมิศาสตร์โลก\nเมืองหลวงของเวียดนามคือเมืองใด | ฮานอย\n\n# คณิตศาสตร์\n12 × 12 เท่ากับเท่าไร | 144"}
           />
           <div className="flex flex-wrap gap-2 text-sm">
             <button
@@ -836,7 +1086,7 @@ function QuestionBank({
               type="button"
               onClick={() => {
                 setText(formatQuestions(bank.filter((q) => q.question.trim() && q.answer.trim())));
-                setMessage("ดึงคำถามทั้งหมดมาแล้ว — แก้ไขแล้วกด “แทนที่ทั้งหมด” หรือคัดลอกเก็บไว้");
+                setMessage("ดึงคำถามทั้งหมดมาแล้ว (พร้อมหัวหมวด) — แก้ไขแล้วกด “แทนที่ทั้งหมด” หรือคัดลอกเก็บไว้");
               }}
               className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 hover:bg-white/10"
             >
@@ -847,7 +1097,13 @@ function QuestionBank({
         </div>
       )}
 
-      <form onSubmit={add} className="mt-4 grid gap-2 sm:grid-cols-[minmax(0,1fr)_12rem_auto]">
+      <datalist id="chaser-categories">
+        {categories.map((c) => (
+          <option key={c.name} value={c.name} />
+        ))}
+      </datalist>
+
+      <form onSubmit={add} className="mt-4 grid gap-2 sm:grid-cols-[minmax(0,1fr)_10rem_8rem_auto]">
         <input
           value={adding.question}
           onChange={(e) => setAdding((a) => ({ ...a, question: e.target.value }))}
@@ -860,6 +1116,15 @@ function QuestionBank({
           placeholder="เฉลย"
           className={field}
         />
+        <input
+          value={adding.category}
+          onChange={(e) => setAdding((a) => ({ ...a, category: e.target.value }))}
+          placeholder={filter || "หมวด"}
+          list="chaser-categories"
+          maxLength={MAX_CATEGORY_CHARS}
+          aria-label="หมวดของคำถามใหม่"
+          className={field}
+        />
         <button
           type="submit"
           disabled={!adding.question.trim() || !adding.answer.trim()}
@@ -869,34 +1134,70 @@ function QuestionBank({
         </button>
       </form>
 
+      <div className="mt-3 grid gap-2 sm:grid-cols-[12rem_minmax(0,1fr)]">
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          aria-label="แสดงเฉพาะหมวด"
+          className={`${field} py-2`}
+        >
+          <option value={ALL}>ทุกหมวด ({bank.length})</option>
+          {categories.map((c) => (
+            <option key={c.name} value={c.name}>
+              {c.name} ({c.count})
+            </option>
+          ))}
+        </select>
+        <label className="relative block">
+          <HiMagnifyingGlass className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="ค้นหาคำถามหรือเฉลย"
+            className={`${field} py-2 pl-9`}
+          />
+        </label>
+      </div>
+
       <ol className="mt-3 max-h-[55vh] min-h-0 space-y-2 overflow-y-auto pr-1">
-        {bank.length === 0 && (
+        {rows.length === 0 && (
           <li className="rounded-xl border border-dashed border-white/15 p-6 text-center text-white/50">
-            ยังไม่มีคำถาม — เพิ่มทีละข้อ นำเข้าจากข้อความ หรือกด “ชุดตัวอย่าง”
+            {bank.length === 0
+              ? "ยังไม่มีคำถาม — เพิ่มทีละข้อ นำเข้าจากข้อความ หรือกด “ชุดมาตรฐาน”"
+              : "ไม่พบคำถามที่ตรงกับตัวกรอง"}
           </li>
         )}
-        {bank.map((q, i) => (
+        {rows.map(({ q, n }) => (
           <li
             key={q.id}
-            className="grid grid-cols-[2rem_minmax(0,1fr)_auto] items-start gap-2 rounded-xl border border-white/10 bg-black/20 p-2 sm:grid-cols-[2rem_minmax(0,1fr)_12rem_auto] sm:items-center"
+            className="grid grid-cols-[2rem_minmax(0,1fr)_auto] items-start gap-x-2 rounded-xl border border-white/10 bg-black/20 p-2 sm:grid-cols-[2rem_minmax(0,1fr)_10rem_8rem_auto] sm:items-center"
           >
-            <span className="pt-2 text-right text-sm text-white/40 tabular-nums sm:pt-0">{i + 1}</span>
+            <span className="pt-2 text-right text-sm text-white/40 tabular-nums sm:pt-0">{n}</span>
             <input
               value={q.question}
               onChange={(e) => update(q.id, { question: e.target.value })}
-              aria-label={`คำถามข้อ ${i + 1}`}
+              aria-label={`คำถามข้อ ${n}`}
               className="w-full rounded-lg border border-transparent bg-transparent px-2 py-1.5 outline-none hover:border-white/10 focus:border-sky-400 focus:bg-black/40"
             />
             <input
               value={q.answer}
               onChange={(e) => update(q.id, { answer: e.target.value })}
-              aria-label={`เฉลยข้อ ${i + 1}`}
+              aria-label={`เฉลยข้อ ${n}`}
               className="col-start-2 row-start-2 w-full rounded-lg border border-transparent bg-transparent px-2 py-1.5 text-emerald-300 outline-none hover:border-white/10 focus:border-sky-400 focus:bg-black/40 sm:col-start-auto sm:row-start-auto"
+            />
+            <input
+              value={q.category}
+              onChange={(e) => update(q.id, { category: e.target.value })}
+              onBlur={() => update(q.id, { category: cleanCategory(q.category) })}
+              list="chaser-categories"
+              maxLength={MAX_CATEGORY_CHARS}
+              aria-label={`หมวดข้อ ${n}`}
+              className="col-start-2 row-start-3 w-full rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm text-sky-200/80 outline-none hover:border-white/10 focus:border-sky-400 focus:bg-black/40 sm:col-start-auto sm:row-start-auto"
             />
             <button
               type="button"
               onClick={() => setBank((b) => b.filter((x) => x.id !== q.id))}
-              aria-label={`ลบข้อ ${i + 1}`}
+              aria-label={`ลบข้อ ${n}`}
               className="col-start-3 row-start-1 flex h-9 w-9 items-center justify-center rounded-lg text-white/40 hover:bg-rose-500/15 hover:text-rose-300 sm:col-start-auto sm:row-start-auto"
             >
               <HiTrash className="h-4 w-4" />
@@ -1045,10 +1346,13 @@ function ChaseTrack({
 
 function RoundScreen({
   game,
+  fresh,
   onDecide,
   onPrimary,
 }: {
   game: Game;
+  /** deck[0..fresh) weren't asked yet today when the game started. */
+  fresh: number;
   onDecide: (v: Verdict) => void;
   onPrimary: () => void;
 }) {
@@ -1131,9 +1435,10 @@ function RoundScreen({
                 </span>
               </div>
             ) : (
-              <p className="text-sm text-white/45">
-                คำถามข้อที่ {game.cursor + 1}
-                {game.cursor >= game.deck.length && " · คำถามวนซ้ำ"}
+              <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-white/45">
+                <span>คำถามข้อที่ {game.cursor + 1}</span>
+                <CategoryTag name={q.category} />
+                {game.cursor >= fresh && <span className="text-amber-300/80">· ถามไปแล้ววันนี้</span>}
               </p>
             )}
             <p
@@ -1212,6 +1517,12 @@ function RoundScreen({
         </div>
       </div>
     </div>
+  );
+}
+
+function CategoryTag({ name }: { name: string }) {
+  return (
+    <span className="rounded-full border border-white/15 bg-white/5 px-2 py-0.5 text-xs text-white/70">{name}</span>
   );
 }
 
