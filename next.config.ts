@@ -24,6 +24,7 @@ const nextConfig: NextConfig = {
       { source: "/final", destination: FINAL_PROJECT_PATH, permanent: false },
       { source: "/chaser", destination: "/admin/chaser", permanent: false },
       { source: "/chaser/display", destination: "/admin/chaser/display", permanent: false },
+      { source: "/tod", destination: "/truth-or-dare", permanent: false },
     ];
   },
 };
