@@ -5,6 +5,7 @@ import {
   HiOutlineCalendarDays,
   HiOutlineBolt,
   HiOutlineChartPie,
+  HiOutlineHandRaised,
   HiOutlineHome,
   HiOutlineRocketLaunch,
   HiOutlinePresentationChartBar,
@@ -53,6 +54,11 @@ const navItems = [
     href: "/admin/chaser",
     label: "เกม Chaser",
     icon: <HiOutlineBolt className="h-5 w-5" />,
+  },
+  {
+    href: "/truth-or-dare",
+    label: "Truth or Dare",
+    icon: <HiOutlineHandRaised className="h-5 w-5" />,
   },
 ];
 
