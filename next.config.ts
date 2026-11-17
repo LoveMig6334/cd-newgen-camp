@@ -25,6 +25,7 @@ const nextConfig: NextConfig = {
       { source: "/chaser", destination: "/admin/chaser", permanent: false },
       { source: "/chaser/display", destination: "/admin/chaser/display", permanent: false },
       { source: "/tod", destination: "/truth-or-dare", permanent: false },
+      { source: "/santa", destination: "/secret-santa", permanent: false },
     ];
   },
 };

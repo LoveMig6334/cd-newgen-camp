@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
   HiOutlineCalendarDays,
+  HiOutlineGift,
   HiOutlineBolt,
   HiOutlineChartPie,
   HiOutlineHandRaised,
@@ -59,6 +60,11 @@ const navItems = [
     href: "/truth-or-dare",
     label: "Truth or Dare",
     icon: <HiOutlineHandRaised className="h-5 w-5" />,
+  },
+  {
+    href: "/admin/secret-santa",
+    label: "Secret Santa",
+    icon: <HiOutlineGift className="h-5 w-5" />,
   },
 ];
 

@@ -117,6 +117,9 @@ Setup: run `supabase/migrations/20261020120000_pitch_submissions.sql`.
 Final Project (2026): students submit a deployed link + pitch deck PDF at `/final` (`/pitch` redirects there too); TAs use `/admin/final-project` (gallery + presenter view) and the picker wheel at `/admin/wheel` (`/wheel`).
 Setup: run `supabase/migrations/20261022090000_final_project.sql` — it also creates the private Storage bucket `final-project-decks` (PDF only, 30 MB). The browser uploads the PDF straight to Storage, so it isn't limited by Vercel's 4.5 MB request cap.
 
+Secret Santa: admin enters names at `/admin/secret-santa`; everyone draws at `/secret-santa` (`/santa`). No record of who got whom is ever stored — only who has drawn and which names are still in the pool.
+Setup: run `supabase/migrations/20261117120000_secret_santa.sql`.
+
 ```sql
 pitch_submissions (id, event_id, application_id, problem, hmw, idea, html, link_url, sketch, sketch_mime, has_html, submitted_at)
 final_project_submissions (id, event_id, application_id, deploy_url, deck_path, deck_size, submitted_at)
