@@ -160,6 +160,9 @@ REVOKE ALL ON FUNCTION public.secret_santa_status() FROM PUBLIC;
 REVOKE ALL ON FUNCTION public.secret_santa_draw(uuid, text) FROM PUBLIC;
 REVOKE ALL ON FUNCTION public.secret_santa_start(text[]) FROM PUBLIC;
 REVOKE ALL ON FUNCTION public.secret_santa_reset() FROM PUBLIC;
+-- Supabase's default privileges also grant EXECUTE to anon directly.
+REVOKE EXECUTE ON FUNCTION public.secret_santa_start(text[]) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.secret_santa_reset() FROM anon;
 GRANT EXECUTE ON FUNCTION public.secret_santa_status() TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.secret_santa_draw(uuid, text) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.secret_santa_start(text[]) TO authenticated;
